@@ -1,0 +1,7 @@
+[
+  {"id": "m1", "businessName": "T'boli Weaves Co.", "businessType": "Artisan", "description": "Preserving T'nalak weaving art.", "address": "Lake Sebu, South Cotabato", "logoUrl": "https://picsum.photos/seed/merch_tboli/200/200", "rating": 4.9, "productsCount": 18, "isVerified": true},
+  {"id": "m2", "businessName": "Davao Delights", "businessType": "Cafe", "description": "Davao's finest durian treats.", "address": "Magsaysay Park, Davao City", "logoUrl": "https://picsum.photos/seed/merch_davao/200/200", "rating": 4.7, "productsCount": 32, "isVerified": true},
+  {"id": "m3", "businessName": "Lanao Artisans", "businessType": "Artisan", "description": "Master brassworkers of Lanao.", "address": "Marawi City", "logoUrl": "https://picsum.photos/seed/merch_lanao/200/200", "rating": 4.85, "productsCount": 12, "isVerified": true},
+  {"id": "m4", "businessName": "Highland Bee Farm", "businessType": "Restaurant", "description": "Organic highland honey.", "address": "Malaybalay, Bukidnon", "logoUrl": "https://picsum.photos/seed/merch_bee/200/200", "rating": 4.8, "productsCount": 8, "isVerified": true},
+  {"id": "m5", "businessName": "Mt. Apo Coffee Co.", "businessType": "Cafe", "description": "Single-origin Mindanao coffee.", "address": "Bansalan, Davao del Sur", "logoUrl": "https://picsum.photos/seed/merch_coffee/200/200", "rating": 4.9, "productsCount": 15, "isVerified": true}
+]

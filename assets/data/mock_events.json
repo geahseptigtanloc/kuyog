@@ -1,0 +1,13 @@
+[
+  {"id": "e1", "name": "Kamang-gagawa: Davao Food Crawl", "description": "Discover hidden gems of Davao's food scene. Collect stamps at 8 participating spots.", "imageUrl": "https://picsum.photos/seed/crawl_food/800/400", "location": "Davao City", "dateRange": "May 1-15, 2026", "totalSpots": 8, "slotsRemaining": 45, "isActive": true, "category": "Food", "spots": [
+    {"id": "s1", "name": "Lachi's Sans Rival", "category": "Dessert", "address": "Torres St, Davao City", "description": "Famous sans rival and durian cheesecake", "imageUrl": "https://picsum.photos/seed/spot_lachi/400/300", "isCollected": true},
+    {"id": "s2", "name": "Penong's BBQ", "category": "Restaurant", "address": "San Pedro St, Davao City", "description": "Best chicken inasal in Davao", "imageUrl": "https://picsum.photos/seed/spot_penong/400/300", "isCollected": true},
+    {"id": "s3", "name": "Magsaysay Fruit Stand", "category": "Market", "address": "Magsaysay Park", "description": "Fresh tropical fruits and durian", "imageUrl": "https://picsum.photos/seed/spot_fruit/400/300", "isCollected": true},
+    {"id": "s4", "name": "Blugré Coffee", "category": "Cafe", "address": "Abreeza Mall", "description": "Local specialty coffee shop", "imageUrl": "https://picsum.photos/seed/spot_blugre/400/300", "isCollected": false},
+    {"id": "s5", "name": "Tiny Kitchen", "category": "Restaurant", "address": "Quirino Ave", "description": "Filipino-Japanese fusion cuisine", "imageUrl": "https://picsum.photos/seed/spot_tiny/400/300", "isCollected": false},
+    {"id": "s6", "name": "Claude's Le Cafe", "category": "Cafe", "address": "JP Laurel Ave", "description": "French-Filipino pastries", "imageUrl": "https://picsum.photos/seed/spot_claude/400/300", "isCollected": false},
+    {"id": "s7", "name": "Tita Ising's Grilled Tuna", "category": "Restaurant", "address": "Magsaysay Park", "description": "Famous grilled tuna belly", "imageUrl": "https://picsum.photos/seed/spot_tita/400/300", "isCollected": false},
+    {"id": "s8", "name": "Roxas Night Market", "category": "Market", "address": "Roxas Ave", "description": "Street food paradise open nightly", "imageUrl": "https://picsum.photos/seed/spot_roxas/400/300", "isCollected": false}
+  ]},
+  {"id": "e2", "name": "Siargao Surf & Culture Trail", "description": "Ride the waves and explore local culture across Siargao's best spots.", "imageUrl": "https://picsum.photos/seed/crawl_surf/800/400", "location": "Siargao Island", "dateRange": "Jun 1-30, 2026", "totalSpots": 6, "slotsRemaining": 78, "isActive": true, "category": "Adventure", "spots": []}
+]

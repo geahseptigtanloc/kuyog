@@ -1,0 +1,9 @@
+[
+  {"id": "n1", "title": "Booking Confirmed!", "message": "Your Mount Apo trek with Maria Santos is confirmed for May 5-7.", "type": "booking", "timeAgo": "1h ago", "isRead": false, "iconType": "booking"},
+  {"id": "n2", "title": "New Stamp Collected! 🎉", "message": "You collected a stamp at Lachi's Sans Rival. 3/8 stamps complete!", "type": "system", "timeAgo": "3h ago", "isRead": false, "iconType": "crawl"},
+  {"id": "n3", "title": "+150 Kuyog Miles", "message": "You earned 150 miles for completing your Siargao trip. Total: 1,240 miles.", "type": "system", "timeAgo": "1d ago", "isRead": true, "iconType": "miles"},
+  {"id": "n4", "title": "Flash Deal! 🔥", "message": "Davao Durian Candy is 30% off for the next 24 hours. Don't miss out!", "type": "promo", "timeAgo": "2d ago", "isRead": true, "iconType": "promo"},
+  {"id": "n5", "title": "Guide Review Reminder", "message": "How was your trip with Juan dela Cruz? Leave a review and earn 50 miles.", "type": "system", "timeAgo": "3d ago", "isRead": true, "iconType": "system"},
+  {"id": "n6", "title": "Mindanao Crawl Starting!", "message": "The Davao Food Crawl starts May 1. Get ready to collect stamps!", "type": "promo", "timeAgo": "5d ago", "isRead": true, "iconType": "crawl"},
+  {"id": "n7", "title": "Order Shipped", "message": "Your T'nalak Woven Bag has been shipped. Estimated delivery: 3-5 days.", "type": "booking", "timeAgo": "1w ago", "isRead": true, "iconType": "booking"}
+]
