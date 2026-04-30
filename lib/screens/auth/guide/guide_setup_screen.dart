@@ -17,7 +17,7 @@ class GuideSetupScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(flex: 2),
-              Icon(Icons.person_pin_rounded, size: 80, color: AppColors.primary.withValues(alpha: 0.7)),
+              Icon(Icons.person_pin_rounded, size: 80, color: AppColors.primary.withOpacity(0.7)),
               const SizedBox(height: 24),
               Text(
                 'Set up your account!',

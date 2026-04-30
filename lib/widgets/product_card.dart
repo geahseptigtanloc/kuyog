@@ -35,7 +35,7 @@ class ProductCard extends StatelessWidget {
                     placeholder: (c, u) => Container(height: 140, color: AppColors.divider),
                     errorWidget: (c, u, e) => Container(
                       height: 140,
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primary.withOpacity(0.1),
                       child: const Icon(Icons.image, color: AppColors.primary),
                     ),
                   ),
@@ -61,7 +61,7 @@ class ProductCard extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Colors.white.withOpacity(0.9),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.favorite_border, size: 18, color: AppColors.textSecondary),

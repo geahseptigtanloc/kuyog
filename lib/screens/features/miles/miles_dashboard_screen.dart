@@ -72,7 +72,7 @@ class MilesDashboardScreen extends StatelessWidget {
                           percent: 0.65,
                           center: const Icon(Icons.workspace_premium, color: AppColors.primary, size: 32),
                           progressColor: AppColors.primary,
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                          backgroundColor: AppColors.primary.withOpacity(0.1),
                           circularStrokeCap: CircularStrokeCap.round,
                         ),
                         const SizedBox(width: 20),
@@ -128,7 +128,7 @@ class MilesDashboardScreen extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
+          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
           child: Icon(icon, color: Colors.white, size: 24),
         ),
         const SizedBox(height: 8),
@@ -151,7 +151,7 @@ class MilesDashboardScreen extends StatelessWidget {
               Text(title, style: AppTheme.label(size: 15)),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: AppColors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+                decoration: BoxDecoration(color: AppColors.accent.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
                 child: Text(reward, style: AppTheme.label(size: 11, color: AppColors.accent)),
               ),
             ],

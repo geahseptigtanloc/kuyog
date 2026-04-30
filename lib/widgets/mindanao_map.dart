@@ -55,16 +55,16 @@ class _MindanaoMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Water background
-    final waterPaint = Paint()..color = const Color(0xFFBBDEFB).withValues(alpha: 0.3);
+    final waterPaint = Paint()..color = const Color(0xFFBBDEFB).withOpacity(0.3);
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), waterPaint);
 
     // Simplified Mindanao island outline
     final landPaint = Paint()
-      ..color = const Color(0xFF81C784).withValues(alpha: 0.5)
+      ..color = const Color(0xFF81C784).withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     final landOutlinePaint = Paint()
-      ..color = const Color(0xFF4A7C3F).withValues(alpha: 0.6)
+      ..color = const Color(0xFF4A7C3F).withOpacity(0.6)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
@@ -91,7 +91,7 @@ class _MindanaoMapPainter extends CustomPainter {
     // Draw dotted route between pins
     if (pins.length > 1) {
       final routePaint = Paint()
-        ..color = AppColors.primary.withValues(alpha: 0.5)
+        ..color = AppColors.primary.withOpacity(0.5)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2;
 
@@ -111,7 +111,7 @@ class _MindanaoMapPainter extends CustomPainter {
       canvas.drawCircle(
         Offset(px, py + 2),
         8,
-        Paint()..color = Colors.black.withValues(alpha: 0.15),
+        Paint()..color = Colors.black.withOpacity(0.15),
       );
 
       // Pin circle
@@ -149,7 +149,7 @@ class _MindanaoMapPainter extends CustomPainter {
       );
       canvas.drawRRect(
         RRect.fromRectAndRadius(labelRect, const Radius.circular(3)),
-        Paint()..color = Colors.white.withValues(alpha: 0.9),
+        Paint()..color = Colors.white.withOpacity(0.9),
       );
 
       textPainter.paint(canvas, Offset(px - textPainter.width / 2, py - 19));

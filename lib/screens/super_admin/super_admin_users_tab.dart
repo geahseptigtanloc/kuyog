@@ -58,12 +58,12 @@ class SuperAdminUsersTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        CircleAvatar(radius: 20, backgroundColor: roleColor.withValues(alpha: 0.15), child: Icon(Icons.person, color: roleColor, size: 20)),
+        CircleAvatar(radius: 20, backgroundColor: roleColor.withOpacity(0.15), child: Icon(Icons.person, color: roleColor, size: 20)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 14)),
           Row(children: [
-            Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: roleColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: roleColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
               child: Text(role, style: AppTheme.body(size: 10, color: roleColor))),
             const SizedBox(width: 6),
             Text(status, style: AppTheme.body(size: 11, color: status == 'Active' ? AppColors.verified : AppColors.warning)),

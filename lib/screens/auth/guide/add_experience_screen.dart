@@ -52,7 +52,7 @@ class AddExperienceScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: lang == 'English' ? AppColors.primary.withValues(alpha: 0.12) : Colors.white,
+                    color: lang == 'English' ? AppColors.primary.withOpacity(0.12) : Colors.white,
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     border: Border.all(color: lang == 'English' ? AppColors.primary : AppColors.divider),
                   ),

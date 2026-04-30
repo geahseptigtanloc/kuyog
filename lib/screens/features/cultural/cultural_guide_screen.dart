@@ -145,7 +145,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
                     child: const Icon(Icons.handshake, color: AppColors.primary),
                   ),
                   const SizedBox(width: 16),
@@ -168,7 +168,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: AppColors.touristBlue.withOpacity(0.1), shape: BoxShape.circle),
                     child: const Icon(Icons.checkroom, color: AppColors.touristBlue),
                   ),
                   const SizedBox(width: 16),

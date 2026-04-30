@@ -36,7 +36,7 @@ class GuideProfileScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                        colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
                       ),
                     ),
                   ),
@@ -168,7 +168,7 @@ class GuideProfileScreen extends StatelessWidget {
                                 width: 160,
                                 fit: BoxFit.cover,
                                 placeholder: (c, u) => Container(width: 160, color: AppColors.divider),
-                                errorWidget: (c, u, e) => Container(width: 160, color: AppColors.primary.withValues(alpha: 0.1)),
+                                errorWidget: (c, u, e) => Container(width: 160, color: AppColors.primary.withOpacity(0.1)),
                               ),
                             ),
                           );
@@ -225,7 +225,7 @@ class GuideProfileScreen extends StatelessWidget {
           children: items.map((item) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              color: AppColors.primary.withOpacity(0.08),
               borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
             child: Text(item, style: AppTheme.body(size: 13, color: AppColors.primary)),

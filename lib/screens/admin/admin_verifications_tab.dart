@@ -13,7 +13,7 @@ class AdminVerificationsTab extends StatelessWidget {
           Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 16), child: Row(children: [
             Text('Verifications', style: AppTheme.headline(size: 24)),
             const Spacer(),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.warning.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('8 pending', style: AppTheme.label(size: 12, color: AppColors.warning))),
           ])),
           Expanded(child: ListView(
@@ -38,13 +38,13 @@ class AdminVerificationsTab extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withValues(alpha: 0.15), child: const Icon(Icons.person, color: AppColors.primary)),
+          CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withOpacity(0.15), child: const Icon(Icons.person, color: AppColors.primary)),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(name, style: AppTheme.label(size: 14)),
             Text('$city · Submitted $date', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
           ])),
-          Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: AppColors.touristBlue.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Text('$docs docs', style: AppTheme.label(size: 10, color: AppColors.touristBlue))),
         ]),
         const SizedBox(height: 12),

@@ -67,7 +67,7 @@ class MerchantDashboardTab extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+        Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
           child: Icon(icon, color: color, size: 20)),
         const SizedBox(width: 10),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -84,7 +84,7 @@ class MerchantDashboardTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        CircleAvatar(radius: 20, backgroundColor: statusColor.withValues(alpha: 0.15), child: Icon(Icons.person, color: statusColor, size: 20)),
+        CircleAvatar(radius: 20, backgroundColor: statusColor.withOpacity(0.15), child: Icon(Icons.person, color: statusColor, size: 20)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 13)),
@@ -93,7 +93,7 @@ class MerchantDashboardTab extends StatelessWidget {
         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Text(total, style: AppTheme.label(size: 13, color: AppColors.primary)),
           const SizedBox(height: 2),
-          Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+          Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2), decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Text(status, style: AppTheme.label(size: 10, color: statusColor))),
         ]),
       ]),

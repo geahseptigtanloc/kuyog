@@ -39,7 +39,7 @@ class SosHelpdeskScreen extends StatelessWidget {
                         color: Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
-                          BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 20, spreadRadius: 5),
+                          BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 20, spreadRadius: 5),
                         ],
                       ),
                       child: Column(
@@ -117,12 +117,12 @@ class SosHelpdeskScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: color.withValues(alpha: 0.3))),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: color.withOpacity(0.3))),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
             child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(width: 16),
@@ -140,7 +140,7 @@ class SosHelpdeskScreen extends StatelessWidget {
             icon: const Icon(Icons.call),
             color: color,
             onPressed: () {},
-            style: IconButton.styleFrom(backgroundColor: color.withValues(alpha: 0.1)),
+            style: IconButton.styleFrom(backgroundColor: color.withOpacity(0.1)),
           ),
         ],
       ),

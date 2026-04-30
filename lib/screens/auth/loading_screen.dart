@@ -33,7 +33,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
               height: 40,
               child: CircularProgressIndicator(
                 strokeWidth: 3,
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary.withValues(alpha: 0.7)),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary.withOpacity(0.7)),
               ),
             ),
           ],

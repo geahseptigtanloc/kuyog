@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import '../app_theme.dart';
 import '../providers/role_provider.dart';
 
@@ -60,21 +61,26 @@ class KuyogBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.7),
         boxShadow: AppShadows.bottomNav,
       ),
-      child: SafeArea(
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: onTap,
-          items: _getItems(),
-          backgroundColor: Colors.white,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.textLight,
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          selectedFontSize: 12,
-          unselectedFontSize: 11,
+      child: ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: SafeArea(
+            child: BottomNavigationBar(
+              currentIndex: currentIndex,
+              onTap: onTap,
+              items: _getItems(),
+              backgroundColor: Colors.transparent,
+              selectedItemColor: AppColors.primary,
+              unselectedItemColor: AppColors.textLight,
+              type: BottomNavigationBarType.fixed,
+              elevation: 0,
+              selectedFontSize: 12,
+              unselectedFontSize: 11,
+            ),
+          ),
         ),
       ),
     );

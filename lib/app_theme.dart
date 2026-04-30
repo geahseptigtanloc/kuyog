@@ -11,15 +11,24 @@ class AppColors {
   static const Color accent = Color(0xFFE8872A);
   static const Color accentLight = Color(0xFFFFB347);
 
-  // Surfaces
+  // Light surfaces
   static const Color surface = Color(0xFFFFFFFF);
   static const Color background = Color(0xFFF4F6F0);
   static const Color card = Color(0xFFFFFFFF);
+
+  // Dark surfaces
+  static const Color surfaceDark = Color(0xFF1E1E1E);
+  static const Color backgroundDark = Color(0xFF121212);
+  static const Color cardDark = Color(0xFF1F1F1F);
 
   // Text
   static const Color textPrimary = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color textLight = Color(0xFF9CA3AF);
+
+  // Dark text
+  static const Color textPrimaryDark = Color(0xFFE0E0E0);
+  static const Color textSecondaryDark = Color(0xFFB0B0B0);
 
   // Semantic
   static const Color success = Color(0xFF22C55E);
@@ -29,6 +38,7 @@ class AppColors {
 
   // Misc
   static const Color divider = Color(0xFFE5E7EB);
+  static const Color dividerDark = Color(0xFF444444);
   static const Color cardShadow = Color(0x14000000);
   static const Color facebookBlue = Color(0xFF1877F2);
   static const Color googleWhite = Color(0xFFF1F1F1);
@@ -65,7 +75,7 @@ class AppSpacing {
 class AppShadows {
   static List<BoxShadow> get card => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
+          color: Colors.black.withOpacity(0.08),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -73,7 +83,7 @@ class AppShadows {
 
   static List<BoxShadow> get cardHover => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.12),
+          color: Colors.black.withOpacity(0.12),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -81,7 +91,7 @@ class AppShadows {
 
   static List<BoxShadow> get bottomNav => [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.08),
+          color: Colors.black.withOpacity(0.08),
           blurRadius: 16,
           offset: const Offset(0, -4),
         ),
@@ -263,7 +273,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: Colors.white,
-        selectedColor: AppColors.primary.withValues(alpha: 0.15),
+        selectedColor: AppColors.primary.withOpacity(0.15),
         side: const BorderSide(color: AppColors.divider),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -284,6 +294,31 @@ class AppTheme {
         color: AppColors.divider,
         thickness: 1,
         space: 1,
+      ),
+    );
+  }
+
+  static ThemeData get darkTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.backgroundDark,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.primaryLight,
+        secondary: AppColors.accentLight,
+        surface: AppColors.surfaceDark,
+        error: AppColors.error,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: AppColors.textPrimaryDark,
+      ),
+      textTheme: GoogleFonts.nunitoTextTheme().copyWith(
+        headlineLarge: GoogleFonts.baloo2(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: AppColors.textPrimaryDark,
+        ),
+        // other text styles can be added here
       ),
     );
   }

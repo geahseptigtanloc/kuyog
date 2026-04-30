@@ -67,7 +67,7 @@ class _CrawlHomeScreenState extends State<CrawlHomeScreen> {
                               const SizedBox(height: 8),
                               LinearProgressIndicator(
                                 value: crawl.stampCount / 8,
-                                backgroundColor: Colors.black.withValues(alpha: 0.2),
+                                backgroundColor: Colors.black.withOpacity(0.2),
                                 valueColor: const AlwaysStoppedAnimation(Colors.white),
                                 borderRadius: BorderRadius.circular(4),
                               ),
@@ -79,7 +79,7 @@ class _CrawlHomeScreenState extends State<CrawlHomeScreen> {
                         const SizedBox(width: 20),
                         Container(
                           padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
+                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
                           child: const Icon(Icons.emoji_events, size: 48, color: Colors.white),
                         ),
                       ],
@@ -130,7 +130,7 @@ class _CrawlHomeScreenState extends State<CrawlHomeScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(color: AppColors.accent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                      decoration: BoxDecoration(color: AppColors.accent.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
                       child: Text(e.category, style: AppTheme.label(size: 11, color: AppColors.accent)),
                     ),
                     const Spacer(),

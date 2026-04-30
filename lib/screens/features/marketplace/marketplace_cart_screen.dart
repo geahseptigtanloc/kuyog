@@ -32,7 +32,7 @@ class MarketplaceCartScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.shopping_cart_outlined, size: 80, color: AppColors.textLight.withValues(alpha: 0.5)),
+                  Icon(Icons.shopping_cart_outlined, size: 80, color: AppColors.textLight.withOpacity(0.5)),
                   const SizedBox(height: 16),
                   Text('Your cart is empty', style: AppTheme.headline(size: 20)),
                   const SizedBox(height: 8),

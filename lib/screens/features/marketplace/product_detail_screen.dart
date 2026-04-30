@@ -55,7 +55,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     right: 16,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                      decoration: BoxDecoration(color: Colors.black.withOpacity(0.6), borderRadius: BorderRadius.circular(AppRadius.pill)),
                       child: Text('1/${widget.product.images.isEmpty ? 1 : widget.product.images.length}', style: const TextStyle(color: Colors.white, fontSize: 12)),
                     ),
                   ),
@@ -114,7 +114,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                   const SizedBox(width: 8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(color: AppColors.error.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                                    decoration: BoxDecoration(color: AppColors.error.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
                                     child: Text('-${(((widget.product.originalPrice! - widget.product.price) / widget.product.originalPrice!) * 100).toInt()}%', style: AppTheme.label(size: 11, color: AppColors.error)),
                                   ),
                                 ],
@@ -152,7 +152,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
                     child: Row(
                       children: [
-                        CircleAvatar(radius: 24, backgroundColor: AppColors.merchantAmber.withValues(alpha: 0.1), child: const Icon(Icons.store, color: AppColors.merchantAmber)),
+                        CircleAvatar(radius: 24, backgroundColor: AppColors.merchantAmber.withOpacity(0.1), child: const Icon(Icons.store, color: AppColors.merchantAmber)),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
@@ -191,7 +191,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           decoration: BoxDecoration(
-                            color: _selectedVariant == v ? AppColors.merchantAmber.withValues(alpha: 0.1) : Colors.white,
+                            color: _selectedVariant == v ? AppColors.merchantAmber.withOpacity(0.1) : Colors.white,
                             border: Border.all(color: _selectedVariant == v ? AppColors.merchantAmber : AppColors.divider),
                             borderRadius: BorderRadius.circular(AppRadius.md),
                           ),

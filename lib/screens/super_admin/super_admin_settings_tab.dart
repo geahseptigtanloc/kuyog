@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
 
 class SuperAdminSettingsTab extends StatelessWidget {
@@ -32,6 +33,10 @@ class SuperAdminSettingsTab extends StatelessWidget {
               _healthCard('CDN', '100%', AppColors.verified),
               _healthCard('Payment Gateway', '99.5%', AppColors.warning),
             ]),
+            const SizedBox(height: 16),
+            _section('Account', [
+              _item(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
+            ]),
             const SizedBox(height: 80),
           ]),
         ),
@@ -47,18 +52,46 @@ class SuperAdminSettingsTab extends StatelessWidget {
     ]);
   }
 
-  Widget _item(IconData icon, String title) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Row(children: [
-        Icon(icon, size: 20, color: AppColors.textSecondary),
-        const SizedBox(width: 12),
-        Text(title, style: AppTheme.body(size: 14)),
-        const Spacer(),
-        const Icon(Icons.chevron_right, size: 18, color: AppColors.textLight),
-      ]),
+  Widget _item(IconData icon, String title, {bool isDestructive = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+        child: Row(children: [
+          Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
+          const SizedBox(width: 12),
+          Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
+          const Spacer(),
+          Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
+        ]),
+      ),
+    );
+  }
+
+  static void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        title: Text('Log out of Kuyog?', style: AppTheme.headline(size: 20)),
+        content: Text('You will need to sign in again to access your account.', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.go('/onboarding');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
     );
   }
 

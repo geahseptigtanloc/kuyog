@@ -37,7 +37,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                        colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
                       ),
                     ),
                   ),
@@ -83,9 +83,9 @@ class CrawlSpotDetailScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.accent.withValues(alpha: 0.1),
+                        color: AppColors.accent.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
+                        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
                       ),
                       child: Row(
                         children: [
@@ -169,7 +169,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
           if (spot.isCollected)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(color: AppColors.success.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+              decoration: BoxDecoration(color: AppColors.success.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
               child: Text('Stamped', style: AppTheme.label(size: 11, color: AppColors.success)),
             )
           else

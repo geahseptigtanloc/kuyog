@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
 
 class MerchantProfileTab extends StatelessWidget {
@@ -14,11 +15,11 @@ class MerchantProfileTab extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(children: [
             const SizedBox(height: 8),
-            CircleAvatar(radius: 44, backgroundColor: AppColors.merchantAmber.withValues(alpha: 0.15), child: const Icon(Icons.store, size: 44, color: AppColors.merchantAmber)),
+            CircleAvatar(radius: 44, backgroundColor: AppColors.merchantAmber.withOpacity(0.15), child: const Icon(Icons.store, size: 44, color: AppColors.merchantAmber)),
             const SizedBox(height: 12),
             Text('T\'boli Weaves Co.', style: AppTheme.headline(size: 22)),
             const SizedBox(height: 4),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.merchantAmber.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('Verified Merchant', style: AppTheme.label(size: 12, color: AppColors.merchantAmber))),
             const SizedBox(height: 24),
             _menuItem(Icons.edit, 'Edit Store Profile'),
@@ -30,7 +31,7 @@ class MerchantProfileTab extends StatelessWidget {
             const SizedBox(height: 16),
             _menuItem(Icons.settings, 'Settings'),
             _menuItem(Icons.help, 'Help & Support'),
-            _menuItem(Icons.logout, 'Logout', isDestructive: true),
+            _menuItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 80),
           ]),
         ),
@@ -38,18 +39,46 @@ class MerchantProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(IconData icon, String title, {bool isDestructive = false}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
-      child: Row(children: [
-        Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
-        const SizedBox(width: 12),
-        Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
-        const Spacer(),
-        Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
-      ]),
+  Widget _menuItem(IconData icon, String title, {bool isDestructive = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+        child: Row(children: [
+          Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
+          const SizedBox(width: 12),
+          Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
+          const Spacer(),
+          Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
+        ]),
+      ),
+    );
+  }
+
+  static void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        title: Text('Log out of Kuyog?', style: AppTheme.headline(size: 20)),
+        content: Text('You will need to sign in again to access your account.', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              context.go('/onboarding');
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text('Log Out'),
+          ),
+        ],
+      ),
     );
   }
 }

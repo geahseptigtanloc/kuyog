@@ -35,7 +35,7 @@ class KuyogLogo extends StatelessWidget {
             style: GoogleFonts.nunito(
               fontSize: fontSize * 0.35,
               fontWeight: FontWeight.w600,
-              color: (color ?? AppColors.primary).withValues(alpha: 0.8),
+              color: (color ?? AppColors.primary).withOpacity(0.8),
               fontStyle: FontStyle.italic,
             ),
           ),

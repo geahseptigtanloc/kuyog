@@ -41,11 +41,22 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
             child: Row(children: [
               Text('StoryHub', style: AppTheme.headline(size: 24)),
               const Spacer(),
+              GestureDetector(
+                onTap: () => _showCreatePost(context),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+                  child: const Icon(Icons.add, color: AppColors.primary, size: 20),
+                ),
+              ),
+              const SizedBox(width: 12),
               const Icon(Icons.search, color: AppColors.textSecondary),
               const SizedBox(width: 16),
               const Icon(Icons.notifications_outlined, color: AppColors.textSecondary),
             ]),
           ),
+          const SizedBox(height: 16),
+          _buildStoriesRow(),
           const SizedBox(height: 12),
           TabBar(
             controller: _tabController,
@@ -66,11 +77,61 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
           ),
         ]),
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'create_post',
-        onPressed: () => _showCreatePost(context),
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.edit, color: Colors.white),
+    );
+  }
+
+  Widget _buildStoriesRow() {
+    final stories = [
+      ('Add Story', '', true),
+      ('Rico M.', 'https://picsum.photos/seed/rico/100/100', false),
+      ('Amina L.', 'https://picsum.photos/seed/amina/100/100', false),
+      ('Mt. Apo', 'https://picsum.photos/seed/apo/100/100', false),
+      ('Durian', 'https://picsum.photos/seed/durian/100/100', false),
+      ('Siargao', 'https://picsum.photos/seed/siargao/100/100', false),
+    ];
+    return SizedBox(
+      height: 90,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        itemCount: stories.length,
+        itemBuilder: (context, i) {
+          final s = stories[i];
+          final isAdd = s.$3;
+          return Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Column(children: [
+              Stack(clipBehavior: Clip.none, children: [
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: isAdd ? null : const LinearGradient(colors: [AppColors.accent, AppColors.primary]),
+                    border: isAdd ? Border.all(color: AppColors.divider, width: 2) : null,
+                  ),
+                  child: CircleAvatar(
+                    radius: 28,
+                    backgroundColor: AppColors.background,
+                    backgroundImage: isAdd ? null : CachedNetworkImageProvider(s.$2),
+                    child: isAdd ? const Icon(Icons.person, color: AppColors.textLight) : null,
+                  ),
+                ),
+                if (isAdd)
+                  Positioned(
+                    right: 0, bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                      child: const Icon(Icons.add, size: 14, color: Colors.white),
+                    ),
+                  ),
+              ]),
+              const SizedBox(height: 6),
+              Text(s.$1, style: AppTheme.label(size: 11)),
+            ]),
+          );
+        },
       ),
     );
   }
@@ -110,7 +171,7 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
           const SizedBox(height: 8),
           Wrap(spacing: 6, children: post.hashtags.map((h) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Text(h, style: AppTheme.body(size: 11, color: AppColors.primary)),
           )).toList()),
         ],
@@ -138,7 +199,7 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
         borderRadius: BorderRadius.circular(AppRadius.md),
         child: CachedNetworkImage(imageUrl: images[0], height: 200, width: double.infinity, fit: BoxFit.cover,
           placeholder: (c, u) => Container(height: 200, color: AppColors.divider),
-          errorWidget: (c, u, e) => Container(height: 200, color: AppColors.primary.withValues(alpha: 0.1))),
+          errorWidget: (c, u, e) => Container(height: 200, color: AppColors.primary.withOpacity(0.1))),
       );
     }
     return SizedBox(
@@ -148,7 +209,7 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
           borderRadius: const BorderRadius.horizontal(left: Radius.circular(AppRadius.md)),
           child: CachedNetworkImage(imageUrl: images[0], height: 160, fit: BoxFit.cover,
             placeholder: (c, u) => Container(color: AppColors.divider),
-            errorWidget: (c, u, e) => Container(color: AppColors.primary.withValues(alpha: 0.1))),
+            errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1))),
         )),
         const SizedBox(width: 4),
         Expanded(child: Column(children: [
@@ -156,7 +217,7 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
             borderRadius: const BorderRadius.only(topRight: Radius.circular(AppRadius.md)),
             child: CachedNetworkImage(imageUrl: images.length > 1 ? images[1] : images[0], width: double.infinity, fit: BoxFit.cover,
               placeholder: (c, u) => Container(color: AppColors.divider),
-              errorWidget: (c, u, e) => Container(color: AppColors.primary.withValues(alpha: 0.1))),
+              errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1))),
           )),
           if (images.length > 2) ...[
             const SizedBox(height: 4),
@@ -165,11 +226,11 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
                 borderRadius: const BorderRadius.only(bottomRight: Radius.circular(AppRadius.md)),
                 child: CachedNetworkImage(imageUrl: images[2], width: double.infinity, fit: BoxFit.cover,
                   placeholder: (c, u) => Container(color: AppColors.divider),
-                  errorWidget: (c, u, e) => Container(color: AppColors.primary.withValues(alpha: 0.1))),
+                  errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1))),
               ),
               if (images.length > 3)
                 Positioned.fill(child: Container(
-                  decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5), borderRadius: const BorderRadius.only(bottomRight: Radius.circular(AppRadius.md))),
+                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.5), borderRadius: const BorderRadius.only(bottomRight: Radius.circular(AppRadius.md))),
                   child: Center(child: Text('+${images.length - 3}', style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700))),
                 )),
             ])),

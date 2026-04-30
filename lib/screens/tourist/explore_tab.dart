@@ -127,7 +127,7 @@ class _ExploreTabState extends State<ExploreTab> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
           child: CachedNetworkImage(imageUrl: g.photoUrl, height: 100, width: double.infinity, fit: BoxFit.cover,
             placeholder: (c, u) => Container(height: 100, color: AppColors.divider),
-            errorWidget: (c, u, e) => Container(height: 100, color: AppColors.primaryLight.withValues(alpha: 0.2), child: const Icon(Icons.person, size: 40, color: AppColors.primary))),
+            errorWidget: (c, u, e) => Container(height: 100, color: AppColors.primaryLight.withOpacity(0.2), child: const Icon(Icons.person, size: 40, color: AppColors.primary))),
         ),
         Padding(
           padding: const EdgeInsets.all(10),
@@ -141,7 +141,7 @@ class _ExploreTabState extends State<ExploreTab> {
             const SizedBox(height: 6),
             Wrap(spacing: 4, children: g.specialties.take(2).map((s) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
               child: Text(s, style: AppTheme.body(size: 9, color: AppColors.primary)),
             )).toList()),
             const SizedBox(height: 6),
@@ -194,7 +194,7 @@ class _ExploreTabState extends State<ExploreTab> {
           borderRadius: const BorderRadius.horizontal(left: Radius.circular(AppRadius.lg)),
           child: CachedNetworkImage(imageUrl: d.imageUrl, width: 100, height: 90, fit: BoxFit.cover,
             placeholder: (c, u) => Container(width: 100, height: 90, color: AppColors.divider),
-            errorWidget: (c, u, e) => Container(width: 100, height: 90, color: AppColors.primaryLight.withValues(alpha: 0.2))),
+            errorWidget: (c, u, e) => Container(width: 100, height: 90, color: AppColors.primaryLight.withOpacity(0.2))),
         ),
         Expanded(child: Padding(
           padding: const EdgeInsets.all(12),
@@ -203,7 +203,7 @@ class _ExploreTabState extends State<ExploreTab> {
             Text(d.province, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
             const SizedBox(height: 4),
             Row(children: [
-              Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+              Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
                 child: Text(d.category, style: AppTheme.body(size: 10, color: AppColors.primary))),
               const Spacer(),
               const Icon(Icons.star, size: 12, color: AppColors.warning),
@@ -226,7 +226,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   Widget _buildEventsList() {
     return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Icon(Icons.event, size: 64, color: AppColors.primary.withValues(alpha: 0.3)),
+      Icon(Icons.event, size: 64, color: AppColors.primary.withOpacity(0.3)),
       const SizedBox(height: 16),
       Text('Crawl Events', style: AppTheme.headline(size: 20)),
       const SizedBox(height: 8),
@@ -236,7 +236,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   Widget _buildMerchantList() {
     return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Icon(Icons.store, size: 64, color: AppColors.accent.withValues(alpha: 0.3)),
+      Icon(Icons.store, size: 64, color: AppColors.accent.withOpacity(0.3)),
       const SizedBox(height: 16),
       Text('Local Merchants', style: AppTheme.headline(size: 20)),
       const SizedBox(height: 8),

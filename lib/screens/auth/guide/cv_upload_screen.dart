@@ -44,11 +44,11 @@ class _CvUploadScreenState extends State<CvUploadScreen> {
                 decoration: BoxDecoration(
                   border: Border.all(color: AppColors.primary, style: BorderStyle.solid, width: 1.5),
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  color: AppColors.primary.withValues(alpha: 0.04),
+                  color: AppColors.primary.withOpacity(0.04),
                 ),
                 child: Column(
                   children: [
-                    Icon(Icons.upload_file, size: 48, color: AppColors.primary.withValues(alpha: 0.6)),
+                    Icon(Icons.upload_file, size: 48, color: AppColors.primary.withOpacity(0.6)),
                     const SizedBox(height: 8),
                     Text('Tap to upload PDF', style: GoogleFonts.nunito(color: AppColors.primary, fontWeight: FontWeight.w600)),
                     Text('Max 5MB', style: GoogleFonts.nunito(fontSize: 12, color: AppColors.textLight)),

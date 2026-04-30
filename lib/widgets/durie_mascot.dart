@@ -103,7 +103,7 @@ class _DuriePainter extends CustomPainter {
 
     // Cheeks (blush)
     final blushPaint = Paint()
-      ..color = const Color(0xFFFF9A9A).withValues(alpha: 0.4);
+      ..color = const Color(0xFFFF9A9A).withOpacity(0.4);
     canvas.drawCircle(
       Offset(center.dx - radius * 0.4, center.dy + radius * 0.1),
       radius * 0.1,

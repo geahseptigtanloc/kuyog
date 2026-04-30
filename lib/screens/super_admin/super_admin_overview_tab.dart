@@ -99,7 +99,7 @@ class SuperAdminOverviewTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        Container(width: 28, height: 28, decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+        Container(width: 28, height: 28, decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
           child: Center(child: Text('$rank', style: AppTheme.label(size: 13, color: color)))),
         const SizedBox(width: 12),
         Expanded(child: Text(name, style: AppTheme.label(size: 14))),

@@ -13,7 +13,7 @@ class CountrySelectionScreen extends StatefulWidget {
 
 class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
   String? _selection = 'yes';
-  final _countryController = TextEditingController(text: 'India');
+  final _countryController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
               ),
               const SizedBox(height: 32),
               Text(
-                'Do you live in United States?',
+                'Do you live in the Philippines?',
                 style: GoogleFonts.nunito(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -108,7 +108,7 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: _selection == value ? AppColors.primary.withValues(alpha: 0.06) : Colors.white,
+          color: _selection == value ? AppColors.primary.withOpacity(0.06) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: _selection == value ? AppColors.primary : AppColors.divider,

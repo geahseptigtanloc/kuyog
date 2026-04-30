@@ -61,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   width: _currentPage == i ? 24 : 8, height: 8,
                   decoration: BoxDecoration(
-                    color: _currentPage == i ? AppColors.accent : Colors.white.withValues(alpha: 0.5),
+                    color: _currentPage == i ? AppColors.accent : Colors.white.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(4),
                   ),
                 )),
@@ -95,7 +95,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         CachedNetworkImage(imageUrl: imageUrl, fit: BoxFit.cover,
           placeholder: (c, u) => Container(color: AppColors.primaryDark, child: const Center(child: CircularProgressIndicator(color: Colors.white))),
           errorWidget: (c, u, e) => Container(decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [AppColors.primaryDark, AppColors.primary])))),
-        Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black.withValues(alpha: 0.1), Colors.black.withValues(alpha: 0.7)]))),
+        Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black.withOpacity(0.1), Colors.black.withOpacity(0.7)]))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -106,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const Spacer(flex: 3),
             Text(title, style: GoogleFonts.baloo2(fontSize: 26, fontWeight: FontWeight.w700, color: Colors.white), textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            Text(subtitle, style: GoogleFonts.nunito(fontSize: 16, color: Colors.white.withValues(alpha: 0.9), height: 1.4), textAlign: TextAlign.center),
+            Text(subtitle, style: GoogleFonts.nunito(fontSize: 16, color: Colors.white.withOpacity(0.9), height: 1.4), textAlign: TextAlign.center),
             const Spacer(),
           ]),
         ),
@@ -121,7 +121,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         CachedNetworkImage(imageUrl: 'https://picsum.photos/seed/lake_mtn2/800/1200', fit: BoxFit.cover,
           placeholder: (c, u) => Container(color: AppColors.primaryDark),
           errorWidget: (c, u, e) => Container(decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [AppColors.primaryDark, AppColors.primary])))),
-        Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black.withValues(alpha: 0.2), Colors.black.withValues(alpha: 0.75)]))),
+        Container(decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.black.withOpacity(0.2), Colors.black.withOpacity(0.75)]))),
         SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -133,7 +133,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               const SizedBox(height: 20),
               Text('Who are you?', style: GoogleFonts.baloo2(fontSize: 28, fontWeight: FontWeight.w700, color: Colors.white)),
               const SizedBox(height: 8),
-              Text('Tell us how you want to experience Mindanao.', style: GoogleFonts.nunito(fontSize: 15, color: Colors.white.withValues(alpha: 0.85)), textAlign: TextAlign.center),
+              Text('Tell us how you want to experience Mindanao.', style: GoogleFonts.nunito(fontSize: 15, color: Colors.white.withOpacity(0.85)), textAlign: TextAlign.center),
               const SizedBox(height: 32),
               _roleCard(Icons.luggage, "I'm a Tourist", 'I want to explore Mindanao', AppColors.touristBlue, () {
                 _controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
@@ -160,16 +160,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: tintColor.withValues(alpha: 0.15),
+          color: tintColor.withOpacity(0.15),
           borderRadius: BorderRadius.circular(AppRadius.xl),
-          border: Border.all(color: tintColor.withValues(alpha: 0.4)),
+          border: Border.all(color: tintColor.withOpacity(0.4)),
         ),
         child: Row(children: [
           Icon(icon, size: 32, color: Colors.white),
           const SizedBox(width: 16),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(label, style: GoogleFonts.nunito(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.white)),
-            Text(subtitle, style: GoogleFonts.nunito(fontSize: 12, color: Colors.white.withValues(alpha: 0.7))),
+            Text(subtitle, style: GoogleFonts.nunito(fontSize: 12, color: Colors.white.withOpacity(0.7))),
           ])),
           const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white54, size: 18),
         ]),
@@ -196,7 +196,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: AppColors.accentLight.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: AppColors.accentLight.withValues(alpha: 0.3))),
+              decoration: BoxDecoration(color: AppColors.accentLight.withOpacity(0.12), borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: AppColors.accentLight.withOpacity(0.3))),
               child: Row(children: [
                 const Icon(Icons.location_on, color: AppColors.accent, size: 20),
                 const SizedBox(width: 10),
@@ -215,7 +215,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: CachedNetworkImage(imageUrl: 'https://picsum.photos/seed/${photoSeeds[i]}/200/200', fit: BoxFit.cover,
                   placeholder: (c, u) => Container(color: AppColors.divider),
-                  errorWidget: (c, u, e) => Container(color: AppColors.primary.withValues(alpha: 0.1), child: const Icon(Icons.image, color: AppColors.primary, size: 24))),
+                  errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.image, color: AppColors.primary, size: 24))),
               ),
             ),
             const SizedBox(height: 20),

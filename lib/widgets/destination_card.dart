@@ -48,7 +48,7 @@ class DestinationCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.65)],
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.65)],
                   ),
                 ),
               ),
@@ -59,7 +59,7 @@ class DestinationCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Row(

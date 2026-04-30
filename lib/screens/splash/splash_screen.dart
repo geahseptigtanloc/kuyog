@@ -72,11 +72,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedBuilder(
+              AnimatedBuilder(
               animation: _bounceAnim,
               builder: (context, child) => Transform.translate(
                 offset: Offset(0, _bounceAnim.value),
-                child: const DurieMascot(size: 100),
+                child: const DurieMascot(size: 160),
               ),
             ),
             const SizedBox(height: 20),
@@ -98,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               style: GoogleFonts.nunito(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Colors.white.withOpacity(0.9),
                 fontStyle: FontStyle.italic,
               ),
             ),

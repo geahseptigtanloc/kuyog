@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/role_provider.dart';
 import '../widgets/kuyog_bottom_nav.dart';
 import '../widgets/role_switcher_fab.dart';
-import '../widgets/sos_button.dart';
+
 import 'tourist/tourist_home_tab.dart';
 import 'tourist/explore_tab.dart';
 import 'shared/storyhub_tab.dart';
@@ -72,14 +72,8 @@ class _AppShellState extends State<AppShell> {
             role: roleProvider.currentRole,
             onTap: (i) => setState(() => _currentIndex = i),
           ),
-          floatingActionButton: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (roleProvider.currentRole == UserRole.tourist) const SosButton(),
-              const SizedBox(height: 8),
-              const RoleSwitcherFab(),
-            ],
-          ),
+          floatingActionButton: const RoleSwitcherFab(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         );
       },
     );

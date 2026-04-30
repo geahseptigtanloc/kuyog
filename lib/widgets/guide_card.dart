@@ -48,7 +48,7 @@ class GuideCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
                   ),
                 ),
               ),
@@ -84,7 +84,7 @@ class GuideCard extends StatelessWidget {
                     children: guide.specialties.take(1).map((s) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
+                        color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       child: Text(s, style: AppTheme.body(size: 9, color: Colors.white)),

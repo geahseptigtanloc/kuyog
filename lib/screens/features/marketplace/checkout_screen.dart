@@ -41,7 +41,7 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
               child: Row(
                 children: [
-                  Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: AppColors.merchantAmber.withValues(alpha: 0.1), shape: BoxShape.circle),
+                  Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), shape: BoxShape.circle),
                     child: const Icon(Icons.location_on, color: AppColors.merchantAmber)),
                   const SizedBox(width: 12),
                   Expanded(
@@ -112,7 +112,7 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
             // Kuyog Miles
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: AppColors.primary.withValues(alpha: 0.3))),
+              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: AppColors.primary.withOpacity(0.3))),
               child: Row(
                 children: [
                   const Icon(Icons.stars, color: AppColors.primary, size: 28),

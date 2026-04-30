@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
+import '../features/marketplace/add_product_screen.dart';
 
 class MerchantListingsTab extends StatelessWidget {
   const MerchantListingsTab({super.key});
@@ -13,7 +14,7 @@ class MerchantListingsTab extends StatelessWidget {
           Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 16), child: Row(children: [
             Text('My Products', style: AppTheme.headline(size: 24)),
             const Spacer(),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('24 active', style: AppTheme.label(size: 12, color: AppColors.primary))),
           ])),
           Expanded(child: ListView(
@@ -31,7 +32,7 @@ class MerchantListingsTab extends StatelessWidget {
         ]),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: 'add_product', onPressed: () {}, backgroundColor: AppColors.primary,
+        heroTag: 'add_product', onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AddProductScreen())), backgroundColor: AppColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -43,7 +44,7 @@ class MerchantListingsTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        Container(width: 56, height: 56, decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+        Container(width: 56, height: 56, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
           child: const Icon(Icons.inventory_2, color: AppColors.primary)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
