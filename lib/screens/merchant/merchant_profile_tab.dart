@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
+import '../shared/settings_screen.dart';
+import '../shared/help_support_screen.dart';
+import '../shared/edit_profile_screen.dart';
+import 'merchant_operating_hours_screen.dart';
+import 'merchant_delivery_settings_screen.dart';
+import 'merchant_reviews_screen.dart';
 
 class MerchantProfileTab extends StatelessWidget {
   const MerchantProfileTab({super.key});
@@ -22,15 +28,15 @@ class MerchantProfileTab extends StatelessWidget {
             Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('Verified Merchant', style: AppTheme.label(size: 12, color: AppColors.merchantAmber))),
             const SizedBox(height: 24),
-            _menuItem(Icons.edit, 'Edit Store Profile'),
-            _menuItem(Icons.access_time, 'Operating Hours'),
-            _menuItem(Icons.local_shipping, 'Delivery Settings'),
+            _menuItem(Icons.edit, 'Edit Store Profile', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
+            _menuItem(Icons.access_time, 'Operating Hours', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantOperatingHoursScreen()))),
+            _menuItem(Icons.local_shipping, 'Delivery Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantDeliverySettingsScreen()))),
             _menuItem(Icons.account_balance, 'Payout Settings'),
             _menuItem(Icons.bar_chart, 'Sales Analytics'),
-            _menuItem(Icons.reviews, 'Customer Reviews'),
+            _menuItem(Icons.reviews, 'Customer Reviews', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantReviewsScreen()))),
             const SizedBox(height: 16),
-            _menuItem(Icons.settings, 'Settings'),
-            _menuItem(Icons.help, 'Help & Support'),
+            _menuItem(Icons.settings, 'Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
+            _menuItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
             _menuItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 80),
           ]),

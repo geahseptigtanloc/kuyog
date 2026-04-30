@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
 import '../../../widgets/kuyog_back_button.dart';
+import '../../../models/product.dart';
+import '../../../providers/product_provider.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -137,8 +140,30 @@ class _AddProductScreenState extends State<AddProductScreen> {
         if (_step > 0) Expanded(child: OutlinedButton(onPressed: () => setState(() => _step--), child: const Text('Back'))),
         if (_step > 0) const SizedBox(width: 12),
         Expanded(child: ElevatedButton(
-          onPressed: () { if (_step < 2) setState(() => _step++); else { Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: const Text('Product added!'), backgroundColor: AppColors.primary)); } },
+          onPressed: () { 
+            if (_step < 2) {
+              setState(() => _step++); 
+            } else { 
+              final newProduct = Product(
+                id: 'prod_${DateTime.now().millisecondsSinceEpoch}',
+                merchantId: 'm_current',
+                merchantName: "T'boli Weaves Co.",
+                name: _nameCtrl.text.isEmpty ? 'Untitled Product' : _nameCtrl.text,
+                description: _descCtrl.text.isEmpty ? 'No description' : _descCtrl.text,
+                price: double.tryParse(_priceCtrl.text) ?? 0.0,
+                imageUrl: 'https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/400/400',
+                images: [],
+                category: _category,
+                stock: _stock,
+                rating: 0.0,
+                soldCount: 0,
+                variants: [],
+              );
+              context.read<ProductProvider>().addProduct(newProduct);
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Product added!'), backgroundColor: AppColors.primary)); 
+            } 
+          },
           style: ElevatedButton.styleFrom(backgroundColor: _step == 2 ? AppColors.accent : AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 14)),
           child: Text(_step == 2 ? 'Publish Product' : 'Next'),
         )),

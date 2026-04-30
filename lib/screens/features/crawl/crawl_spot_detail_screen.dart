@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
 import '../../../models/event.dart';
 import '../../../providers/crawl_provider.dart';
+import '../../../widgets/mock_qr_scanner.dart';
 
 class CrawlSpotDetailScreen extends StatelessWidget {
   final CrawlEvent event;
@@ -122,7 +123,27 @@ class CrawlSpotDetailScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: isJoined
-          ? null
+          ? Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),
+              child: SafeArea(
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      final success = await Navigator.push(context, MaterialPageRoute(builder: (_) => const MockQrScanner()));
+                      if (success == true) {
+                        context.read<CrawlProvider>().collectStamp('scanned_stamp');
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stamp Collected!'), backgroundColor: AppColors.success));
+                      }
+                    },
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: const Text('Scan QR to Earn Stamp'),
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent, padding: const EdgeInsets.symmetric(vertical: 16), foregroundColor: Colors.white),
+                  ),
+                ),
+              ),
+            )
           : Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),

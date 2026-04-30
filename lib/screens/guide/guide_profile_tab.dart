@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
+import '../shared/settings_screen.dart';
+import '../shared/help_support_screen.dart';
+import '../shared/edit_profile_screen.dart';
+import 'guide_availability_screen.dart';
+import 'guide_pricing_screen.dart';
+import 'guide_certifications_screen.dart';
 
 class GuideProfileTab extends StatelessWidget {
   const GuideProfileTab({super.key});
@@ -36,16 +42,16 @@ class GuideProfileTab extends StatelessWidget {
               _statCard('5 Yrs', 'Experience'),
             ]),
             const SizedBox(height: 24),
-            _menuItem(Icons.edit, 'Edit Profile'),
-            _menuItem(Icons.calendar_month, 'Availability Calendar'),
+            _menuItem(Icons.edit, 'Edit Profile', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
+            _menuItem(Icons.calendar_month, 'Availability Calendar', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideAvailabilityScreen()))),
             _menuItem(Icons.backpack, 'Tour Packages'),
-            _menuItem(Icons.attach_money, 'Pricing'),
-            _menuItem(Icons.badge, 'Certifications'),
+            _menuItem(Icons.attach_money, 'Pricing', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidePricingScreen()))),
+            _menuItem(Icons.badge, 'Certifications', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideCertificationsScreen()))),
             _menuItem(Icons.account_balance, 'Payout Settings'),
             _menuItem(Icons.bar_chart, 'Earnings & Insights'),
             const SizedBox(height: 16),
-            _menuItem(Icons.settings, 'Settings'),
-            _menuItem(Icons.help, 'Help & Support'),
+            _menuItem(Icons.settings, 'Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
+            _menuItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
             _menuItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 80),
           ]),

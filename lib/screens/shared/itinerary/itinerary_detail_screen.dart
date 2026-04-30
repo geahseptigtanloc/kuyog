@@ -49,8 +49,11 @@ class ItineraryDetailScreen extends StatelessWidget {
         Text('Itinerary Details', style: AppTheme.headline(size: 20)),
         const Spacer(),
         const Icon(Icons.share_outlined, color: AppColors.textSecondary),
-        const SizedBox(width: 16),
-        const Icon(Icons.more_vert, color: AppColors.textSecondary),
+        const SizedBox(width: 8),
+        IconButton(
+          icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
+          onPressed: () => _showOptionsSheet(context),
+        ),
       ]),
     );
   }
@@ -162,6 +165,40 @@ class ItineraryDetailScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showOptionsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.edit, color: AppColors.primary),
+                title: Text('Edit Itinerary', style: AppTheme.label(size: 16)),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Edit mode activated'), backgroundColor: AppColors.primary));
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.delete_outline, color: AppColors.error),
+                title: Text('Delete Itinerary', style: AppTheme.label(size: 16, color: AppColors.error)),
+                onTap: () {
+                  Navigator.pop(ctx); // Close sheet
+                  Navigator.pop(context); // Close detail screen
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Itinerary deleted'), backgroundColor: AppColors.error));
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

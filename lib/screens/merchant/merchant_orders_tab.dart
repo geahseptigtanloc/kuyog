@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
+import '../../models/order.dart';
+import '../features/marketplace/order_tracking_screen.dart';
 
 class MerchantOrdersTab extends StatefulWidget {
   const MerchantOrdersTab({super.key});
@@ -47,28 +49,41 @@ class _MerchantOrdersTabState extends State<MerchantOrdersTab> with SingleTicker
   }
 
   Widget _orderCard(String id, String name, String items, String total, String status, Color color) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Text(id, style: AppTheme.label(size: 13, color: AppColors.textSecondary)),
-          const Spacer(),
-          Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-            child: Text(status, style: AppTheme.label(size: 11, color: color))),
+    return GestureDetector(
+      onTap: () {
+        final mockOrder = Order(
+          id: id,
+          customerName: name,
+          orderDate: DateTime.now().subtract(const Duration(days: 1)),
+          status: status,
+          items: [],
+          total: 1100,
+        );
+        Navigator.push(context, MaterialPageRoute(builder: (_) => OrderTrackingScreen(order: mockOrder)));
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Text(id, style: AppTheme.label(size: 13, color: AppColors.textSecondary)),
+            const Spacer(),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+              child: Text(status, style: AppTheme.label(size: 11, color: color))),
+          ]),
+          const Divider(height: 20),
+          Row(children: [
+            CircleAvatar(radius: 18, backgroundColor: color.withOpacity(0.15), child: const Icon(Icons.person, size: 18)),
+            const SizedBox(width: 10),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(name, style: AppTheme.label(size: 14)),
+              Text(items, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+            ])),
+            Text(total, style: AppTheme.label(size: 14, color: AppColors.primary)),
+          ]),
         ]),
-        const Divider(height: 20),
-        Row(children: [
-          CircleAvatar(radius: 18, backgroundColor: color.withOpacity(0.15), child: const Icon(Icons.person, size: 18)),
-          const SizedBox(width: 10),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name, style: AppTheme.label(size: 14)),
-            Text(items, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-          ])),
-          Text(total, style: AppTheme.label(size: 14, color: AppColors.primary)),
-        ]),
-      ]),
+      ),
     );
   }
 

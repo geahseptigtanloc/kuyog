@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../app_theme.dart';
-import '../../data/mock_data.dart';
 import '../../models/post.dart';
+import '../../providers/story_provider.dart';
+import 'story_detail_screen.dart';
 
 class StoryhubTab extends StatefulWidget {
   const StoryhubTab({super.key});
@@ -12,26 +14,26 @@ class StoryhubTab extends StatefulWidget {
 
 class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<Post> _posts = [];
-  bool _loading = true;
+  final TextEditingController _postCtrl = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _load();
-  }
-
-  Future<void> _load() async {
-    final p = await MockData.getPosts();
-    if (mounted) setState(() { _posts = p; _loading = false; });
   }
 
   @override
-  void dispose() { _tabController.dispose(); super.dispose(); }
+  void dispose() { 
+    _tabController.dispose(); 
+    _postCtrl.dispose();
+    super.dispose(); 
+  }
 
   @override
   Widget build(BuildContext context) {
+    final storyProvider = context.watch<StoryProvider>();
+    final posts = storyProvider.posts;
+    final loading = storyProvider.isLoading;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -68,11 +70,11 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
             tabs: const [Tab(text: 'TOP'), Tab(text: 'HOT'), Tab(text: 'NEW')],
           ),
           Expanded(
-            child: _loading
+            child: loading
                 ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                 : TabBarView(
                     controller: _tabController,
-                    children: [_buildFeed(_posts), _buildFeed(_posts.reversed.toList()), _buildFeed(_posts)],
+                    children: [_buildFeed(posts), _buildFeed(posts.reversed.toList()), _buildFeed(posts)],
                   ),
           ),
         ]),
@@ -137,11 +139,18 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
   }
 
   Widget _buildFeed(List<Post> posts) {
+    if (posts.isEmpty) return const Center(child: Text('No posts yet'));
     return ListView.builder(
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(20),
       itemCount: posts.length,
-      itemBuilder: (c, i) => _postCard(posts[i]),
+      itemBuilder: (context, i) {
+        final post = posts[i];
+        return GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StoryDetailScreen(post: post))),
+          child: _postCard(post),
+        );
+      },
     );
   }
 
@@ -181,11 +190,17 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
         ],
         const SizedBox(height: 12),
         Row(children: [
-          _actionBtn(Icons.arrow_upward, '${post.upvotes}'),
+          GestureDetector(
+            onTap: () => context.read<StoryProvider>().upvotePost(post.id),
+            child: _actionBtn(Icons.arrow_upward, '${post.upvotes}'),
+          ),
           const SizedBox(width: 20),
           _actionBtn(Icons.chat_bubble_outline, '${post.comments}'),
           const Spacer(),
-          Icon(post.isBookmarked ? Icons.bookmark : Icons.bookmark_border, size: 20, color: post.isBookmarked ? AppColors.primary : AppColors.textLight),
+          GestureDetector(
+            onTap: () => context.read<StoryProvider>().toggleBookmark(post.id),
+            child: Icon(post.isBookmarked ? Icons.bookmark : Icons.bookmark_border, size: 20, color: post.isBookmarked ? AppColors.primary : AppColors.textLight),
+          ),
           const SizedBox(width: 16),
           const Icon(Icons.share_outlined, size: 20, color: AppColors.textLight),
         ]),
@@ -259,7 +274,7 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
           const SizedBox(height: 16),
           Text('Create Post', style: AppTheme.headline(size: 18)),
           const SizedBox(height: 16),
-          TextField(maxLines: 4, decoration: InputDecoration(hintText: 'Share your Mindanao experience...', border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)))),
+          TextField(controller: _postCtrl, maxLines: 4, decoration: InputDecoration(hintText: 'Share your Mindanao experience...', border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)))),
           const SizedBox(height: 12),
           Row(children: [
             _chipAction(Icons.photo, 'Photo'),
@@ -269,7 +284,16 @@ class _StoryhubTabState extends State<StoryhubTab> with SingleTickerProviderStat
             _chipAction(Icons.tag, 'Hashtag'),
           ]),
           const SizedBox(height: 16),
-          SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () => Navigator.pop(ctx), child: const Text('Post'))),
+          SizedBox(width: double.infinity, child: ElevatedButton(
+            onPressed: () {
+              if (_postCtrl.text.isNotEmpty) {
+                context.read<StoryProvider>().addPost(_postCtrl.text, []);
+                _postCtrl.clear();
+              }
+              Navigator.pop(ctx);
+            }, 
+            child: const Text('Post'),
+          )),
           const SizedBox(height: 16),
         ]),
       ),

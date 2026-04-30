@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../app_theme.dart';
+import '../../providers/product_provider.dart';
 import '../features/marketplace/add_product_screen.dart';
 
 class MerchantListingsTab extends StatelessWidget {
@@ -7,6 +10,9 @@ class MerchantListingsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productProvider = context.watch<ProductProvider>();
+    final products = productProvider.products.where((p) => p.merchantId == 'm_current').toList();
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -15,20 +21,20 @@ class MerchantListingsTab extends StatelessWidget {
             Text('My Products', style: AppTheme.headline(size: 24)),
             const Spacer(),
             Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('24 active', style: AppTheme.label(size: 12, color: AppColors.primary))),
+              child: Text('${products.length} active', style: AppTheme.label(size: 12, color: AppColors.primary))),
           ])),
-          Expanded(child: ListView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              _productTile('T\'nalak Woven Bag', '₱1,850', 15, true),
-              _productTile('Durian Candy Pack', '₱250', 200, true),
-              _productTile('Maranao Brass Tray', '₱3,500', 8, true),
-              _productTile('Bukidnon Honey 500ml', '₱450', 45, true),
-              _productTile('Coffee Sampler Set', '₱980', 30, true),
-              _productTile('Tribal Print Shirt', '₱650', 75, false),
-            ],
-          )),
+          Expanded(child: productProvider.isLoading 
+            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            : ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: products.length,
+                itemBuilder: (ctx, i) {
+                  final p = products[i];
+                  return _productTile(p.name, '₱${p.price.toStringAsFixed(0)}', p.stock, true, p.imageUrl);
+                },
+              )
+          ),
         ]),
       ),
       floatingActionButton: FloatingActionButton(
@@ -38,14 +44,23 @@ class MerchantListingsTab extends StatelessWidget {
     );
   }
 
-  Widget _productTile(String name, String price, int stock, bool isActive) {
+  Widget _productTile(String name, String price, int stock, bool isActive, String imageUrl) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        Container(width: 56, height: 56, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
-          child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          child: CachedNetworkImage(
+            imageUrl: imageUrl,
+            width: 56,
+            height: 56,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+            errorWidget: (context, url, error) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+          ),
+        ),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 14)),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
+import '../admin/admin_manage_roles_screen.dart';
+import '../admin/admin_invite_screen.dart';
+import '../admin/admin_broadcast_screen.dart';
 
 class SuperAdminSettingsTab extends StatelessWidget {
   const SuperAdminSettingsTab({super.key});
@@ -17,13 +20,13 @@ class SuperAdminSettingsTab extends StatelessWidget {
             Text('System Settings', style: AppTheme.headline(size: 24)),
             const SizedBox(height: 24),
             _section('Role Management', [
-              _item(Icons.admin_panel_settings, 'Manage Roles & Permissions'),
-              _item(Icons.person_add, 'Invite Admin'),
+              _item(Icons.admin_panel_settings, 'Manage Roles & Permissions', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminManageRolesScreen()))),
+              _item(Icons.person_add, 'Invite Admin', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminInviteScreen()))),
             ]),
             const SizedBox(height: 16),
             _section('Platform', [
               _item(Icons.settings_applications, 'Platform Configuration'),
-              _item(Icons.campaign, 'Notification Broadcast'),
+              _item(Icons.campaign, 'Notification Broadcast', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AdminBroadcastScreen()))),
               _item(Icons.toggle_on, 'Feature Flags'),
             ]),
             const SizedBox(height: 16),

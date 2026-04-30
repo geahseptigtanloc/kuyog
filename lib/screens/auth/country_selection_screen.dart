@@ -13,7 +13,20 @@ class CountrySelectionScreen extends StatefulWidget {
 
 class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
   String? _selection = 'yes';
-  final _countryController = TextEditingController();
+  String? _selectedCountry;
+
+  final List<String> _countries = [
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'Japan',
+    'South Korea',
+    'Singapore',
+    'Malaysia',
+    'Indonesia',
+    'Other',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +71,15 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
               _radioTile('No', 'no'),
               if (_selection == 'no') ...[
                 const SizedBox(height: 16),
-                TextField(
-                  controller: _countryController,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter your country/region',
-                    prefixIcon: Icon(Icons.public, color: AppColors.textLight),
+                DropdownButtonFormField<String>(
+                  value: _selectedCountry,
+                  decoration: InputDecoration(
+                    labelText: 'Select your country/region',
+                    prefixIcon: const Icon(Icons.public, color: AppColors.textLight),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
                   ),
+                  items: _countries.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                  onChanged: (val) => setState(() => _selectedCountry = val),
                 ),
               ],
               const Spacer(),

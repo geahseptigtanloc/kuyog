@@ -7,6 +7,8 @@ import 'providers/cart_provider.dart';
 import 'providers/miles_provider.dart';
 import 'providers/crawl_provider.dart';
 import 'providers/chat_provider.dart';
+import 'providers/story_provider.dart';
+import 'providers/product_provider.dart';
 
 void main() {
   runApp(const KuyogApp());
@@ -24,6 +26,8 @@ class KuyogApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MilesProvider()),
         ChangeNotifierProvider(create: (_) => CrawlProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => StoryProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
       ],
       child: MaterialApp.router(
         title: 'Kuyog',

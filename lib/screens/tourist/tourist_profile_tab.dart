@@ -7,6 +7,10 @@ import '../../providers/miles_provider.dart';
 import '../../providers/crawl_provider.dart';
 import '../features/miles/miles_dashboard_screen.dart';
 import '../features/crawl/crawl_home_screen.dart';
+import '../shared/settings_screen.dart';
+import '../shared/help_support_screen.dart';
+import '../shared/edit_profile_screen.dart';
+import '../features/notifications/notifications_list_screen.dart';
 
 class TouristProfileTab extends StatelessWidget {
   const TouristProfileTab({super.key});
@@ -43,7 +47,11 @@ class TouristProfileTab extends StatelessWidget {
               Text('Verified Phone', style: AppTheme.body(size: 12, color: AppColors.verified)),
             ]),
             const SizedBox(height: 16),
-            OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.edit, size: 16), label: const Text('Edit Profile')),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())), 
+              icon: const Icon(Icons.edit, size: 16), 
+              label: const Text('Edit Profile')
+            ),
             const SizedBox(height: 24),
             _statsRow(miles, crawl),
             const SizedBox(height: 24),
@@ -55,11 +63,11 @@ class TouristProfileTab extends StatelessWidget {
             _menuItem(Icons.emoji_events, 'Crawl Progress', '${crawl.stampCount}/8', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CrawlHomeScreen()))),
             const SizedBox(height: 16),
             _sectionTitle('Settings'),
-            _settingsItem(Icons.notifications, 'Notifications'),
+            _settingsItem(Icons.notifications, 'Notifications', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsListScreen()))),
             _settingsItem(Icons.language, 'Language'),
             _settingsItem(Icons.lock, 'Privacy'),
-            _settingsItem(Icons.help, 'Help & Support'),
-            _settingsItem(Icons.info, 'About Kuyog'),
+            _settingsItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
+            _settingsItem(Icons.settings, 'General Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
             const SizedBox(height: 8),
             _settingsItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 16),
