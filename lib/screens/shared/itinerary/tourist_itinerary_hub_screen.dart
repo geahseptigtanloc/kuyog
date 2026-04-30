@@ -8,20 +8,28 @@ import '../../../widgets/mindanao_map.dart';
 import 'itinerary_create_screen.dart';
 import 'itinerary_detail_screen.dart';
 import 'itinerary_browse_screen.dart';
+import '../../../widgets/kuyog_app_bar.dart';
 
-class ItineraryHubScreen extends StatefulWidget {
-  const ItineraryHubScreen({super.key});
+class TouristItineraryHubScreen extends StatefulWidget {
+  const TouristItineraryHubScreen({super.key});
   @override
-  State<ItineraryHubScreen> createState() => _ItineraryHubScreenState();
+  State<TouristItineraryHubScreen> createState() => _TouristItineraryHubScreenState();
 }
 
-class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
+class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
   String _filter = 'All';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: KuyogAppBar(
+        title: 'My Itineraries',
+        extraAction: IconButton(
+          icon: const Icon(Icons.filter_list, color: AppColors.primary),
+          onPressed: () {},
+        ),
+      ),
       body: SafeArea(
         child: Consumer<ItineraryProvider>(
           builder: (context, provider, _) {
@@ -31,23 +39,6 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // App bar
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Row(children: [
-                    Text('My Itineraries', style: AppTheme.headline(size: 24)),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-                        child: const Icon(Icons.filter_list, size: 20, color: AppColors.primary),
-                      ),
-                    ),
-                  ]),
-                ),
                 const SizedBox(height: 12),
                 // Stats row
                 Padding(

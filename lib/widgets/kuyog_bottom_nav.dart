@@ -28,7 +28,7 @@ class KuyogBottomNav extends StatelessWidget {
       case UserRole.guide:
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_rounded), label: 'Clients'),
+          BottomNavigationBarItem(icon: Icon(Icons.people_alt_rounded), label: 'Clients'),
           BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
           BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Itinerary'),
           BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),

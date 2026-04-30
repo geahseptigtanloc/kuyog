@@ -49,6 +49,8 @@ class ChatProvider extends ChangeNotifier {
 
   List<ChatThread> get threads => _threads;
 
+  int get totalUnreadCount => _threads.fold(0, (sum, t) => sum + t.unreadCount);
+
   ChatProvider() {
     _initMockThreads();
   }

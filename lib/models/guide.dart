@@ -16,6 +16,16 @@ class Guide {
   final List<String> languages;
   final String priceRange;
   final String specialty;
+  // V3 additions
+  final String guideType; // 'community' or 'regional'
+  final int matchScore;
+  final bool dotAccredited;
+  final bool lguEndorsed;
+  final int trainingDays;
+  final String storyExcerpt;
+  final String fullStory;
+  final List<String> acceptedPayments;
+  final String pricingStatus; // 'not_submitted', 'under_review', 'approved', 'revision_requested'
 
   const Guide({
     required this.id,
@@ -35,6 +45,15 @@ class Guide {
     this.languages = const ['Filipino', 'English'],
     this.priceRange = '₱₱',
     this.specialty = 'Cultural Immersion',
+    this.guideType = 'community',
+    this.matchScore = 0,
+    this.dotAccredited = false,
+    this.lguEndorsed = true,
+    this.trainingDays = 7,
+    this.storyExcerpt = '',
+    this.fullStory = '',
+    this.acceptedPayments = const ['Cash', 'GCash'],
+    this.pricingStatus = 'not_submitted',
   });
 
   factory Guide.fromJson(Map<String, dynamic> json) {
@@ -56,6 +75,15 @@ class Guide {
       languages: List<String>.from(json['languages'] ?? ['Filipino', 'English']),
       priceRange: json['priceRange'] ?? '₱₱',
       specialty: json['specialty'] ?? 'Cultural Immersion',
+      guideType: json['guideType'] ?? 'community',
+      matchScore: json['matchScore'] ?? 0,
+      dotAccredited: json['dotAccredited'] ?? false,
+      lguEndorsed: json['lguEndorsed'] ?? true,
+      trainingDays: json['trainingDays'] ?? 7,
+      storyExcerpt: json['storyExcerpt'] ?? '',
+      fullStory: json['fullStory'] ?? '',
+      acceptedPayments: List<String>.from(json['acceptedPayments'] ?? ['Cash', 'GCash']),
+      pricingStatus: json['pricingStatus'] ?? 'not_submitted',
     );
   }
 }

@@ -8,20 +8,28 @@ import '../../../widgets/mindanao_map.dart';
 import 'itinerary_create_screen.dart';
 import 'itinerary_detail_screen.dart';
 import 'itinerary_browse_screen.dart';
+import '../../../widgets/kuyog_app_bar.dart';
 
-class ItineraryHubScreen extends StatefulWidget {
-  const ItineraryHubScreen({super.key});
+class GuideItineraryHubScreen extends StatefulWidget {
+  const GuideItineraryHubScreen({super.key});
   @override
-  State<ItineraryHubScreen> createState() => _ItineraryHubScreenState();
+  State<GuideItineraryHubScreen> createState() => _GuideItineraryHubScreenState();
 }
 
-class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
+class _GuideItineraryHubScreenState extends State<GuideItineraryHubScreen> {
   String _filter = 'All';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: KuyogAppBar(
+        title: 'My Itineraries',
+        extraAction: IconButton(
+          icon: const Icon(Icons.filter_list, color: AppColors.primary),
+          onPressed: () {},
+        ),
+      ),
       body: SafeArea(
         child: Consumer<ItineraryProvider>(
           builder: (context, provider, _) {
@@ -31,33 +39,16 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                // App bar
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-                  child: Row(children: [
-                    Text('My Itineraries', style: AppTheme.headline(size: 24)),
-                    const Spacer(),
-                    InkWell(
-                      onTap: () {},
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-                        child: const Icon(Icons.filter_list, size: 20, color: AppColors.primary),
-                      ),
-                    ),
-                  ]),
-                ),
                 const SizedBox(height: 12),
                 // Stats row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(children: [
-                    _statChip(Icons.calendar_today, 'Active', '${provider.activeCount}', AppColors.primary),
+                    _statChip(Icons.calendar_today, 'Assigned', '3', AppColors.primary),
                     const SizedBox(width: 8),
-                    _statChip(Icons.check_circle, 'Completed', '${provider.completedCount}', AppColors.success),
+                    _statChip(Icons.check_circle, 'Completed', '12', AppColors.success),
                     const SizedBox(width: 8),
-                    _statChip(Icons.edit_note, 'Drafts', '${provider.draftCount}', AppColors.textSecondary),
+                    _statChip(Icons.edit_note, 'My Templates', '5', AppColors.textSecondary),
                   ]),
                 ),
                 const SizedBox(height: 16),
@@ -85,7 +76,7 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
                       Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryBrowseScreen()));
                     }),
                     const SizedBox(width: 8),
-                    _quickAction(Icons.handshake, 'Co-Create\nwith Guide', AppColors.primaryDark, () {
+                    _quickAction(Icons.handshake, 'Co-Create\nwith Tourist', AppColors.primaryDark, () {
                       Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryCreateScreen()));
                     }),
                   ]),
@@ -96,8 +87,6 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(children: [
                     Text('My Itineraries', style: AppTheme.headline(size: 18)),
-                    const Spacer(),
-                    InkWell(onTap: () {}, child: Text('See All', style: AppTheme.label(size: 13, color: AppColors.primary))),
                   ]),
                 ),
                 const SizedBox(height: 8),
@@ -107,7 +96,7 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    children: ['All', 'Active', 'Draft', 'Awaiting Guide', 'Completed'].map((f) => Padding(
+                    children: ['Assigned to Me', 'My Templates'].map((f) => Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: InkWell(
                         onTap: () => setState(() { _filter = f; provider.setFilter(f); }),

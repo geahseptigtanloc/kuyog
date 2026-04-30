@@ -6,9 +6,12 @@ import '../models/post.dart';
 import '../models/product.dart';
 import '../models/merchant.dart';
 import '../models/event.dart';
-import '../models/notification.dart';
+import '../models/notification_item.dart';
 import '../models/order.dart';
 import '../models/review.dart';
+import '../models/itinerary.dart';
+import '../models/match_request.dart';
+import '../models/tour_operator.dart';
 
 class MockData {
   static List<Guide>? _guides;
@@ -20,6 +23,9 @@ class MockData {
   static List<NotificationItem>? _notifications;
   static List<Order>? _orders;
   static List<Review>? _reviews;
+  static List<Itinerary>? _itineraries;
+  static List<MatchRequest>? _matchRequests;
+  static List<TourOperator>? _tourOperators;
 
   static Future<List<T>> _load<T>(String path, T Function(Map<String, dynamic>) fromJson) async {
     final data = await rootBundle.loadString(path);
@@ -70,5 +76,20 @@ class MockData {
   static Future<List<Review>> getReviews() async {
     _reviews ??= await _load('assets/data/mock_reviews.json', Review.fromJson);
     return _reviews!;
+  }
+
+  static Future<List<Itinerary>> getItineraries() async {
+    _itineraries ??= await _load('assets/data/mock_itineraries.json', Itinerary.fromJson);
+    return _itineraries!;
+  }
+
+  static Future<List<MatchRequest>> getMatchRequests() async {
+    _matchRequests ??= await _load('assets/data/mock_match_requests.json', MatchRequest.fromJson);
+    return _matchRequests!;
+  }
+
+  static Future<List<TourOperator>> getTourOperators() async {
+    _tourOperators ??= await _load('assets/data/mock_tour_operators.json', TourOperator.fromJson);
+    return _tourOperators!;
   }
 }

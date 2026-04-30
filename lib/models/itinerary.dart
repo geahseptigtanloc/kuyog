@@ -5,10 +5,24 @@ class Itinerary {
   final String imageUrl;
   final int stopsCount;
   final int daysRemaining;
-  final String status; // Active, Upcoming, Completed, Draft
+  final String status; // Active, Upcoming, Completed, Draft, Awaiting Guide
   final List<ItineraryDay> days;
   final double totalCost;
   final String guideId;
+  // V3 additions
+  final String dateRange;
+  final String guideName;
+  final String guideAvatar;
+  final String thumbnailUrl;
+  final double estimatedCost;
+  final int guestCount;
+  final bool isOfflineAvailable;
+  final String creationMode; // 'own', 'browse', 'co-create'
+  final double rating;
+  final String creatorName;
+  final String creatorAvatar;
+  final String region;
+  final int durationDays;
 
   const Itinerary({
     required this.id,
@@ -21,6 +35,19 @@ class Itinerary {
     this.days = const [],
     this.totalCost = 0,
     this.guideId = '',
+    this.dateRange = '',
+    this.guideName = '',
+    this.guideAvatar = '',
+    this.thumbnailUrl = '',
+    this.estimatedCost = 0,
+    this.guestCount = 1,
+    this.isOfflineAvailable = false,
+    this.creationMode = 'own',
+    this.rating = 0,
+    this.creatorName = '',
+    this.creatorAvatar = '',
+    this.region = 'Davao Region',
+    this.durationDays = 1,
   });
 
   factory Itinerary.fromJson(Map<String, dynamic> json) {
@@ -38,6 +65,19 @@ class Itinerary {
           [],
       totalCost: (json['totalCost'] ?? 0).toDouble(),
       guideId: json['guideId'] ?? '',
+      dateRange: json['dateRange'] ?? '',
+      guideName: json['guideName'] ?? '',
+      guideAvatar: json['guideAvatar'] ?? '',
+      thumbnailUrl: json['thumbnailUrl'] ?? '',
+      estimatedCost: (json['estimatedCost'] ?? 0).toDouble(),
+      guestCount: json['guestCount'] ?? 1,
+      isOfflineAvailable: json['isOfflineAvailable'] ?? false,
+      creationMode: json['creationMode'] ?? 'own',
+      rating: (json['rating'] ?? 0).toDouble(),
+      creatorName: json['creatorName'] ?? '',
+      creatorAvatar: json['creatorAvatar'] ?? '',
+      region: json['region'] ?? 'Davao Region',
+      durationDays: json['durationDays'] ?? 1,
     );
   }
 }
@@ -67,6 +107,8 @@ class ItineraryActivity {
   final String timeEstimate;
   final String distance;
   final IconCategory iconCategory;
+  final double cost;
+  final String time;
 
   const ItineraryActivity({
     required this.name,
@@ -76,6 +118,8 @@ class ItineraryActivity {
     this.timeEstimate = '1-2 hrs',
     this.distance = '2.5 km',
     this.iconCategory = IconCategory.sightseeing,
+    this.cost = 0,
+    this.time = '09:00 AM',
   });
 
   factory ItineraryActivity.fromJson(Map<String, dynamic> json) {
@@ -90,6 +134,8 @@ class ItineraryActivity {
         (e) => e.name == (json['iconCategory'] ?? 'sightseeing'),
         orElse: () => IconCategory.sightseeing,
       ),
+      cost: (json['cost'] ?? 0).toDouble(),
+      time: json['time'] ?? '09:00 AM',
     );
   }
 }

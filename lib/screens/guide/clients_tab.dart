@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../app_theme.dart';
+import '../../widgets/kuyog_app_bar.dart';
 
 class ClientsTab extends StatelessWidget {
   const ClientsTab({super.key});
@@ -8,17 +9,10 @@ class ClientsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: const KuyogAppBar(title: 'Clients'),
       body: SafeArea(
         child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-            child: Row(children: [
-              Text('Clients', style: AppTheme.headline(size: 24)),
-              const Spacer(),
-              Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text('47 total', style: AppTheme.label(size: 12, color: AppColors.primary))),
-            ]),
-          ),
+          const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
@@ -56,7 +50,7 @@ class ClientsTab extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        CircleAvatar(radius: 24, backgroundColor: AppColors.primary.withOpacity(0.15), child: const Icon(Icons.person, color: AppColors.primary)),
+        CircleAvatar(radius: 24, backgroundColor: AppColors.primary.withValues(alpha: 0.12), child: const Icon(Icons.person, color: AppColors.primary)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 14)),
@@ -66,7 +60,7 @@ class ClientsTab extends StatelessWidget {
           Text(rating, style: AppTheme.label(size: 12)),
           if (hasMessage) ...[
             const SizedBox(height: 4),
-            Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+            Container(padding: const EdgeInsets.all(4), decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), shape: BoxShape.circle),
               child: const Icon(Icons.chat_bubble, size: 14, color: AppColors.primary)),
           ],
         ]),

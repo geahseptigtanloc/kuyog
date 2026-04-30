@@ -2,6 +2,7 @@ class Post {
   final String id;
   final String userName;
   final String userAvatar;
+  final String userRole; // Tourist, Guide, Merchant
   final String location;
   final String content;
   final List<String> images;
@@ -15,6 +16,7 @@ class Post {
     required this.id,
     required this.userName,
     required this.userAvatar,
+    this.userRole = 'Tourist',
     required this.location,
     required this.content,
     this.images = const [],
@@ -30,6 +32,7 @@ class Post {
       id: json['id'] ?? '',
       userName: json['userName'] ?? '',
       userAvatar: json['userAvatar'] ?? '',
+      userRole: json['userRole'] ?? 'Tourist',
       location: json['location'] ?? '',
       content: json['content'] ?? '',
       images: List<String>.from(json['images'] ?? []),

@@ -1,0 +1,51 @@
+[
+  {
+    "id": "mr1",
+    "touristName": "Anna Reyes",
+    "touristAvatar": "https://picsum.photos/seed/anna/100/100",
+    "touristLocation": "Manila",
+    "travelPreferences": ["Adventure Travel", "Mountain Trekking", "Photography"],
+    "destinationsOfInterest": ["Mount Apo", "Eden Nature Park"],
+    "travelDates": "May 15-17, 2026",
+    "matchScore": 94,
+    "status": "pending",
+    "timeAgo": "30m ago"
+  },
+  {
+    "id": "mr2",
+    "touristName": "Mike Torres",
+    "touristAvatar": "https://picsum.photos/seed/mike/100/100",
+    "touristLocation": "Cebu City",
+    "travelPreferences": ["Cultural Immersion", "Food Tourism", "Heritage Tours"],
+    "destinationsOfInterest": ["Lake Sebu", "Grand Mosque of Cotabato"],
+    "travelDates": "Jun 1-3, 2026",
+    "matchScore": 87,
+    "status": "pending",
+    "timeAgo": "2h ago"
+  },
+  {
+    "id": "mr3",
+    "touristName": "Sarah Kim",
+    "touristAvatar": "https://picsum.photos/seed/sarah_k/100/100",
+    "touristLocation": "Seoul, South Korea",
+    "travelPreferences": ["Beach", "Surfing", "Island Hopping"],
+    "destinationsOfInterest": ["Siargao Island", "Dahican Beach"],
+    "travelDates": "May 20-25, 2026",
+    "matchScore": 76,
+    "status": "accepted",
+    "timeAgo": "1d ago"
+  },
+  {
+    "id": "mr4",
+    "touristName": "Carlos Garcia",
+    "touristAvatar": "https://picsum.photos/seed/carlos/100/100",
+    "touristLocation": "Davao City",
+    "travelPreferences": ["Adventure Travel", "River Sports"],
+    "destinationsOfInterest": ["White Water Rafting - CDO"],
+    "travelDates": "May 10, 2026",
+    "matchScore": 91,
+    "status": "declined",
+    "declineReason": "Fully booked",
+    "timeAgo": "3d ago"
+  }
+]

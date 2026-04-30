@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app_theme.dart';
+import '../../../providers/role_provider.dart';
+import '../../../widgets/terms_agreement_sheet.dart';
 
 class ProfessionalProfileScreen extends StatelessWidget {
   final VoidCallback onNext;
@@ -62,7 +64,9 @@ class ProfessionalProfileScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
-                onPressed: onNext,
+                onPressed: () {
+                  TermsAgreementSheet.checkAndShow(context, UserRole.guide, onNext);
+                },
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
                 child: const Text('Next'),
               ),

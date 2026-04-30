@@ -3,12 +3,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
 import '../../../providers/chat_provider.dart';
-import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_loading.dart';
+import '../../../widgets/kuyog_back_button.dart';
 import 'chat_detail_screen.dart';
 
-class ChatListScreen extends StatelessWidget {
+class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
+  @override
+  State<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen> {
+  bool _showSearch = false;
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -25,44 +32,56 @@ class ChatListScreen extends StatelessWidget {
                   const SizedBox(width: 12),
                   Text('Messages', style: AppTheme.headline(size: 24)),
                   const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-                    child: const Icon(Icons.edit_note, size: 22, color: AppColors.primary),
+                  InkWell(
+                    onTap: () => setState(() => _showSearch = !_showSearch),
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
+                      child: Icon(_showSearch ? Icons.close : Icons.search, size: 20, color: AppColors.primary),
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill), boxShadow: AppShadows.card),
-                child: Row(
-                  children: [
-                    const Icon(Icons.search, color: AppColors.textLight, size: 20),
-                    const SizedBox(width: 10),
-                    Text('Search conversations...', style: AppTheme.body(size: 14, color: AppColors.textLight)),
-                  ],
+            if (_showSearch) ...[
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  onChanged: (val) => setState(() => _searchQuery = val.toLowerCase()),
+                  style: AppTheme.body(size: 14),
+                  decoration: InputDecoration(
+                    hintText: 'Search conversations...',
+                    prefixIcon: const Icon(Icons.search, size: 20, color: AppColors.textLight),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.pill), borderSide: BorderSide.none),
+                  ),
                 ),
               ),
-            ),
+            ],
             const SizedBox(height: 16),
             Expanded(
               child: Consumer<ChatProvider>(
                 builder: (context, chatProvider, _) {
-                  if (chatProvider.threads.isEmpty) {
+                  final threads = chatProvider.threads.where((t) {
+                    if (_searchQuery.isEmpty) return true;
+                    return t.participantName.toLowerCase().contains(_searchQuery);
+                  }).toList();
+
+                  if (threads.isEmpty) {
                     return const DurieEmptyState(
-                      message: 'No messages yet',
-                      subtitle: 'Start a conversation!',
+                      message: 'No conversations yet',
+                      subtitle: 'Start by matching with a guide!',
                     );
                   }
                   return ListView.builder(
                     physics: const BouncingScrollPhysics(),
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: chatProvider.threads.length,
-                    itemBuilder: (context, i) => _chatTile(context, chatProvider.threads[i]),
+                    itemCount: threads.length,
+                    itemBuilder: (context, i) => _chatTile(context, threads[i]),
                   );
                 },
               ),
@@ -85,6 +104,7 @@ class ChatListScreen extends StatelessWidget {
           color: unread > 0 ? AppColors.primary.withOpacity(0.04) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.lg),
           boxShadow: AppShadows.card,
+          border: unread > 0 ? Border(left: BorderSide(color: AppColors.primary, width: 3)) : null,
         ),
         child: Row(
           children: [
@@ -118,7 +138,7 @@ class ChatListScreen extends StatelessWidget {
                       Expanded(
                         child: Text(
                           thread.participantName,
-                          style: AppTheme.label(size: 14).copyWith(fontWeight: unread > 0 ? FontWeight.w700 : FontWeight.w600),
+                          style: AppTheme.label(size: 15).copyWith(fontWeight: unread > 0 ? FontWeight.w700 : FontWeight.w600),
                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -141,7 +161,10 @@ class ChatListScreen extends StatelessWidget {
                           style: AppTheme.body(
                             size: 13,
                             color: unread > 0 ? AppColors.textPrimary : AppColors.textSecondary,
-                          ).copyWith(fontWeight: unread > 0 ? FontWeight.w600 : FontWeight.w400),
+                          ).copyWith(
+                            fontWeight: unread > 0 ? FontWeight.w600 : FontWeight.w400,
+                            fontStyle: unread > 0 ? FontStyle.normal : FontStyle.italic,
+                          ),
                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
                       ),

@@ -133,7 +133,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
                     onPressed: () async {
                       final success = await Navigator.push(context, MaterialPageRoute(builder: (_) => const MockQrScanner()));
                       if (success == true) {
-                        context.read<CrawlProvider>().collectStamp('scanned_stamp');
+                        context.read<CrawlProvider>().collectStampSimple('scanned_stamp');
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stamp Collected!'), backgroundColor: AppColors.success));
                       }
                     },
@@ -152,7 +152,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      crawl.collectStamp('Welcome Stamp');
+                      crawl.collectStampSimple('Welcome Stamp');
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Joined successfully! Earned 1 free stamp.'), backgroundColor: AppColors.success));
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../app_theme.dart';
 import '../providers/role_provider.dart';
+import 'terms_agreement_sheet.dart';
 
 class RoleSwitcherFab extends StatelessWidget {
   const RoleSwitcherFab({super.key});
@@ -59,15 +60,17 @@ class RoleSwitcherFab extends StatelessWidget {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(AppRadius.md),
                     onTap: () {
-                      roleProvider.switchRole(role);
                       Navigator.pop(ctx);
+                      TermsAgreementSheet.checkAndShow(context, role, () {
+                        roleProvider.switchRole(role);
+                      });
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
                         color: isActive
-                            ? AppColors.primary.withOpacity(0.1)
+                            ? AppColors.primary.withValues(alpha: 0.1)
                             : AppColors.background,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                         border: Border.all(
@@ -82,7 +85,7 @@ class RoleSwitcherFab extends StatelessWidget {
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                              color: _roleColor(role).withOpacity(0.15),
+                              color: _roleColor(role).withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(AppRadius.sm),
                             ),
                             child: Center(

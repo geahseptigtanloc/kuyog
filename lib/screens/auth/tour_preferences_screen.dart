@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../app_theme.dart';
+import '../../providers/role_provider.dart';
+import '../../widgets/terms_agreement_sheet.dart';
 
 class TourPreferencesScreen extends StatefulWidget {
   final VoidCallback onContinue;
@@ -50,7 +52,9 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.maybePop(context)),
         actions: [
           TextButton(
-            onPressed: widget.onContinue,
+            onPressed: () {
+              TermsAgreementSheet.checkAndShow(context, UserRole.tourist, widget.onContinue);
+            },
             child: Text('Skip', style: GoogleFonts.nunito(color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
           ),
         ],
@@ -129,7 +133,9 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _selected.length >= 3
-                    ? widget.onContinue
+                    ? () {
+                        TermsAgreementSheet.checkAndShow(context, UserRole.tourist, widget.onContinue);
+                      }
                     : () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Please select at least 3 preferences'), backgroundColor: AppColors.warning),

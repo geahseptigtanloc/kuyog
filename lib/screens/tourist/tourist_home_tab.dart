@@ -19,6 +19,7 @@ import '../features/notifications/notifications_screen.dart';
 import '../features/cultural/cultural_guide_screen.dart';
 import '../features/miles/miles_dashboard_screen.dart';
 import '../shared/chat/chat_list_screen.dart';
+import '../../widgets/kuyog_app_bar.dart';
 import 'search_screen.dart';
 import 'guide_profile_screen.dart';
 
@@ -52,6 +53,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
     final miles = context.watch<MilesProvider>();
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: KuyogAppBar(title: role.greeting),
       body: SafeArea(
         child: _loading
             ? const DurieLoading()
@@ -60,7 +62,6 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildHeader(role),
                     const SizedBox(height: 20),
                     _buildHero(),
                     const SizedBox(height: 24),
@@ -117,61 +118,9 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
 
   Widget _padded(Widget child) => Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: child);
 
-  Widget _buildHeader(RoleProvider role) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        children: [
-          Expanded(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(role.greeting, style: AppTheme.headline(size: 22)),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  const Icon(Icons.location_on, size: 14, color: AppColors.primary),
-                  const SizedBox(width: 4),
-                  Text('Davao City', style: AppTheme.label(size: 12, color: AppColors.primary)),
-                ]),
-              ),
-            ],
-          )),
-          GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatListScreen())),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-              child: const Icon(Icons.chat_bubble_outline, size: 22, color: AppColors.primary),
-            ),
-          ),
-          const SizedBox(width: 8),
-          _notifBell(),
-          const SizedBox(width: 8),
-          CircleAvatar(radius: 20, backgroundColor: AppColors.primary.withOpacity(0.15), child: const Icon(Icons.person, color: AppColors.primary)),
-        ],
-      ),
-    );
-  }
 
-  Widget _notifBell() {
-    return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen())),
-      child: Stack(clipBehavior: Clip.none, children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-          child: const Icon(Icons.notifications_outlined, size: 22),
-        ),
-        Positioned(right: -2, top: -2, child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
-          child: const Text('3', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700)),
-        )),
-      ]),
-    );
-  }
+
+
 
   Widget _buildHero() {
     return Padding(
@@ -185,13 +134,13 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
             errorWidget: (c, u, e) => Container(height: 190, decoration: BoxDecoration(gradient: LinearGradient(colors: [AppColors.primary, AppColors.primaryLight]))),
           ),
           Positioned.fill(child: Container(
-            decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.5)])),
+            decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withValues(alpha: 0.5)])),
           )),
           Positioned(top: 16, left: 16, right: 16, child: GestureDetector(
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.95), borderRadius: BorderRadius.circular(AppRadius.pill)),
+              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.95), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Row(children: [
                 const Icon(Icons.search, color: AppColors.textLight, size: 20),
                 const SizedBox(width: 10),
@@ -221,7 +170,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
       children: items.map((a) => GestureDetector(
         onTap: () => _handleQuickAction(a.$1),
         child: Column(children: [
-          Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: a.$3.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
+          Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: a.$3.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
             child: Icon(a.$2, color: a.$3, size: 24)),
           const SizedBox(height: 6),
           Text(a.$1, style: AppTheme.label(size: 10), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -292,7 +241,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
               child: Row(children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+                  decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
                   child: Icon(item.$2, size: 22, color: AppColors.primary),
                 ),
                 const SizedBox(width: 12),
@@ -325,9 +274,9 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
             const SizedBox(width: 16),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text('${miles.balance}', style: AppTheme.headline(size: 32, color: Colors.white)),
-              Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white.withOpacity(0.85))),
+              Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white.withValues(alpha: 0.85))),
               const SizedBox(height: 4),
-              Text('Redeem rewards  \u2192', style: AppTheme.body(size: 12, color: Colors.white.withOpacity(0.7))),
+              Text('Redeem rewards  \u2192', style: AppTheme.body(size: 12, color: Colors.white.withValues(alpha: 0.7))),
             ])),
           ]),
         ),
@@ -360,7 +309,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                 child: Text('Start Creating', style: AppTheme.label(size: 13, color: Colors.white)),
               ),
             ])),
-            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), shape: BoxShape.circle),
+            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
               child: const Icon(Icons.map_rounded, size: 40, color: Colors.white70)),
           ]),
         ),
@@ -390,7 +339,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                 child: Text('Join the Crawl', style: AppTheme.label(size: 12, color: AppColors.accent)),
               ),
             ])),
-            Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+            Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
               child: const Icon(Icons.emoji_events, size: 36, color: Colors.white)),
           ]),
         ),

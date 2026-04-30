@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../app_theme.dart';
 import '../../../data/mock_data.dart';
-import '../../../models/notification.dart' as model;
+import '../../../models/notification_item.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
@@ -11,7 +11,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  List<model.NotificationItem> _notifications = [];
+  List<NotificationItem> _notifications = [];
   bool _loading = true;
 
   @override
@@ -68,7 +68,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 
-  Widget _notificationTile(model.NotificationItem n) {
+  Widget _notificationTile(NotificationItem n) {
     IconData icon;
     Color color;
 

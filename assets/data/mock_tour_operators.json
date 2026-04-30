@@ -1,0 +1,48 @@
+[
+  {
+    "id": "op1",
+    "companyName": "Mindanao Eco Adventures",
+    "logoUrl": "https://picsum.photos/seed/eco_adv/200/200",
+    "location": "Davao City, Davao del Sur",
+    "dotAccredited": true,
+    "businessPermitVerified": true,
+    "specialties": ["Mountain", "Adventure", "Eco-Tourism"],
+    "guideCount": 12,
+    "rating": 4.8,
+    "reviewCount": 156,
+    "packages": [
+      { "id": "pkg1", "name": "Mt. Apo 3-Day Summit", "photoUrl": "https://picsum.photos/seed/apo_pkg/600/400", "durationDays": 3, "price": 12000, "inclusions": ["Guide", "Meals", "Camping Gear", "Permits"], "description": "Complete Mt. Apo summit experience with DOT-accredited guides" },
+      { "id": "pkg2", "name": "Davao City Heritage Walk", "photoUrl": "https://picsum.photos/seed/davao_walk/600/400", "durationDays": 1, "price": 2500, "inclusions": ["Guide", "Lunch", "Museum Entry", "Transport"], "description": "Walking tour of Davao's cultural landmarks" }
+    ]
+  },
+  {
+    "id": "op2",
+    "companyName": "Surallah Tours Inc.",
+    "logoUrl": "https://picsum.photos/seed/surallah/200/200",
+    "location": "Koronadal City, South Cotabato",
+    "dotAccredited": true,
+    "businessPermitVerified": true,
+    "specialties": ["Cultural", "Indigenous", "Lake Tours"],
+    "guideCount": 8,
+    "rating": 4.6,
+    "reviewCount": 89,
+    "packages": [
+      { "id": "pkg3", "name": "Lake Sebu Cultural Immersion", "photoUrl": "https://picsum.photos/seed/sebu_pkg/600/400", "durationDays": 2, "price": 8500, "inclusions": ["Community Guide", "Meals", "Weaving Workshop", "Boat Ride"], "description": "2-day T'boli cultural immersion with certified community guides" }
+    ]
+  },
+  {
+    "id": "op3",
+    "companyName": "Northern Mindanao Expeditions",
+    "logoUrl": "https://picsum.photos/seed/nme_logo/200/200",
+    "location": "Cagayan de Oro, Misamis Oriental",
+    "dotAccredited": true,
+    "businessPermitVerified": true,
+    "specialties": ["Adventure", "River Sports", "Extreme"],
+    "guideCount": 15,
+    "rating": 4.7,
+    "reviewCount": 234,
+    "packages": [
+      { "id": "pkg4", "name": "CDO Extreme Weekend", "photoUrl": "https://picsum.photos/seed/extreme_pkg/600/400", "durationDays": 2, "price": 9500, "inclusions": ["Guide", "Equipment", "Insurance", "Meals", "Transport"], "description": "White water rafting + zipline + cliff diving adventure package" }
+    ]
+  }
+]

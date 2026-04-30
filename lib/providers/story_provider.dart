@@ -24,6 +24,7 @@ class StoryProvider extends ChangeNotifier {
       id: 'post_${DateTime.now().millisecondsSinceEpoch}',
       userName: 'Current User',
       userAvatar: 'https://picsum.photos/seed/user/100/100',
+      userRole: 'Tourist',
       location: 'Davao City',
       timeAgo: 'Just now',
       content: content,
@@ -43,6 +44,7 @@ class StoryProvider extends ChangeNotifier {
       final p = _posts[index];
       _posts[index] = Post(
         id: p.id, userName: p.userName, userAvatar: p.userAvatar,
+        userRole: p.userRole,
         location: p.location, timeAgo: p.timeAgo, content: p.content, images: p.images,
         hashtags: p.hashtags, upvotes: p.upvotes, comments: p.comments,
         isBookmarked: !p.isBookmarked,
@@ -57,6 +59,7 @@ class StoryProvider extends ChangeNotifier {
       final p = _posts[index];
       _posts[index] = Post(
         id: p.id, userName: p.userName, userAvatar: p.userAvatar,
+        userRole: p.userRole,
         location: p.location, timeAgo: p.timeAgo, content: p.content, images: p.images,
         hashtags: p.hashtags, upvotes: p.upvotes + 1, comments: p.comments,
         isBookmarked: p.isBookmarked,

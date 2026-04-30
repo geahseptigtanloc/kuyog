@@ -12,6 +12,10 @@ class Merchant {
   final double salesToday;
   final bool isVerified;
   final String operatingHours;
+  // V3 additions
+  final bool businessPermit;
+  final bool dotAccredited;
+  final String dataSource;
 
   const Merchant({
     required this.id,
@@ -27,6 +31,9 @@ class Merchant {
     this.salesToday = 3200,
     this.isVerified = true,
     this.operatingHours = '8:00 AM - 8:00 PM',
+    this.businessPermit = true,
+    this.dotAccredited = false,
+    this.dataSource = '',
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {
@@ -44,6 +51,9 @@ class Merchant {
       salesToday: (json['salesToday'] ?? 0).toDouble(),
       isVerified: json['isVerified'] ?? true,
       operatingHours: json['operatingHours'] ?? '8:00 AM - 8:00 PM',
+      businessPermit: json['businessPermit'] ?? true,
+      dotAccredited: json['dotAccredited'] ?? false,
+      dataSource: json['dataSource'] ?? '',
     );
   }
 }

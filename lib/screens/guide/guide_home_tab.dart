@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../providers/role_provider.dart';
+import '../../widgets/kuyog_app_bar.dart';
 import 'verification_gate_screen.dart';
 
 
@@ -13,27 +14,16 @@ class GuideHomeTab extends StatelessWidget {
     final role = context.watch<RoleProvider>();
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: KuyogAppBar(title: role.greeting),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(children: [
-              Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(role.greeting, style: AppTheme.headline(size: 22)),
-                const SizedBox(height: 4),
-                Row(children: [
-                  const Icon(Icons.verified, size: 14, color: AppColors.verified),
-                  const SizedBox(width: 4),
-                  Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified)),
-                ]),
-              ])),
-              Stack(clipBehavior: Clip.none, children: [
-                Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
-                  child: const Icon(Icons.notifications_outlined, size: 22)),
-                Positioned(right: -2, top: -2, child: Container(padding: const EdgeInsets.all(4), decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
-                  child: const Text('5', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w700)))),
-              ]),
+              const Icon(Icons.verified, size: 14, color: AppColors.verified),
+              const SizedBox(width: 4),
+              Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified)),
             ]),
             const SizedBox(height: 24),
             // Stats Dashboard
@@ -114,7 +104,7 @@ class GuideHomeTab extends StatelessWidget {
       crossAxisCount: 4, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
       mainAxisSpacing: 12, crossAxisSpacing: 8, childAspectRatio: 0.85,
       children: items.map((a) => Column(children: [
-        Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: a.$3.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+        Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: a.$3.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
           child: Icon(a.$2, color: a.$3, size: 22)),
         const SizedBox(height: 6),
         Text(a.$1, style: AppTheme.label(size: 10), textAlign: TextAlign.center, maxLines: 1),
@@ -128,14 +118,14 @@ class GuideHomeTab extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
       child: Row(children: [
-        CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withOpacity(0.15), child: const Icon(Icons.person, color: AppColors.primary)),
+        CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withValues(alpha: 0.15), child: const Icon(Icons.person, color: AppColors.primary)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 14)),
           Text('$tour · $date', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
         ])),
         Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+          decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
           child: Text(status, style: AppTheme.label(size: 11, color: statusColor))),
       ]),
     );
@@ -147,9 +137,9 @@ class GuideHomeTab extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.warning.withOpacity(0.1),
+          color: AppColors.warning.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+          border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
         ),
         child: Row(children: [
           const Icon(Icons.verified_user, size: 28, color: AppColors.warning),
