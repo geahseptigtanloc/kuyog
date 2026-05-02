@@ -7,6 +7,10 @@ import '../../../models/guide.dart';
 import '../../../widgets/verified_badge.dart';
 import '../../../widgets/verified_content_badge.dart';
 import '../../../providers/match_provider.dart';
+import '../../../providers/travel_provider.dart';
+import '../shared/travel/travel_type_screen.dart';
+import '../shared/travel/group_setup_screen.dart';
+import '../shared/travel/ai_matching_screen.dart';
 
 class GuideProfileScreen extends StatelessWidget {
   final Guide guide;
@@ -157,13 +161,7 @@ class GuideProfileScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: isPending ? null : () {
-                            matchProvider.sendMatchRequest(guide.id);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Match request sent to ${guide.name}!', style: AppTheme.body(size: 14, color: Colors.white)),
-                              backgroundColor: AppColors.primary,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                            ));
+                            _startTravelFlow(context);
                           },
                           icon: Icon(isPending ? Icons.hourglass_empty : Icons.handshake),
                           label: Text(isPending ? 'Request Pending' : 'Request Match'),
@@ -384,5 +382,34 @@ class GuideProfileScreen extends StatelessWidget {
       case 'Credit/Debit Card': return Icons.credit_card;
       default: return Icons.payments;
     }
+  }
+
+  void _startTravelFlow(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TravelTypeScreen(
+          onContinue: () {
+            final provider = context.read<TravelProvider>();
+            provider.selectGuide(guide.id);
+            if (provider.travelType == 'group') {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => GroupSetupScreen(
+                  onContinue: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => const AIMatchingScreen(nextRoute: 'guide_profile'),
+                    ));
+                  },
+                ),
+              ));
+            } else {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const AIMatchingScreen(nextRoute: 'guide_profile'),
+              ));
+            }
+          },
+        ),
+      ),
+    );
   }
 }

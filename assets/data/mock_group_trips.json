@@ -1,0 +1,30 @@
+[
+  {
+    "id": "gt001",
+    "group_name": "Barkada Davao Trip 2025",
+    "leader_id": "tourist_001",
+    "travel_type": "group",
+    "guide_type": "community",
+    "guide_id": "g1",
+    "dates": {
+      "start": "2025-03-15",
+      "end": "2025-03-18"
+    },
+    "status": "planning",
+    "members": [
+      {
+        "name": "Maria Clara",
+        "email": "maria@email.com",
+        "role": "Friend",
+        "status": "accepted"
+      },
+      {
+        "name": "Jose Santos",
+        "email": "jose@email.com",
+        "role": "Friend",
+        "status": "pending"
+      }
+    ],
+    "itinerary_id": "itin_001"
+  }
+]

@@ -1,48 +1,98 @@
 [
   {
-    "id": "op1",
-    "companyName": "Mindanao Eco Adventures",
-    "logoUrl": "https://picsum.photos/seed/eco_adv/200/200",
+    "id": "to001",
+    "companyName": "Mindanao Adventure Co.",
+    "logoUrl": "https://picsum.photos/seed/op1logo/200/200",
     "location": "Davao City, Davao del Sur",
     "dotAccredited": true,
     "businessPermitVerified": true,
-    "specialties": ["Mountain", "Adventure", "Eco-Tourism"],
+    "specialties": ["Mountain Trekking", "Adventure Travel", "Eco-Tourism"],
     "guideCount": 12,
     "rating": 4.8,
     "reviewCount": 156,
+    "description": "DOT-accredited tour operator specializing in adventure and cultural tours across Mindanao.",
+    "bannerUrl": "https://picsum.photos/seed/op1banner/800/300",
+    "matchTags": ["Adventure Travel", "Mountain Trekking", "Cultural Exploration"],
+    "maxGroupSize": 50,
+    "totalTours": 320,
+    "matchScore": 92,
     "packages": [
-      { "id": "pkg1", "name": "Mt. Apo 3-Day Summit", "photoUrl": "https://picsum.photos/seed/apo_pkg/600/400", "durationDays": 3, "price": 12000, "inclusions": ["Guide", "Meals", "Camping Gear", "Permits"], "description": "Complete Mt. Apo summit experience with DOT-accredited guides" },
-      { "id": "pkg2", "name": "Davao City Heritage Walk", "photoUrl": "https://picsum.photos/seed/davao_walk/600/400", "durationDays": 1, "price": 2500, "inclusions": ["Guide", "Lunch", "Museum Entry", "Transport"], "description": "Walking tour of Davao's cultural landmarks" }
+      {
+        "id": "pkg001",
+        "name": "Mindanao Cultural Trail",
+        "photoUrl": "https://picsum.photos/seed/pkg1/400/250",
+        "durationDays": 3,
+        "price_per_person": 4500,
+        "group_price_per_person": 3800,
+        "max_pax": 20,
+        "inclusions": ["Accommodation", "Meals", "Guide", "Transport"],
+        "description": "3 days of cultural immersion across the region",
+        "duration": "3 Days 2 Nights"
+      }
     ]
   },
   {
-    "id": "op2",
+    "id": "to002",
     "companyName": "Surallah Tours Inc.",
     "logoUrl": "https://picsum.photos/seed/surallah/200/200",
     "location": "Koronadal City, South Cotabato",
     "dotAccredited": true,
     "businessPermitVerified": true,
-    "specialties": ["Cultural", "Indigenous", "Lake Tours"],
+    "specialties": ["Cultural Exploration", "Indigenous", "Lake Tours"],
     "guideCount": 8,
     "rating": 4.6,
     "reviewCount": 89,
+    "description": "Specialists in South Cotabato cultural experiences and Lake Sebu tours.",
+    "bannerUrl": "https://picsum.photos/seed/surallah_banner/800/300",
+    "matchTags": ["Cultural Exploration", "Photography"],
+    "maxGroupSize": 30,
+    "totalTours": 150,
+    "matchScore": 85,
     "packages": [
-      { "id": "pkg3", "name": "Lake Sebu Cultural Immersion", "photoUrl": "https://picsum.photos/seed/sebu_pkg/600/400", "durationDays": 2, "price": 8500, "inclusions": ["Community Guide", "Meals", "Weaving Workshop", "Boat Ride"], "description": "2-day T'boli cultural immersion with certified community guides" }
+      {
+        "id": "pkg002",
+        "name": "Lake Sebu Cultural Immersion",
+        "photoUrl": "https://picsum.photos/seed/sebu_pkg/600/400",
+        "durationDays": 2,
+        "price_per_person": 8500,
+        "group_price_per_person": 7500,
+        "max_pax": 15,
+        "inclusions": ["Community Guide", "Meals", "Weaving Workshop", "Boat Ride"],
+        "description": "2-day T'boli cultural immersion with certified community guides",
+        "duration": "2 Days 1 Night"
+      }
     ]
   },
   {
-    "id": "op3",
+    "id": "to003",
     "companyName": "Northern Mindanao Expeditions",
     "logoUrl": "https://picsum.photos/seed/nme_logo/200/200",
     "location": "Cagayan de Oro, Misamis Oriental",
     "dotAccredited": true,
     "businessPermitVerified": true,
-    "specialties": ["Adventure", "River Sports", "Extreme"],
+    "specialties": ["Adventure Travel", "River Sports", "Extreme"],
     "guideCount": 15,
     "rating": 4.7,
     "reviewCount": 234,
+    "description": "The premier adventure tour operator in Northern Mindanao. We make memories happen.",
+    "bannerUrl": "https://picsum.photos/seed/nme_banner/800/300",
+    "matchTags": ["Adventure Travel", "Photography"],
+    "maxGroupSize": 40,
+    "totalTours": 500,
+    "matchScore": 89,
     "packages": [
-      { "id": "pkg4", "name": "CDO Extreme Weekend", "photoUrl": "https://picsum.photos/seed/extreme_pkg/600/400", "durationDays": 2, "price": 9500, "inclusions": ["Guide", "Equipment", "Insurance", "Meals", "Transport"], "description": "White water rafting + zipline + cliff diving adventure package" }
+      {
+        "id": "pkg003",
+        "name": "CDO Extreme Weekend",
+        "photoUrl": "https://picsum.photos/seed/extreme_pkg/600/400",
+        "durationDays": 2,
+        "price_per_person": 9500,
+        "group_price_per_person": 8000,
+        "max_pax": 30,
+        "inclusions": ["Guide", "Equipment", "Insurance", "Meals", "Transport"],
+        "description": "White water rafting + zipline + cliff diving adventure package",
+        "duration": "2 Days 1 Night"
+      }
     ]
   }
 ]

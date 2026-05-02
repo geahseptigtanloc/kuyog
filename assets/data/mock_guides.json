@@ -25,7 +25,11 @@
     "storyExcerpt": "Growing up in the foothills of Mount Apo, I learned to love the mountains before I could even read.",
     "fullStory": "Growing up in the foothills of Mount Apo, I learned to love the mountains before I could even read. My lolo would take me on trails every weekend, teaching me the names of every bird, tree, and river we passed. When I was 18, I started volunteering as a porter for trekking groups, and by 22, I had completed my DOT accreditation. Over 150 treks later, I still feel the same excitement every time I reach a summit with a new group of travelers. My mission is to share the beauty of Mindanao while protecting the land that raised me.",
     "acceptedPayments": ["GCash", "Maya", "Cash", "Bank Transfer"],
-    "pricingStatus": "approved"
+    "pricingStatus": "approved",
+    "communityArea": "Davao City proper",
+    "maxGroupSize": 15,
+    "groupToursExperience": true,
+    "matchTags": ["Adventure Travel", "Cultural Exploration", "Photography", "Hiking/Trekking"]
   },
   {
     "id": "g2",
@@ -53,7 +57,11 @@
     "storyExcerpt": "I want to change the narrative about Mindanao, one tour at a time.",
     "fullStory": "Growing up in Cotabato, I often heard negative stories about our homeland. I became a tour guide because I wanted to change the narrative — to show the world the beauty of our culture, the warmth of our people, and the incredible food that defines Maguindanaon hospitality. Every tour I lead is a chance to build bridges and create understanding.",
     "acceptedPayments": ["GCash", "Cash"],
-    "pricingStatus": "approved"
+    "pricingStatus": "approved",
+    "communityArea": "Cotabato City / BARMM",
+    "maxGroupSize": 10,
+    "groupToursExperience": true,
+    "matchTags": ["Cultural Exploration", "Food Tourism"]
   },
   {
     "id": "g3",
@@ -81,7 +89,11 @@
     "storyExcerpt": "As a T'boli descendant, I am honored to share our living culture with the world.",
     "fullStory": "My grandmother was a master T'nalak weaver. She taught me that our culture is not something kept in a museum — it is alive in every thread, every song, every sunset over Lake Sebu. When I became a community guide, I made it my mission to share this living heritage with visitors. Every tour starts with a prayer and ends with a story around the fire.",
     "acceptedPayments": ["Cash", "GCash"],
-    "pricingStatus": "approved"
+    "pricingStatus": "approved",
+    "communityArea": "Lake Sebu",
+    "maxGroupSize": 8,
+    "groupToursExperience": true,
+    "matchTags": ["Cultural Exploration"]
   },
   {
     "id": "g4",
@@ -109,7 +121,11 @@
     "storyExcerpt": "I've been chasing rapids and adrenaline rushes across Northern Mindanao for a decade.",
     "fullStory": "CDO is the adventure capital of the Philippines, and I've spent the last decade proving it. From Class IV rapids on the Cagayan River to the heights of the Sky Challenge zipline, I've guided thousands of thrill-seekers safely through Northern Mindanao's most exciting experiences. Safety is always first, but fun is a very close second.",
     "acceptedPayments": ["GCash", "Maya", "Cash", "Credit/Debit Card"],
-    "pricingStatus": "approved"
+    "pricingStatus": "approved",
+    "communityArea": "CDO",
+    "maxGroupSize": 20,
+    "groupToursExperience": true,
+    "matchTags": ["Adventure Travel"]
   },
   {
     "id": "g5",
@@ -137,7 +153,11 @@
     "storyExcerpt": "They call GenSan the Tuna Capital — I call it the Food Capital of Mindanao.",
     "fullStory": "Growing up in a family of fisherfolk in General Santos, food was always at the center of our lives. I started hosting food tours after visitors kept asking me where to find the best tuna sashimi. Now I guide visitors through markets, kitchens, and secret local spots that you won't find in any guidebook.",
     "acceptedPayments": ["GCash", "Maya", "Cash"],
-    "pricingStatus": "under_review"
+    "pricingStatus": "under_review",
+    "communityArea": "GenSan",
+    "maxGroupSize": 12,
+    "groupToursExperience": true,
+    "matchTags": ["Food Tourism"]
   },
   {
     "id": "g6",
@@ -165,6 +185,10 @@
     "storyExcerpt": "Tourism is peace-building. Every visitor to Marawi is a step toward healing.",
     "fullStory": "After the siege, many said Marawi was finished as a tourism destination. I disagree. Our mosques, our lake, our crafts — they survived, and so did our spirit. I guide visitors through Marawi not just to show them beautiful places, but to show them that peace is possible, and that tourism can be a tool for healing and understanding.",
     "acceptedPayments": ["Cash", "GCash"],
-    "pricingStatus": "not_submitted"
+    "pricingStatus": "not_submitted",
+    "communityArea": "Marawi",
+    "maxGroupSize": 8,
+    "groupToursExperience": false,
+    "matchTags": ["Cultural Exploration"]
   }
 ]

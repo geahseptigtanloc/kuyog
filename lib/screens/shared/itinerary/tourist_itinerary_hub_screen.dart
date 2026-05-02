@@ -3,12 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app_theme.dart';
 import '../../../providers/itinerary_provider.dart';
+import '../../../providers/travel_provider.dart';
 import '../../../models/itinerary.dart';
 import '../../../widgets/mindanao_map.dart';
 import 'itinerary_create_screen.dart';
 import 'itinerary_detail_screen.dart';
 import 'itinerary_browse_screen.dart';
 import '../../../widgets/kuyog_app_bar.dart';
+import '../travel/travel_type_screen.dart';
+import '../travel/group_setup_screen.dart';
+import '../travel/ai_matching_screen.dart';
 
 class TouristItineraryHubScreen extends StatefulWidget {
   const TouristItineraryHubScreen({super.key});
@@ -69,15 +73,15 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(children: [
                     _quickAction(Icons.edit_note, 'Create\nMy Own', AppColors.primary, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryCreateScreen()));
+                      _startTravelFlow(context, 'create');
                     }),
                     const SizedBox(width: 8),
                     _quickAction(Icons.explore, 'Browse\nItineraries', AppColors.accent, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryBrowseScreen()));
+                      _startTravelFlow(context, 'browse');
                     }),
                     const SizedBox(width: 8),
                     _quickAction(Icons.handshake, 'Co-Create\nwith Guide', AppColors.primaryDark, () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryCreateScreen()));
+                      _startTravelFlow(context, 'cocreate');
                     }),
                   ]),
                 ),
@@ -146,6 +150,34 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
                 const SizedBox(height: 80),
               ]),
             );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _startTravelFlow(BuildContext context, String mode) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TravelTypeScreen(
+          onContinue: () {
+            final provider = context.read<TravelProvider>();
+            if (provider.travelType == 'group') {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => GroupSetupScreen(
+                  onContinue: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => const AIMatchingScreen(nextRoute: 'itinerary_create'),
+                    ));
+                  },
+                ),
+              ));
+            } else {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const AIMatchingScreen(nextRoute: 'itinerary_create'),
+              ));
+            }
           },
         ),
       ),

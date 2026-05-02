@@ -26,6 +26,11 @@ class Guide {
   final String fullStory;
   final List<String> acceptedPayments;
   final String pricingStatus; // 'not_submitted', 'under_review', 'approved', 'revision_requested'
+  // V3.1 additions
+  final String communityArea;
+  final int maxGroupSize;
+  final bool groupToursExperience;
+  final List<String> matchTags;
 
   const Guide({
     required this.id,
@@ -54,6 +59,10 @@ class Guide {
     this.fullStory = '',
     this.acceptedPayments = const ['Cash', 'GCash'],
     this.pricingStatus = 'not_submitted',
+    this.communityArea = '',
+    this.maxGroupSize = 1,
+    this.groupToursExperience = false,
+    this.matchTags = const [],
   });
 
   factory Guide.fromJson(Map<String, dynamic> json) {
@@ -84,6 +93,10 @@ class Guide {
       fullStory: json['fullStory'] ?? '',
       acceptedPayments: List<String>.from(json['acceptedPayments'] ?? ['Cash', 'GCash']),
       pricingStatus: json['pricingStatus'] ?? 'not_submitted',
+      communityArea: json['communityArea'] ?? '',
+      maxGroupSize: json['maxGroupSize'] ?? 1,
+      groupToursExperience: json['groupToursExperience'] ?? false,
+      matchTags: List<String>.from(json['matchTags'] ?? []),
     );
   }
 }

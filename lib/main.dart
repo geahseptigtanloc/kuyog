@@ -12,6 +12,7 @@ import 'providers/product_provider.dart';
 import 'providers/connectivity_provider.dart';
 import 'providers/match_provider.dart';
 import 'providers/itinerary_provider.dart';
+import 'providers/travel_provider.dart';
 
 void main() {
   runApp(const KuyogApp());
@@ -34,6 +35,7 @@ class KuyogApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         ChangeNotifierProvider(create: (_) => MatchProvider()),
         ChangeNotifierProvider(create: (_) => ItineraryProvider()),
+        ChangeNotifierProvider(create: (_) => TravelProvider()),
       ],
       child: MaterialApp.router(
         title: 'Kuyog',

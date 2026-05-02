@@ -6,11 +6,14 @@ import '../../data/mock_data.dart';
 import '../../models/guide.dart';
 import '../../models/destination.dart';
 import '../../providers/match_provider.dart';
-import '../../widgets/verified_badge.dart';
 import '../../widgets/verified_content_badge.dart';
 import '../../widgets/kuyog_app_bar.dart';
 import 'guide_profile_screen.dart';
 import '../features/crawl/crawl_home_screen.dart';
+import '../../providers/travel_provider.dart';
+import '../shared/travel/travel_type_screen.dart';
+import '../shared/travel/group_setup_screen.dart';
+import '../shared/travel/ai_matching_screen.dart';
 
 class ExploreTab extends StatefulWidget {
   const ExploreTab({super.key});
@@ -325,13 +328,7 @@ class _ExploreTabState extends State<ExploreTab> {
               const SizedBox(width: 12),
               Expanded(child: ElevatedButton(
                 onPressed: isPending ? null : () {
-                  matchProvider.sendMatchRequest(guide.id);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Match request sent to ${guide.name}!', style: AppTheme.body(size: 14, color: Colors.white)),
-                    backgroundColor: AppColors.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-                  ));
+                  _startTravelFlow(context, guide.id);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: isPending ? AppColors.textLight : AppColors.accent,
@@ -594,5 +591,34 @@ class _ExploreTabState extends State<ExploreTab> {
       case 'Credit/Debit Card': return AppColors.accent;
       default: return AppColors.textSecondary;
     }
+  }
+
+  void _startTravelFlow(BuildContext context, String guideId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TravelTypeScreen(
+          onContinue: () {
+            final provider = context.read<TravelProvider>();
+            provider.selectGuide(guideId);
+            if (provider.travelType == 'group') {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => GroupSetupScreen(
+                  onContinue: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (_) => const AIMatchingScreen(nextRoute: 'explore_tab'),
+                    ));
+                  },
+                ),
+              ));
+            } else {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => const AIMatchingScreen(nextRoute: 'explore_tab'),
+              ));
+            }
+          },
+        ),
+      ),
+    );
   }
 }

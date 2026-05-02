@@ -12,6 +12,7 @@ import '../models/review.dart';
 import '../models/itinerary.dart';
 import '../models/match_request.dart';
 import '../models/tour_operator.dart';
+import '../models/group_trip.dart';
 
 class MockData {
   static List<Guide>? _guides;
@@ -26,6 +27,7 @@ class MockData {
   static List<Itinerary>? _itineraries;
   static List<MatchRequest>? _matchRequests;
   static List<TourOperator>? _tourOperators;
+  static List<GroupTrip>? _groupTrips;
 
   static Future<List<T>> _load<T>(String path, T Function(Map<String, dynamic>) fromJson) async {
     final data = await rootBundle.loadString(path);
@@ -91,5 +93,10 @@ class MockData {
   static Future<List<TourOperator>> getTourOperators() async {
     _tourOperators ??= await _load('assets/data/mock_tour_operators.json', TourOperator.fromJson);
     return _tourOperators!;
+  }
+
+  static Future<List<GroupTrip>> getGroupTrips() async {
+    _groupTrips ??= await _load('assets/data/mock_group_trips.json', GroupTrip.fromJson);
+    return _groupTrips!;
   }
 }
