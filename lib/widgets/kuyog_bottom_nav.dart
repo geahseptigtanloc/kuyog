@@ -36,6 +36,7 @@ class KuyogBottomNav extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.storefront_rounded), label: 'Marketplace'),
           BottomNavigationBarItem(icon: Icon(Icons.receipt_long_rounded), label: 'Orders'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded), label: 'Profile'),
         ];
       case UserRole.admin:
         return const [

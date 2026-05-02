@@ -109,7 +109,7 @@ class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
                     case UserRole.tourist:
                       profileScreen = const TouristProfileTab();
                     case UserRole.guide:
-                      profileScreen = const GuideProfileTab();
+                      profileScreen = const GuideProfileTab();  x
                     case UserRole.merchant:
                       profileScreen = const MerchantProfileTab();
                     case UserRole.admin:

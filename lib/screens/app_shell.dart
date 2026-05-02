@@ -47,7 +47,7 @@ class _AppShellState extends State<AppShell> {
       case UserRole.guide:
         return [const GuideHomeTab(), const ClientsTab(), const ExploreTab(), const GuideItineraryHubScreen()];
       case UserRole.merchant:
-        return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab()];
+        return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab(), const MerchantProfileTab()];
       case UserRole.admin:
         return [const AdminDashboardTab(), const AdminVerificationsTab(), const AdminReportsTab()];
       case UserRole.superAdmin:
