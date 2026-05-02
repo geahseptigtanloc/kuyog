@@ -58,4 +58,26 @@ class Product {
       originalPrice: json['originalPrice']?.toDouble(),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'merchantName': merchantName,
+      'merchantId': merchantId,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'images': images,
+      'category': category,
+      'rating': rating,
+      'soldCount': soldCount,
+      'stock': stock,
+      'isActive': isActive,
+      'isMindanaoMade': isMindanaoMade,
+      'variants': variants,
+      'isFlashDeal': isFlashDeal,
+      'originalPrice': originalPrice,
+    };
+  }
 }
