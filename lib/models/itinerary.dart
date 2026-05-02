@@ -80,6 +80,34 @@ class Itinerary {
       durationDays: json['durationDays'] ?? 1,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'destination': destination,
+      'imageUrl': imageUrl,
+      'stopsCount': stopsCount,
+      'daysRemaining': daysRemaining,
+      'status': status,
+      'days': days.map((d) => d.toJson()).toList(),
+      'totalCost': totalCost,
+      'guideId': guideId,
+      'dateRange': dateRange,
+      'guideName': guideName,
+      'guideAvatar': guideAvatar,
+      'thumbnailUrl': thumbnailUrl,
+      'estimatedCost': estimatedCost,
+      'guestCount': guestCount,
+      'isOfflineAvailable': isOfflineAvailable,
+      'creationMode': creationMode,
+      'rating': rating,
+      'creatorName': creatorName,
+      'creatorAvatar': creatorAvatar,
+      'region': region,
+      'durationDays': durationDays,
+    };
+  }
 }
 
 class ItineraryDay {
@@ -96,6 +124,13 @@ class ItineraryDay {
               .toList() ??
           [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'day': day,
+      'activities': activities.map((a) => a.toJson()).toList(),
+    };
   }
 }
 
@@ -137,6 +172,20 @@ class ItineraryActivity {
       cost: (json['cost'] ?? 0).toDouble(),
       time: json['time'] ?? '09:00 AM',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'location': location,
+      'category': category,
+      'rating': rating,
+      'timeEstimate': timeEstimate,
+      'distance': distance,
+      'iconCategory': iconCategory.name,
+      'cost': cost,
+      'time': time,
+    };
   }
 }
 

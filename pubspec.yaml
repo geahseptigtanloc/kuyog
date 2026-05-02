@@ -25,7 +25,9 @@ dependencies:
   timeline_tile: ^2.0.0
   image_picker: ^1.1.0
   badges: ^3.1.2
-
+  supabase_flutter: ^2.10.6
+  flutter_dotenv: ^5.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -35,6 +37,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/data/
+    - .env
 
 dependency_overrides:
   path_provider_foundation: 2.3.2

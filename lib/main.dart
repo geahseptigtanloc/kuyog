@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:kuyog/core/supabase/client.dart';
 import 'package:provider/provider.dart';
 import 'app_theme.dart';
 import 'router.dart';
@@ -14,7 +16,18 @@ import 'providers/match_provider.dart';
 import 'providers/itinerary_provider.dart';
 import 'providers/travel_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load(fileName: ".env"); // load env variables
+
+  try {
+    await AppSupabase.initialize();
+    debugPrint('supabase connected');
+  } catch (e) {
+    debugPrint('Supabase initialization failed: $e');
+  }
+
   runApp(const KuyogApp());
 }
 
