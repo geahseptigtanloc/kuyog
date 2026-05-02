@@ -43,15 +43,15 @@ class _AppShellState extends State<AppShell> {
   List<Widget> _getTabs(UserRole role) {
     switch (role) {
       case UserRole.tourist:
-        return const [TouristHomeTab(), ExploreTab(), StoryhubTab(), TouristItineraryHubScreen(), TouristProfileTab()];
+        return [const TouristHomeTab(), const ExploreTab(), const StoryhubTab(), const TouristItineraryHubScreen(), const TouristProfileTab()];
       case UserRole.guide:
-        return const [GuideHomeTab(), ClientsTab(), ExploreTab(), GuideItineraryHubScreen(), GuideProfileTab()];
+        return [const GuideHomeTab(), const ClientsTab(), const ExploreTab(), const GuideItineraryHubScreen(), const GuideProfileTab()];
       case UserRole.merchant:
-        return const [MerchantDashboardTab(), MerchantListingsTab(), MerchantOrdersTab(), MerchantProfileTab()];
+        return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab(), const MerchantProfileTab()];
       case UserRole.admin:
-        return const [AdminDashboardTab(), AdminVerificationsTab(), AdminReportsTab(), AdminSettingsTab()];
+        return [const AdminDashboardTab(), const AdminVerificationsTab(), const AdminReportsTab(), const AdminSettingsTab()];
       case UserRole.superAdmin:
-        return const [SuperAdminOverviewTab(), SuperAdminUsersTab(), SuperAdminAnalyticsTab(), SuperAdminSettingsTab()];
+        return [const SuperAdminOverviewTab(), const SuperAdminUsersTab(), const SuperAdminAnalyticsTab(), const SuperAdminSettingsTab()];
     }
   }
 
@@ -72,6 +72,7 @@ class _AppShellState extends State<AppShell> {
         }
 
         return Scaffold(
+          key: ValueKey(roleProvider.currentRole),
           body: Column(
             children: [
               const OfflineBanner(),
@@ -80,6 +81,7 @@ class _AppShellState extends State<AppShell> {
                   index: safeIndex,
                   children: tabs,
                 ),
+                
               ),
             ],
           ),
@@ -115,6 +117,7 @@ class _AppShellState extends State<AppShell> {
   }
 
   void _showCreatePostSheet(BuildContext context) {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
     final postCtrl = TextEditingController();
     showModalBottomSheet(
       context: context,
@@ -154,8 +157,8 @@ class _AppShellState extends State<AppShell> {
                     const CircleAvatar(radius: 22, backgroundColor: AppColors.primaryLight, child: Icon(Icons.person, color: Colors.white)),
                     const SizedBox(width: 12),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Maria Santos', style: AppTheme.label(size: 14)),
-                      Text('Tourist', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+                      Text(roleProvider.userName, style: AppTheme.label(size: 14)),
+                      Text(roleProvider.roleDisplayName, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
                     ]),
                   ],
                 ),

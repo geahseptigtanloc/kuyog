@@ -3,9 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../app_theme.dart';
 
 class PasswordEntryScreen extends StatefulWidget {
-  final VoidCallback onNext;
+  final String email;
+  final String role;
+  final Function(String email, String password, String role) onNext;
 
-  const PasswordEntryScreen({super.key, required this.onNext});
+  const PasswordEntryScreen({
+    super.key, 
+    required this.email,
+    required this.role,
+    required this.onNext,
+  });
 
   @override
   State<PasswordEntryScreen> createState() => _PasswordEntryScreenState();
@@ -13,6 +20,7 @@ class PasswordEntryScreen extends StatefulWidget {
 
 class _PasswordEntryScreenState extends State<PasswordEntryScreen> {
   bool _obscure = true;
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +63,14 @@ class _PasswordEntryScreenState extends State<PasswordEntryScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'maria.clara@gmail.com',
+                  widget.email,
                   style: GoogleFonts.roboto(fontSize: 14, color: AppColors.textSecondary),
                 ),
               ],
             ),
             const SizedBox(height: 32),
             TextField(
+              controller: _passwordController,
               obscureText: _obscure,
               decoration: InputDecoration(
                 labelText: 'Enter your password',
@@ -90,7 +99,7 @@ class _PasswordEntryScreenState extends State<PasswordEntryScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                onPressed: widget.onNext,
+                onPressed: () => widget.onNext(widget.email, _passwordController.text, widget.role),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4285F4),
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),

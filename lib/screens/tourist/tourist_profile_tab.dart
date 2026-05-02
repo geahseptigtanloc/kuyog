@@ -18,6 +18,7 @@ class TouristProfileTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final roleProvider = context.watch<RoleProvider>();
     final miles = context.watch<MilesProvider>();
     final crawl = context.watch<CrawlProvider>();
     return Scaffold(
@@ -31,12 +32,12 @@ class TouristProfileTab extends StatelessWidget {
             const SizedBox(height: 8),
             CircleAvatar(radius: 44, backgroundColor: AppColors.primary.withValues(alpha: 0.12), child: const Icon(Icons.person, size: 44, color: AppColors.primary)),
             const SizedBox(height: 12),
-            Text('Maria Santos', style: AppTheme.headline(size: 22)),
+            Text(roleProvider.userName, style: AppTheme.headline(size: 22)),
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('Tourist', style: AppTheme.label(size: 12, color: AppColors.touristBlue)),
+              child: Text(roleProvider.roleDisplayName, style: AppTheme.label(size: 12, color: AppColors.touristBlue)),
             ),
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [

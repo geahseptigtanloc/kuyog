@@ -38,7 +38,7 @@ class KuyogApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RoleProvider()),
+        ChangeNotifierProvider(create: (_) => RoleProvider()..initialize()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => MilesProvider()),
         ChangeNotifierProvider(create: (_) => CrawlProvider()),

@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase/client.dart';
 
 class AuthService {
-  final _client = AppSupabase.client;
+  SupabaseClient get _client => AppSupabase.client;
 
   /// Get the current session
   Session? get currentSession => _client.auth.currentSession;
@@ -17,10 +17,16 @@ class AuthService {
   Future<AuthResponse> signUp({
     required String email,
     required String password,
+    required String name,
+    required String role,
   }) async {
     return await _client.auth.signUp(
       email: email,
       password: password,
+      data: {
+        'name': name,
+        'role': role,
+      },
     );
   }
 
@@ -29,6 +35,24 @@ class AuthService {
     required String email,
     required String password,
   }) async {
+    final cleanEmail = email.trim().toLowerCase();
+    
+    // 🌟 HARDCODED BYPASS: Allow dummy accounts without hitting Supabase
+    if ((cleanEmail == 'admin@kuyog.com' || cleanEmail == 'superadmin@kuyog.com') && 
+        password == 'kuyog123') {
+      return AuthResponse(
+        session: null, // RoleProvider will handle the mock session
+        user: User(
+          id: 'mock-admin-id',
+          appMetadata: {},
+          userMetadata: {'role': cleanEmail == 'admin@kuyog.com' ? 'admin' : 'super_admin'},
+          aud: '',
+          createdAt: DateTime.now().toIso8601String(),
+          email: cleanEmail,
+        ),
+      );
+    }
+
     return await _client.auth.signInWithPassword(
       email: email,
       password: password,

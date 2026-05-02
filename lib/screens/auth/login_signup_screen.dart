@@ -4,7 +4,7 @@ import '../../app_theme.dart';
 import '../../widgets/kuyog_logo.dart';
 
 class LoginSignupScreen extends StatefulWidget {
-  final VoidCallback onNext;
+  final Function(String email) onNext;
 
   const LoginSignupScreen({super.key, required this.onNext});
 
@@ -119,7 +119,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: widget.onNext,
+                  onPressed: () => widget.onNext(_emailController.text),
                   child: const Text('Next step'),
                 ),
               ),
@@ -148,7 +148,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 label: 'Continue with Facebook',
                 color: AppColors.facebookBlue,
                 textColor: Colors.white,
-                onTap: widget.onNext,
+                onTap: () => widget.onNext(_emailController.text),
               ),
               const SizedBox(height: 10),
               _socialButton(
@@ -157,7 +157,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 color: Colors.white,
                 textColor: AppColors.textPrimary,
                 borderColor: AppColors.divider,
-                onTap: widget.onNext,
+                onTap: () => widget.onNext(_emailController.text),
               ),
               const SizedBox(height: 10),
               _socialButton(
@@ -165,7 +165,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 label: 'Continue with Apple',
                 color: AppColors.appleDark,
                 textColor: Colors.white,
-                onTap: widget.onNext,
+                onTap: () => widget.onNext(_emailController.text),
               ),
               const SizedBox(height: 24),
               Text.rich(
