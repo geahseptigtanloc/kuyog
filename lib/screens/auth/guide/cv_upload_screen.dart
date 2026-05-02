@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
+import '../../../data/services/onboarding_service.dart';
+import '../../../providers/role_provider.dart';
 
 class CvUploadScreen extends StatefulWidget {
   final VoidCallback onNext;
@@ -13,7 +17,73 @@ class CvUploadScreen extends StatefulWidget {
 
 class _CvUploadScreenState extends State<CvUploadScreen> {
   bool _agreed = false;
+  bool _isLoading = false;
+  PlatformFile? _pickedFile;
   final List<TextEditingController> _portfolioControllers = [TextEditingController()];
+
+  Future<void> _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg'],
+      withData: true,
+    );
+
+    if (result != null) {
+      setState(() => _pickedFile = result.files.first);
+    }
+  }
+
+  Future<void> _handleNext() async {
+    if (!_agreed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please agree to the terms')),
+      );
+      return;
+    }
+
+    if (_pickedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please upload your CV')),
+      );
+      return;
+    }
+
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final user = roleProvider.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final onboarding = OnboardingService();
+      
+      // Upload CV
+      final cvUrl = await onboarding.uploadVerificationFile(
+        userId: user.id,
+        fileName: 'cv_${_pickedFile!.name}',
+        fileBytes: _pickedFile!.bytes ?? [], // For web
+      );
+
+      // Save to verification table
+      await onboarding.submitGuideVerification(
+        userId: user.id,
+        cvUrl: cvUrl,
+        portfolioUrls: _portfolioControllers
+            .map((controller) => controller.text.trim())
+            .where((t) => t.isNotEmpty)
+            .toList(),
+      );
+      
+      widget.onNext();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error uploading CV: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +107,35 @@ class _CvUploadScreenState extends State<CvUploadScreen> {
             const SizedBox(height: 24),
             // CV Upload area
             GestureDetector(
-              onTap: () {},
+              onTap: _isLoading ? null : _pickFile,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 40),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primary, style: BorderStyle.solid, width: 1.5),
+                  border: Border.all(
+                    color: _pickedFile != null ? AppColors.verified : AppColors.primary, 
+                    style: BorderStyle.solid, 
+                    width: 1.5
+                  ),
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  color: AppColors.primary.withOpacity(0.04),
+                  color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withOpacity(0.04),
                 ),
                 child: Column(
                   children: [
-                    Icon(Icons.upload_file, size: 48, color: AppColors.primary.withOpacity(0.6)),
+                    Icon(
+                      _pickedFile != null ? Icons.check_circle : Icons.upload_file, 
+                      size: 48, 
+                      color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withOpacity(0.6)
+                    ),
                     const SizedBox(height: 8),
-                    Text('Tap to upload PDF', style: GoogleFonts.nunito(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                    Text(
+                      _pickedFile != null ? _pickedFile!.name : 'Tap to upload PDF/PNG', 
+                      style: GoogleFonts.nunito(
+                        color: _pickedFile != null ? AppColors.verified : AppColors.primary, 
+                        fontWeight: FontWeight.w600
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                     Text('Max 5MB', style: GoogleFonts.nunito(fontSize: 12, color: AppColors.textLight)),
                   ],
                 ),
@@ -105,9 +190,11 @@ class _CvUploadScreenState extends State<CvUploadScreen> {
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
-                onPressed: onNext,
+                onPressed: _isLoading ? null : _handleNext,
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                child: const Text('Next'),
+                child: _isLoading 
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : const Text('Next'),
               ),
             ),
           ],

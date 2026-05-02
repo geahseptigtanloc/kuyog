@@ -11,9 +11,16 @@ class RoleProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   RoleProvider() {
-    // Listen for auth changes to clear state automatically
+    // Listen for auth changes to clear or hydrate state automatically
     Supabase.instance.client.auth.onAuthStateChange.listen((data) {
-      if (data.event == AuthChangeEvent.signedOut) {
+      final event = data.event;
+      debugPrint('RoleProvider: Auth event received: $event');
+      
+      if (event == AuthChangeEvent.signedIn || 
+          event == AuthChangeEvent.initialSession ||
+          event == AuthChangeEvent.tokenRefreshed) {
+        initialize();
+      } else if (event == AuthChangeEvent.signedOut) {
         clear();
       }
     });
@@ -54,47 +61,62 @@ class RoleProvider extends ChangeNotifier {
   }
 
   Future<void> initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    
+    // If no user, just clear and return silently. No error here - could be logged out.
+    if (user == null) {
+      debugPrint('RoleProvider: No user session found. Skipping hydration.');
+      _currentUser = null;
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+
+    if (_isLoading) {
+      debugPrint('RoleProvider: Already loading, skipping duplicate call.');
+      return;
+    }
+    
     _isLoading = true;
     notifyListeners();
     
     try {
-      // 1. Give Supabase a moment to finalize the session
-      await Future.delayed(const Duration(milliseconds: 500));
+      // 1. Give Supabase/PostgreSQL triggers a moment to finalize the profile
+      await Future.delayed(const Duration(milliseconds: 800));
       
-      final user = Supabase.instance.client.auth.currentUser;
+      final email = user.email?.toLowerCase() ?? '';
       
-      if (user != null) {
-        final email = user.email?.toLowerCase() ?? '';
-        
-        // 🌟 HARDCODED BYPASS: Check for dummy admin accounts
-        if (email == 'admin@kuyog.com') {
-          _currentUser = User(
-            id: user.id,
-            name: 'Kuyog Admin',
-            email: 'admin@kuyog.com',
-            role: 'admin',
-            avatarUrl: '',
-            joinedDate: DateTime.now(),
-          );
-        } else if (email == 'superadmin@kuyog.com') {
-          _currentUser = User(
-            id: user.id,
-            name: 'Kuyog Super Admin',
-            email: 'superadmin@kuyog.com',
-            role: 'super_admin',
-            avatarUrl: '',
-            joinedDate: DateTime.now(),
-          );
-        } else {
-          // Normal DB fetch for other roles
-          _currentUser = await _profileService.getCurrentProfile();
-        }
+      // 🌟 HARDCODED BYPASS: Check for dummy admin accounts
+      if (email == 'admin@kuyog.com') {
+        _currentUser = User(
+          id: user.id,
+          name: 'Kuyog Admin',
+          email: 'admin@kuyog.com',
+          role: 'admin',
+          avatarUrl: '',
+          joinedDate: DateTime.now(),
+        );
+      } else if (email == 'superadmin@kuyog.com') {
+        _currentUser = User(
+          id: user.id,
+          name: 'Kuyog Super Admin',
+          email: 'superadmin@kuyog.com',
+          role: 'super_admin',
+          avatarUrl: '',
+          joinedDate: DateTime.now(),
+        );
+      } else {
+        // Normal DB fetch for other roles
+        _currentUser = await _profileService.getCurrentProfile();
+      }
+      
+      if (_currentUser != null) {
         debugPrint('RoleProvider: Profile hydrated for $email. Role is: ${_currentUser?.role}');
       } else {
-        debugPrint('RoleProvider: No authenticated user found during init.');
+        debugPrint('RoleProvider: Profile fetch returned NULL for $email. Check if profile exists in DB.');
       }
     } catch (e) {
-      debugPrint('RoleProvider: Initialization error: $e');
+      debugPrint('RoleProvider: Initialization error for ${user.email}: $e');
     }
     
     _isLoading = false;

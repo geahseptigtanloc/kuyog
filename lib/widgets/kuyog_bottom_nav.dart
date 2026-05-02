@@ -23,7 +23,6 @@ class KuyogBottomNav extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
           BottomNavigationBarItem(icon: Icon(Icons.auto_stories_rounded), label: 'StoryHub'),
           BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Itinerary'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ];
       case UserRole.guide:
         return const [
@@ -31,28 +30,24 @@ class KuyogBottomNav extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.people_alt_rounded), label: 'Clients'),
           BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
           BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Itinerary'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ];
       case UserRole.merchant:
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.storefront_rounded), label: 'Marketplace'),
           BottomNavigationBarItem(icon: Icon(Icons.receipt_long_rounded), label: 'Orders'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ];
       case UserRole.admin:
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(Icons.verified_user_rounded), label: 'Verify'),
           BottomNavigationBarItem(icon: Icon(Icons.report_rounded), label: 'Reports'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings_rounded), label: 'Settings'),
         ];
       case UserRole.superAdmin:
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.analytics_rounded), label: 'Overview'),
           BottomNavigationBarItem(icon: Icon(Icons.people_rounded), label: 'Users'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Analytics'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings_rounded), label: 'Settings'),
         ];
     }
   }

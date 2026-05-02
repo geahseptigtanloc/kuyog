@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import '../../core/supabase/client.dart';
 import '../../models/user.dart';
 
@@ -51,5 +53,29 @@ class ProfileService {
     return (response as List)
         .map((json) => User.fromJson(json))
         .toList();
+  }
+
+  /// Upload an avatar image and return the public URL
+  Future<String> uploadAvatar(String userId, List<int> imageBytes, String fileExtension) async {
+    // Sanitize extension - if it's a blob URL or has no dots, default to jpg
+    String ext = fileExtension.toLowerCase();
+    final extRegex = RegExp(r'^[a-z0-9]+$');
+    if (ext.contains(':') || ext.length > 5 || !extRegex.hasMatch(ext)) {
+      ext = 'jpg';
+    }
+
+    final fileName = '$userId-${DateTime.now().millisecondsSinceEpoch}.$ext';
+    final filePath = 'avatars/$fileName';
+
+    await _client.storage.from('avatars').uploadBinary(
+      filePath,
+      Uint8List.fromList(imageBytes),
+      fileOptions: FileOptions(
+        contentType: 'image/$ext',
+        upsert: true,
+      ),
+    );
+
+    return _client.storage.from('avatars').getPublicUrl(filePath);
   }
 }

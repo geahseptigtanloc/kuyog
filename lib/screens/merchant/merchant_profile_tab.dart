@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
+import '../../widgets/kuyog_app_bar.dart';
 import '../shared/settings_screen.dart';
 import '../shared/help_support_screen.dart';
 import '../shared/edit_profile_screen.dart';
@@ -15,6 +16,7 @@ class MerchantProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: const KuyogAppBar(title: 'Profile'),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

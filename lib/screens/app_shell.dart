@@ -43,15 +43,15 @@ class _AppShellState extends State<AppShell> {
   List<Widget> _getTabs(UserRole role) {
     switch (role) {
       case UserRole.tourist:
-        return [const TouristHomeTab(), const ExploreTab(), const StoryhubTab(), const TouristItineraryHubScreen(), const TouristProfileTab()];
+        return [const TouristHomeTab(), const ExploreTab(), const StoryhubTab(), const TouristItineraryHubScreen()];
       case UserRole.guide:
-        return [const GuideHomeTab(), const ClientsTab(), const ExploreTab(), const GuideItineraryHubScreen(), const GuideProfileTab()];
+        return [const GuideHomeTab(), const ClientsTab(), const ExploreTab(), const GuideItineraryHubScreen()];
       case UserRole.merchant:
-        return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab(), const MerchantProfileTab()];
+        return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab()];
       case UserRole.admin:
-        return [const AdminDashboardTab(), const AdminVerificationsTab(), const AdminReportsTab(), const AdminSettingsTab()];
+        return [const AdminDashboardTab(), const AdminVerificationsTab(), const AdminReportsTab()];
       case UserRole.superAdmin:
-        return [const SuperAdminOverviewTab(), const SuperAdminUsersTab(), const SuperAdminAnalyticsTab(), const SuperAdminSettingsTab()];
+        return [const SuperAdminOverviewTab(), const SuperAdminUsersTab(), const SuperAdminAnalyticsTab()];
     }
   }
 

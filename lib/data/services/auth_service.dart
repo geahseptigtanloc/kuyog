@@ -35,24 +35,6 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final cleanEmail = email.trim().toLowerCase();
-    
-    // 🌟 HARDCODED BYPASS: Allow dummy accounts without hitting Supabase
-    if ((cleanEmail == 'admin@kuyog.com' || cleanEmail == 'superadmin@kuyog.com') && 
-        password == 'kuyog123') {
-      return AuthResponse(
-        session: null, // RoleProvider will handle the mock session
-        user: User(
-          id: 'mock-admin-id',
-          appMetadata: {},
-          userMetadata: {'role': cleanEmail == 'admin@kuyog.com' ? 'admin' : 'super_admin'},
-          aud: '',
-          createdAt: DateTime.now().toIso8601String(),
-          email: cleanEmail,
-        ),
-      );
-    }
-
     return await _client.auth.signInWithPassword(
       email: email,
       password: password,

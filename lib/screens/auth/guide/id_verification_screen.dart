@@ -1,11 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
+import '../../../data/services/onboarding_service.dart';
+import '../../../providers/role_provider.dart';
 
-class IdVerificationScreen extends StatelessWidget {
+class IdVerificationScreen extends StatefulWidget {
   final VoidCallback onNext;
 
   const IdVerificationScreen({super.key, required this.onNext});
+
+  @override
+  State<IdVerificationScreen> createState() => _IdVerificationScreenState();
+}
+
+class _IdVerificationScreenState extends State<IdVerificationScreen> {
+  bool _isLoading = false;
+
+  XFile? _capturedImage;
+
+  Future<void> _handleCapture() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 70,
+    );
+
+    if (image == null) return;
+
+    setState(() {
+      _capturedImage = image;
+      _isLoading = true;
+    });
+
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final user = roleProvider.currentUser;
+    if (user == null) return;
+
+    try {
+      final onboarding = OnboardingService();
+      
+      // Upload ID image
+      final bytes = await image.readAsBytes();
+      final idUrl = await onboarding.uploadVerificationFile(
+        userId: user.id,
+        fileName: 'id_${image.name}',
+        fileBytes: bytes,
+      );
+
+      // Save to verification table (upsert)
+      await onboarding.submitGuideVerification(
+        userId: user.id,
+        idFrontUrl: idUrl,
+      );
+      
+      widget.onNext();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving verification: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +163,7 @@ class IdVerificationScreen extends StatelessWidget {
             const Spacer(flex: 3),
             // Capture button
             GestureDetector(
-              onTap: onNext,
+              onTap: _isLoading ? null : _handleCapture,
               child: Container(
                 width: 72,
                 height: 72,
@@ -113,10 +173,11 @@ class IdVerificationScreen extends StatelessWidget {
                 ),
                 child: Container(
                   margin: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary,
+                    color: _isLoading ? AppColors.textLight : AppColors.primary,
                   ),
+                  child: _isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : null,
                 ),
               ),
             ),

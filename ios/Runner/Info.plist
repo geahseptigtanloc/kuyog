@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Kuyog needs camera access to capture your ID for verification.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kuyog needs photo library access to upload your CV and ID documents.</string>
 </dict>
 </plist>

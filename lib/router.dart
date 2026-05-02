@@ -4,9 +4,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
-import 'screens/auth/login_signup_screen.dart';
+import 'screens/auth/signup_screen.dart';
+import 'screens/auth/login_screen.dart';
 import 'screens/auth/google_oauth_mock.dart';
-import 'screens/auth/password_entry_screen.dart';
 import 'screens/auth/loading_screen.dart';
 import 'screens/auth/country_selection_screen.dart';
 import 'screens/auth/tour_preferences_screen.dart';
@@ -15,6 +15,7 @@ import 'screens/auth/guide/professional_profile_screen.dart';
 import 'screens/auth/guide/cv_upload_screen.dart';
 import 'screens/auth/guide/add_experience_screen.dart';
 import 'screens/auth/guide/id_verification_screen.dart';
+import 'screens/auth/merchant_setup_screen.dart';
 import 'screens/app_shell.dart';
 import 'data/services/auth_service.dart';
 import 'providers/role_provider.dart';
@@ -106,90 +107,18 @@ final router = GoRouter(
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         final role = extra?['role'] ?? 'tourist';
-        return LoginSignupScreen(
-          onNext: (email) => context.go('/auth/google', extra: {'email': email, 'role': role}),
+        return SignupScreen(
+          role: role,
         );
       },
       routes: [
         GoRoute(
-          path: 'google',
+          path: 'login',
           builder: (context, state) {
             final extra = state.extra as Map<String, dynamic>?;
-            return GoogleOauthMockScreen(
-              onAccountSelected: () => context.go('/auth/password', extra: extra),
-            );
-          },
-        ),
-        GoRoute(
-          path: 'password',
-          builder: (context, state) {
-            final extra = state.extra as Map<String, dynamic>?;
-            final email = extra?['email'] ?? '';
             final role = extra?['role'] ?? 'tourist';
-            return PasswordEntryScreen(
-              email: email.trim(),
+            return LoginScreen(
               role: role,
-              onNext: (email, password, role) async {
-                final auth = AuthService();
-                final cleanEmail = email.trim();
-                final cleanPassword = password.trim();
-                
-                try {
-                  // 🌟 HARDCODED BYPASS CHECK
-                  if (cleanEmail == 'admin@kuyog.com' || cleanEmail == 'superadmin@kuyog.com') {
-                    if (cleanPassword == 'kuyog123') {
-                      if (context.mounted) {
-                        Provider.of<RoleProvider>(context, listen: false).setMockUser(cleanEmail);
-                        context.go('/home');
-                        return;
-                      }
-                    } else {
-                      throw const AuthException('Invalid login credentials', statusCode: '400');
-                    }
-                  }
-
-                  // 1. Attempt to Sign In (Standard Flow)
-                  await auth.signIn(email: cleanEmail, password: cleanPassword);
-                  
-                  // HYDRATE: Fetch profile immediately after login
-                  if (context.mounted) {
-                    await Provider.of<RoleProvider>(context, listen: false).initialize();
-                    context.go('/home');
-                  }
-                } on AuthException catch (e) {
-                  // 2. If user not found (and ONLY if not found), attempt to Sign Up
-                  // Note: Supabase sometimes returns 'Invalid login credentials' for both.
-                  // We'll assume if it's a 400 and we're in the unified flow, we can try signup
-                  // BUT we'll catch the 'User already exists' error from signup if it fails.
-                  if (e.message.contains('Invalid login credentials') || e.statusCode == '400') {
-                    try {
-                      await auth.signUp(
-                        email: cleanEmail, 
-                        password: cleanPassword, 
-                        name: cleanEmail.split('@')[0], 
-                        role: role
-                      );
-                      if (context.mounted) context.go('/auth/loading');
-                    } catch (signUpError) {
-                      String errorMsg = signUpError.toString();
-                      if (errorMsg.contains('already registered')) {
-                        errorMsg = 'Incorrect password for this account.';
-                      }
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(errorMsg))
-                        );
-                      }
-                    }
-                  } else {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error: ${e.message}'))
-                      );
-                    }
-                  }
-                }
-              },
             );
           },
         ),
@@ -197,9 +126,37 @@ final router = GoRouter(
           path: 'loading',
           builder: (context, state) => LoadingScreen(
             onComplete: () async {
-              // HYDRATE: Fetch the profile before going home
-              await Provider.of<RoleProvider>(context, listen: false).initialize();
-              if (context.mounted) context.go('/home');
+              final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+              await roleProvider.initialize();
+              
+              if (!context.mounted) return;
+
+              final user = roleProvider.currentUser;
+              if (user == null) {
+                context.go('/auth');
+                return;
+              }
+
+              // Check if onboarded
+              if (user.isOnboarded) {
+                context.go('/home');
+                return;
+              }
+
+              // Route to role-specific onboarding
+              switch (roleProvider.currentRole) {
+                case UserRole.tourist:
+                  context.go('/auth/country');
+                  break;
+                case UserRole.guide:
+                  context.go('/auth/guide-setup');
+                  break;
+                case UserRole.merchant:
+                  context.go('/auth/merchant-setup');
+                  break;
+                default:
+                  context.go('/home');
+              }
             },
           ),
         ),
@@ -251,6 +208,12 @@ final router = GoRouter(
             title: 'Tour Specialty',
             subtitle: 'Share your travel specialty, and we\'ll match you with interested tourists.',
             onContinue: () => context.go('/home'),
+          ),
+        ),
+        GoRoute(
+          path: 'merchant-setup',
+          builder: (context, state) => MerchantSetupScreen(
+            onNext: () => context.go('/home'),
           ),
         ),
       ],

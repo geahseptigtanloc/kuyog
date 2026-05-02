@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../app_theme.dart';
+import '../../data/services/onboarding_service.dart';
+import '../../providers/role_provider.dart';
 
 class CountrySelectionScreen extends StatefulWidget {
   final VoidCallback onNext;
@@ -14,6 +17,7 @@ class CountrySelectionScreen extends StatefulWidget {
 class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
   String? _selection = 'yes';
   String? _selectedCountry;
+  bool _isLoading = false;
 
   final List<String> _countries = [
     'United States',
@@ -27,6 +31,33 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
     'Indonesia',
     'Other',
   ];
+
+  Future<void> _handleConfirm() async {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final user = roleProvider.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final onboarding = OnboardingService();
+      final country = _selection == 'yes' ? 'Philippines' : (_selectedCountry ?? 'Other');
+      
+      await onboarding.saveTouristPreferences(
+        userId: user.id,
+        countryOfOrigin: country,
+      );
+      
+      widget.onNext();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving preferences: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,14 +117,16 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: widget.onNext,
-                  child: const Text('Confirm'),
+                  onPressed: _isLoading ? null : _handleConfirm,
+                  child: _isLoading 
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Text('Confirm'),
                 ),
               ),
               const SizedBox(height: 12),
               Center(
                 child: TextButton(
-                  onPressed: widget.onNext,
+                  onPressed: _isLoading ? null : widget.onNext,
                   child: Text(
                     'Maybe later',
                     style: GoogleFonts.nunito(
