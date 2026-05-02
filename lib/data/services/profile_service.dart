@@ -12,14 +12,38 @@ class ProfileService {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return null;
 
+    // Join with verification tables. Note: merchant_verifications links to merchant_profiles, not profiles.
     final response = await _client
         .from(_tableName)
-        .select()
+        .select('*, guide_verifications!guide_verifications_guide_id_fkey(status), merchant_profiles(merchant_verifications(status))')
         .eq('id', userId)
         .maybeSingle();
 
     if (response == null) return null;
-    return User.fromJson(response);
+
+    // Extract status from joins
+    String vStatus = 'pending';
+    
+    // guide_verifications is a 1-to-1 relationship, so it returns a Map, not a List
+    if (response['guide_verifications'] != null && response['guide_verifications'] is Map) {
+      vStatus = response['guide_verifications']['status'] ?? 'pending';
+    } else if (response['merchant_profiles'] != null && response['merchant_profiles'] is Map) {
+      final merchantProfile = response['merchant_profiles'];
+      if (merchantProfile['merchant_verifications'] != null && merchantProfile['merchant_verifications'] is Map) {
+        vStatus = merchantProfile['merchant_verifications']['status'] ?? 'pending';
+      } else if (merchantProfile['merchant_verifications'] != null && merchantProfile['merchant_verifications'] is List && (merchantProfile['merchant_verifications'] as List).isNotEmpty) {
+         vStatus = merchantProfile['merchant_verifications'][0]['status'] ?? 'pending';
+      }
+    } else if (response['guide_verifications'] != null && response['guide_verifications'] is List && (response['guide_verifications'] as List).isNotEmpty) {
+      // Just in case it ever returns a list
+      vStatus = response['guide_verifications'][0]['status'] ?? 'pending';
+    }
+
+    // Merge status into the map before creating User object
+    final userData = Map<String, dynamic>.from(response);
+    userData['verificationStatus'] = vStatus;
+    
+    return User.fromJson(userData);
   }
 
   /// Create or update a profile

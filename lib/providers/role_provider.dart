@@ -39,6 +39,14 @@ class RoleProvider extends ChangeNotifier {
     return UserRole.tourist;
   }
 
+  bool get needsVerificationBanner {
+    if (_currentUser == null) return false;
+    if (currentRole == UserRole.tourist || currentRole == UserRole.admin || currentRole == UserRole.superAdmin) return false;
+    
+    // Show banner if not approved yet
+    return _currentUser!.verificationStatus != 'approved' && _currentUser!.verificationStatus != 'pending';
+  }
+
   String get userName => _currentUser?.name ?? 'User';
 
   String get roleDisplayName {

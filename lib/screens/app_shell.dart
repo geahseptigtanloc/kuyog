@@ -76,12 +76,13 @@ class _AppShellState extends State<AppShell> {
           body: Column(
             children: [
               const OfflineBanner(),
+              if (roleProvider.needsVerificationBanner) 
+                const VerificationBanner(),
               Expanded(
                 child: IndexedStack(
                   index: safeIndex,
                   children: tabs,
                 ),
-                
               ),
             ],
           ),
@@ -260,6 +261,67 @@ class _AppShellState extends State<AppShell> {
           const SizedBox(width: 4),
           Text(label, style: AppTheme.label(size: 12, color: AppColors.primary)),
         ]),
+      ),
+    );
+  }
+}
+
+class VerificationBanner extends StatelessWidget {
+  const VerificationBanner({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final status = Provider.of<RoleProvider>(context).currentUser?.verificationStatus ?? 'pending';
+
+    Color bgColor;
+    IconData icon;
+    String text;
+
+    switch (status) {
+      case 'submitted':
+        bgColor = AppColors.touristBlue.withOpacity(0.95);
+        icon = Icons.hourglass_empty;
+        text = 'Your documents are currently under review by our team.';
+        break;
+      case 'draft':
+        bgColor = AppColors.accent.withOpacity(0.95);
+        icon = Icons.upload_file;
+        text = 'Resume your verification. Please finish uploading your documents.';
+        break;
+      case 'rejected':
+        bgColor = AppColors.error.withOpacity(0.95);
+        icon = Icons.error_outline;
+        text = 'Your verification was rejected. Please review and update your documents.';
+        break;
+      case 'pending':
+      default:
+        bgColor = AppColors.warning.withOpacity(0.95);
+        icon = Icons.info_outline;
+        text = 'Your account is incomplete. Please submit verification documents.';
+        break;
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      decoration: BoxDecoration(color: bgColor),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.7), size: 18),
+        ],
       ),
     );
   }

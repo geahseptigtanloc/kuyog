@@ -77,15 +77,30 @@ class OnboardingService {
   /// Submit guide verification status with document URLs
   Future<void> submitGuideVerification({
     required String userId,
+    String status = 'submitted',
     String? cvUrl,
     String? idFrontUrl,
+    String? idBackUrl,
+    String? selfieUrl,
+    String? dotCertUrl,
+    String? barangayClearanceUrl,
+    String? birthCertUrl,
+    String? nbiClearanceUrl,
+    String? applicationFormUrl,
     List<String>? portfolioUrls,
   }) async {
     final data = {
       'guide_id': userId,
-      'status': 'submitted',
+      'status': status,
       if (cvUrl != null) 'cv_url': cvUrl,
       if (idFrontUrl != null) 'id_front_url': idFrontUrl,
+      if (idBackUrl != null) 'id_back_url': idBackUrl,
+      if (selfieUrl != null) 'selfie_url': selfieUrl,
+      if (dotCertUrl != null) 'dot_cert_url': dotCertUrl,
+      if (barangayClearanceUrl != null) 'barangay_clearance_url': barangayClearanceUrl,
+      if (birthCertUrl != null) 'birth_cert_url': birthCertUrl,
+      if (nbiClearanceUrl != null) 'nbi_clearance_url': nbiClearanceUrl,
+      if (applicationFormUrl != null) 'application_form_url': applicationFormUrl,
       if (portfolioUrls != null) 'portfolio_urls': portfolioUrls,
       'submitted_at': DateTime.now().toIso8601String(),
     };
@@ -110,10 +125,38 @@ class OnboardingService {
     await _client.from('merchant_profiles').upsert(data, onConflict: 'profile_id');
   }
 
+  /// Submit merchant verification status
+  Future<void> submitMerchantVerification({
+    required String userId,
+    String status = 'submitted',
+    String? permitUrl,
+    String? lguEndorsementUrl,
+    String? dotAccreditationUrl,
+  }) async {
+    final data = {
+      'merchant_id': userId,
+      'status': status,
+      if (permitUrl != null) 'permit_url': permitUrl,
+      if (lguEndorsementUrl != null) 'lgu_endorsement_url': lguEndorsementUrl,
+      if (dotAccreditationUrl != null) 'dot_accreditation_url': dotAccreditationUrl,
+      'submitted_at': DateTime.now().toIso8601String(),
+    };
+
+    await _client.from('merchant_verifications').upsert(data, onConflict: 'merchant_id');
+  }
+
   /// Mark user as onboarded
   Future<void> markOnboarded(String userId) async {
     await _client.from('profiles').update({
       'is_onboarded': true,
     }).eq('id', userId);
+  }
+
+  /// Fetch existing verification documents
+  Future<Map<String, dynamic>?> getVerificationDocs(String userId, String role) async {
+    final table = role == 'merchant' ? 'merchant_verifications' : 'guide_verifications';
+    final idField = role == 'merchant' ? 'merchant_id' : 'guide_id';
+    
+    return await _client.from(table).select().eq(idField, userId).maybeSingle();
   }
 }
