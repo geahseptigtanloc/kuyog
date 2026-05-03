@@ -32,7 +32,7 @@ class GuideProfileTab extends StatelessWidget {
             Text('Juan dela Cruz', style: AppTheme.headline(size: 22)),
             const SizedBox(height: 4),
             Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.verified.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified))),
+              child: Text('Verified Kuyog Guide', style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.verified))),
             const SizedBox(height: 16),
             Row(children: [
               _statCard('150+', 'Trips'),

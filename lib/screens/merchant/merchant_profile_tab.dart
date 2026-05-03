@@ -28,7 +28,7 @@ class MerchantProfileTab extends StatelessWidget {
             Text('T\'boli Weaves Co.', style: AppTheme.headline(size: 22)),
             const SizedBox(height: 4),
             Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('Verified Merchant', style: AppTheme.label(size: 12, color: AppColors.merchantAmber))),
+              child: Text('Verified Merchant', style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.merchantAmber))),
             const SizedBox(height: 24),
             _menuItem(Icons.edit, 'Edit Store Profile', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
             _menuItem(Icons.access_time, 'Operating Hours', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantOperatingHoursScreen()))),

@@ -51,7 +51,7 @@ class TouristProfileTab extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text(roleProvider.roleDisplayName, style: AppTheme.label(size: 12, color: AppColors.touristBlue)),
+              child: Text(roleProvider.roleDisplayName, style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.touristBlue)),
             ),
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [

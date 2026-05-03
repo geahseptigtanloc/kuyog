@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../widgets/kuyog_logo.dart';
@@ -21,17 +22,46 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscure = true;
   bool _isLoading = false;
+  String? _emailError;
+  String? _passwordError;
+  String? _generalError;
+
+  String _getFriendlyErrorMessage(Object e) {
+    if (e is AuthException) {
+      final msg = e.message.toLowerCase();
+      if (msg.contains('invalid login credentials')) return 'Invalid email or password. Please try again.';
+      if (msg.contains('email not confirmed')) return 'Please verify your email address before logging in.';
+      if (msg.contains('too many requests')) return 'Too many attempts. Please try again later.';
+      return e.message;
+    }
+    return 'An unexpected error occurred. Please check your connection.';
+  }
 
   void _logIn() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
-      );
-      return;
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+      _generalError = null;
+    });
+
+    bool hasError = false;
+    if (email.isEmpty) {
+      setState(() => _emailError = 'Email is required');
+      hasError = true;
+    } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+      setState(() => _emailError = 'Please enter a valid email address');
+      hasError = true;
     }
+
+    if (password.isEmpty) {
+      setState(() => _passwordError = 'Password is required');
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     setState(() => _isLoading = true);
 
@@ -48,8 +78,18 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       if (context.mounted) {
+        setState(() => _generalError = _getFriendlyErrorMessage(e));
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+            content: Row(children: [
+              const Icon(Icons.error_outline, color: Colors.white),
+              const SizedBox(width: 12),
+              Expanded(child: Text(_generalError!)),
+            ]),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+          ),
         );
       }
     } finally {
@@ -107,9 +147,11 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                onChanged: (_) => setState(() => _emailError = null),
+                decoration: InputDecoration(
                   hintText: 'Enter your email',
-                  prefixIcon: Icon(
+                  errorText: _emailError,
+                  prefixIcon: const Icon(
                     Icons.email_outlined,
                     color: AppColors.textLight,
                   ),
@@ -120,8 +162,10 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _passwordController,
                 obscureText: _obscure,
+                onChanged: (_) => setState(() => _passwordError = null),
                 decoration: InputDecoration(
                   hintText: 'Password',
+                  errorText: _passwordError,
                   prefixIcon: const Icon(
                     Icons.lock_outline,
                     color: AppColors.textLight,
