@@ -97,7 +97,7 @@ class GuideCard extends StatelessWidget {
                       const SizedBox(width: 2),
                       Text('${guide.rating}', style: AppTheme.label(size: 11, color: Colors.white)),
                       const SizedBox(width: 4),
-                      Text('${guide.tripCount} trips', style: AppTheme.body(size: 10, color: Colors.white60)),
+                      Expanded(child: Text('${guide.tripCount} trips', style: AppTheme.body(size: 10, color: Colors.white60), maxLines: 1, overflow: TextOverflow.ellipsis)),
                     ],
                   ),
                 ],

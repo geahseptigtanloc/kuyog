@@ -15,7 +15,9 @@ import '../travel/group_setup_screen.dart';
 import '../travel/ai_matching_screen.dart';
 
 class TouristItineraryHubScreen extends StatefulWidget {
-  const TouristItineraryHubScreen({super.key});
+  final VoidCallback? onBack;
+  final VoidCallback? onFindGuide;
+  const TouristItineraryHubScreen({super.key, this.onBack, this.onFindGuide});
   @override
   State<TouristItineraryHubScreen> createState() => _TouristItineraryHubScreenState();
 }
@@ -29,6 +31,12 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
       backgroundColor: AppColors.background,
       appBar: KuyogAppBar(
         title: 'My Itineraries',
+        leading: widget.onBack != null 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+              onPressed: widget.onBack,
+            )
+          : null,
         extraAction: IconButton(
           icon: const Icon(Icons.filter_list, color: AppColors.primary),
           onPressed: () {},
@@ -81,7 +89,11 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
                     }),
                     const SizedBox(width: 8),
                     _quickAction(Icons.handshake, 'Co-Create\nwith Guide', AppColors.primaryDark, () {
-                      _startTravelFlow(context, 'cocreate');
+                      if (widget.onFindGuide != null) {
+                        widget.onFindGuide!();
+                      } else {
+                        _startTravelFlow(context, 'cocreate');
+                      }
                     }),
                   ]),
                 ),
@@ -161,7 +173,7 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => TravelTypeScreen(
-          onContinue: () {
+          onContinue: (travelType, guideType) {
             final provider = context.read<TravelProvider>();
             if (provider.travelType == 'group') {
               Navigator.push(context, MaterialPageRoute(
@@ -276,17 +288,20 @@ class _TouristItineraryHubScreenState extends State<TouristItineraryHubScreen> {
                 ]),
               ],
               const SizedBox(height: 4),
-              Row(children: [
-                const Icon(Icons.place, size: 12, color: AppColors.textLight),
-                Text(' ${itin.stopsCount} stops', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                const SizedBox(width: 8),
-                const Icon(Icons.calendar_today, size: 12, color: AppColors.textLight),
-                Text(' ${itin.dateRange.isNotEmpty ? itin.dateRange : '${itin.durationDays}d'}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                if (itin.estimatedCost > 0) ...[
-                  const SizedBox(width: 8),
-                  const Icon(Icons.payments, size: 12, color: AppColors.textLight),
-                  Text(' ₱${itin.estimatedCost.toStringAsFixed(0)}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                ],
+              Wrap(spacing: 8, runSpacing: 4, children: [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.place, size: 12, color: AppColors.textLight),
+                  Text(' ${itin.stopsCount} stops', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                ]),
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.calendar_today, size: 12, color: AppColors.textLight),
+                  Text(' ${itin.dateRange.isNotEmpty ? itin.dateRange : '${itin.durationDays}d'}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                ]),
+                if (itin.estimatedCost > 0)
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.payments, size: 12, color: AppColors.textLight),
+                    Text(' ₱${itin.estimatedCost.toStringAsFixed(0)}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                  ]),
               ]),
               const SizedBox(height: 4),
               Row(children: [

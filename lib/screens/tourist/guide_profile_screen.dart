@@ -11,6 +11,9 @@ import '../../../providers/travel_provider.dart';
 import '../shared/travel/travel_type_screen.dart';
 import '../shared/travel/group_setup_screen.dart';
 import '../shared/travel/ai_matching_screen.dart';
+import '../shared/itinerary/itinerary_create_screen.dart';
+import '../shared/itinerary/itinerary_browse_screen.dart';
+import '../shared/itinerary/itinerary_detail_screen.dart';
 
 class GuideProfileScreen extends StatelessWidget {
   final Guide guide;
@@ -250,7 +253,9 @@ class GuideProfileScreen extends StatelessWidget {
                         Row(children: [
                           const Icon(Icons.check_circle, size: 16, color: AppColors.primary),
                           const SizedBox(width: 6),
-                          Text('These rates have been reviewed and approved by Kuyog admin.', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+                          Expanded(
+                            child: Text('These rates have been reviewed and approved by Kuyog admin.', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+                          ),
                         ]),
                         const SizedBox(height: 12),
                         _priceRow('Half Day Tour', guide.priceRange == '\u20B1' ? '\u20B1500-800' : guide.priceRange == '\u20B1\u20B1' ? '\u20B11,000-1,500' : '\u20B11,500-2,500'),
@@ -295,12 +300,124 @@ class GuideProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ],
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 32),
+                  
+                  // Plan Your Trip Section
+                  _buildPlanYourTripSection(context),
+                  
+                  const SizedBox(height: 100), // Space for sticky buttons
                 ],
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPlanYourTripSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Plan Your Trip with ${guide.name.split(' ')[0]}', style: AppTheme.headline(size: 18)),
+        const SizedBox(height: 16),
+        _buildPlanCard(
+          context,
+          icon: Icons.edit_note,
+          title: 'Create My Own',
+          description: 'Build your itinerary yourself. This guide will be assigned to your trip.',
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => ItineraryCreateScreen(preAssignedGuide: guide),
+            ));
+          },
+        ),
+        const SizedBox(height: 12),
+        _buildPlanCard(
+          context,
+          icon: Icons.map_outlined,
+          title: 'Browse Itineraries',
+          description: 'Explore community itineraries and use one as your starting point.',
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => ItineraryBrowseScreen(preAssignedGuide: guide),
+            ));
+          },
+        ),
+        const SizedBox(height: 12),
+        _buildPlanCard(
+          context,
+          icon: Icons.handshake_outlined,
+          title: 'Co-Create with Guide',
+          description: 'Collaborate directly with ${guide.name.split(' ')[0]} to build your perfect Mindanao trip together.',
+          onTap: () {
+            // Tapping sends a co-create proposal to the guide and opens collaborative Detail screen
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Co-creation request sent to ${guide.name}!'), backgroundColor: AppColors.primary),
+            );
+            Navigator.push(context, MaterialPageRoute(
+              builder: (_) => ItineraryDetailScreen(
+                itineraryId: 'draft_${guide.id}', 
+                isDraft: true,
+                isCollaborative: true,
+                preAssignedGuide: guide,
+              ),
+            ));
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPlanCard(BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String description,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+          border: const Border(
+            left: BorderSide(color: AppColors.primary, width: 4),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: AppColors.primary, size: 20),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: GoogleFonts.baloo2(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                  const SizedBox(height: 2),
+                  Text(description, style: GoogleFonts.nunito(fontSize: 13, color: AppColors.textSecondary)),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: AppColors.divider),
+          ],
+        ),
       ),
     );
   }
@@ -389,7 +506,7 @@ class GuideProfileScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (_) => TravelTypeScreen(
-          onContinue: () {
+          onContinue: (travelType, guideType) {
             final provider = context.read<TravelProvider>();
             provider.selectGuide(guide.id);
             if (provider.travelType == 'group') {

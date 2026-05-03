@@ -261,7 +261,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 Row(children: [
                   const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textLight),
                   const SizedBox(width: 2),
-                  Text(guide.city, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+                  Expanded(child: Text(guide.city, style: AppTheme.body(size: 13, color: AppColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis)),
                 ]),
               ])),
               if (guide.dotAccredited)
@@ -283,15 +283,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 ]),
               )).toList()),
             ],
-            // Story excerpt
-            if (guide.storyExcerpt.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              Text(
-                '"${guide.storyExcerpt}"',
-                style: AppTheme.body(size: 13, color: AppColors.textSecondary).copyWith(fontStyle: FontStyle.italic),
-                maxLines: 2, overflow: TextOverflow.ellipsis,
-              ),
-            ],
+            const SizedBox(height: 12),
             const SizedBox(height: 12),
             // Rating + price row
             Row(children: [
@@ -299,24 +291,10 @@ class _ExploreTabState extends State<ExploreTab> {
               const SizedBox(width: 2),
               Text('${guide.rating}', style: AppTheme.label(size: 14)),
               const SizedBox(width: 4),
-              Text('(${guide.tripCount} trips)', style: AppTheme.body(size: 12, color: AppColors.textLight)),
-              const Spacer(),
+              Expanded(child: Text('(${guide.tripCount} trips)', style: AppTheme.body(size: 12, color: AppColors.textLight), maxLines: 1, overflow: TextOverflow.ellipsis)),
+              const SizedBox(width: 8),
               Text(guide.priceRange, style: AppTheme.label(size: 16, color: AppColors.primary)),
             ]),
-            const SizedBox(height: 4),
-            Text('Speaks: ${guide.languages.join(", ")}', style: AppTheme.body(size: 12, color: AppColors.textLight)),
-            // Payment methods
-            if (guide.acceptedPayments.isNotEmpty) ...[
-              const SizedBox(height: 10),
-              Wrap(spacing: 6, runSpacing: 6, children: guide.acceptedPayments.take(3).map((p) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: _paymentColor(p).withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                ),
-                child: Text(p, style: AppTheme.body(size: 11, color: _paymentColor(p))),
-              )).toList()),
-            ],
             // Action buttons
             const SizedBox(height: 16),
             Row(children: [
@@ -400,9 +378,9 @@ class _ExploreTabState extends State<ExploreTab> {
           Expanded(child: Padding(
             padding: const EdgeInsets.all(14),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(d.name, style: AppTheme.label(size: 15)),
+              Text(d.name, style: AppTheme.label(size: 15), maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 2),
-              Text(d.province, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+              Text(d.province, style: AppTheme.body(size: 13, color: AppColors.textSecondary), maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 8),
               Row(children: [
                 Container(
@@ -423,8 +401,8 @@ class _ExploreTabState extends State<ExploreTab> {
                 const Icon(Icons.star_rounded, size: 14, color: AppColors.warning),
                 const SizedBox(width: 2),
                 Text('${d.rating}', style: AppTheme.label(size: 13)),
-                const Spacer(),
-                Text(d.region, style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                const SizedBox(width: 8),
+                Expanded(child: Text(d.region, style: AppTheme.body(size: 11, color: AppColors.textLight), textAlign: TextAlign.right, maxLines: 1, overflow: TextOverflow.ellipsis)),
               ]),
             ]),
           )),
@@ -497,62 +475,72 @@ class _ExploreTabState extends State<ExploreTab> {
 
   Widget _operatorCard(String name, String location, int guides, double rating, int reviews, List<String> specialties, String logoUrl) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         boxShadow: AppShadows.card,
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          CircleAvatar(radius: 24, backgroundImage: CachedNetworkImageProvider(logoUrl)),
-          const SizedBox(width: 14),
+          CircleAvatar(radius: 28, backgroundImage: CachedNetworkImageProvider(logoUrl)),
+          const SizedBox(width: 16),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name, style: AppTheme.label(size: 15)),
-            const SizedBox(height: 2),
+            Text(name, style: AppTheme.headline(size: 16)),
+            const SizedBox(height: 4),
             Row(children: [
               const Icon(Icons.location_on_outlined, size: 14, color: AppColors.textLight),
-              const SizedBox(width: 2),
-              Text(location, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+              const SizedBox(width: 4),
+              Expanded(child: Text(location, style: AppTheme.body(size: 13, color: AppColors.textSecondary))),
             ]),
           ])),
         ]),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Row(children: [
           const VerifiedContentBadge(type: BadgeType.dotAccredited, fontSize: 10, compact: true),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
           const VerifiedContentBadge(type: BadgeType.businessPermit, fontSize: 10, compact: true),
         ]),
-        const SizedBox(height: 12),
-        Wrap(spacing: 6, runSpacing: 6, children: specialties.map((s) => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        const SizedBox(height: 16),
+        Wrap(spacing: 8, runSpacing: 8, children: specialties.map((s) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.accent.withValues(alpha: 0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(AppRadius.pill),
           ),
-          child: Text(s, style: AppTheme.body(size: 12, color: AppColors.accent)),
+          child: Text(s, style: AppTheme.body(size: 12, color: AppColors.primary, weight: FontWeight.w600)),
         )).toList()),
-        const SizedBox(height: 12),
-        Row(children: [
-          const Icon(Icons.people_outline, size: 16, color: AppColors.textSecondary),
-          const SizedBox(width: 4),
-          Text('$guides guides', style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
-          const SizedBox(width: 16),
-          const Icon(Icons.star_rounded, size: 16, color: AppColors.warning),
-          const SizedBox(width: 2),
-          Text('$rating ($reviews)', style: AppTheme.label(size: 13)),
-          const Spacer(),
-          OutlinedButton(
-            onPressed: () {},
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.people_outline, size: 18, color: AppColors.textSecondary),
+              const SizedBox(width: 6),
+              Text('$guides guides', style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+              const SizedBox(width: 16),
+              const Icon(Icons.star_rounded, size: 18, color: AppColors.warning),
+              const SizedBox(width: 4),
+              Text('$rating', style: AppTheme.label(size: 14)),
+              Text(' ($reviews)', style: AppTheme.body(size: 12, color: AppColors.textLight)),
+            ]),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: AppColors.primary,
+                elevation: 0,
+                side: const BorderSide(color: AppColors.primary, width: 1.2),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.pill)),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Text('View Packages', style: AppTheme.label(size: 12, color: AppColors.primary)),
             ),
-            child: Text('View Packages', style: AppTheme.label(size: 12, color: AppColors.primary)),
-          ),
-        ]),
+          ],
+        ),
       ]),
     );
   }
@@ -598,7 +586,7 @@ class _ExploreTabState extends State<ExploreTab> {
       context,
       MaterialPageRoute(
         builder: (_) => TravelTypeScreen(
-          onContinue: () {
+          onContinue: (travelType, guideType) {
             final provider = context.read<TravelProvider>();
             provider.selectGuide(guideId);
             if (provider.travelType == 'group') {

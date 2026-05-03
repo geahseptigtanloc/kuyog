@@ -8,9 +8,10 @@ import '../../../widgets/kuyog_back_button.dart';
 import 'ai_matching_screen.dart';
 
 class GroupSetupScreen extends StatefulWidget {
-  final VoidCallback onContinue;
+  final VoidCallback? onBack;
+  final VoidCallback? onContinue;
 
-  const GroupSetupScreen({super.key, required this.onContinue});
+  const GroupSetupScreen({super.key, this.onBack, this.onContinue});
 
   @override
   State<GroupSetupScreen> createState() => _GroupSetupScreenState();
@@ -44,7 +45,14 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
     if (_groupNameCtrl.text.isNotEmpty) {
       context.read<TravelProvider>().setGroupName(_groupNameCtrl.text);
     }
-    widget.onContinue();
+    if (widget.onContinue != null) {
+      widget.onContinue!();
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AIMatchingScreen()),
+      );
+    }
   }
 
   @override
@@ -90,7 +98,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
       padding: const EdgeInsets.fromLTRB(12, 12, 20, 0),
       child: Row(
         children: [
-          KuyogBackButton(onTap: () => Navigator.pop(context)),
+          KuyogBackButton(onTap: widget.onBack ?? () => Navigator.pop(context)),
           const SizedBox(width: 12),
           Text('Set Up Your Group', style: AppTheme.headline(size: 20)),
         ],
@@ -161,7 +169,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
               children: [
                 Row(
                   children: [
-                    Text('Maria Santos', style: AppTheme.label(size: 16)),
+                    Expanded(child: Text('Maria Santos', style: AppTheme.label(size: 16))),
                     const SizedBox(width: 8),
                     const Icon(Icons.verified, size: 16, color: AppColors.verified),
                   ],
@@ -275,7 +283,9 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
                 ),
                 Text(member.email, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
                 const SizedBox(height: 8),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -285,7 +295,6 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
                       ),
                       child: Text(member.role, style: AppTheme.label(size: 10, color: AppColors.textSecondary)),
                     ),
-                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(

@@ -7,7 +7,8 @@ import '../../../models/miles_activity.dart';
 import '../../../widgets/kuyog_back_button.dart';
 
 class MilesDashboardScreen extends StatefulWidget {
-  const MilesDashboardScreen({super.key});
+  final VoidCallback? onBack;
+  const MilesDashboardScreen({super.key, this.onBack});
   @override
   State<MilesDashboardScreen> createState() => _MilesDashboardScreenState();
 }
@@ -40,7 +41,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
             // Back button
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-              child: KuyogBackButton(onTap: () => Navigator.pop(context)),
+              child: KuyogBackButton(onTap: widget.onBack ?? () => Navigator.pop(context)),
             ),
             // Hero Card
             Container(

@@ -20,8 +20,12 @@ import '../features/cultural/cultural_guide_screen.dart';
 import '../features/miles/miles_dashboard_screen.dart';
 import '../shared/chat/chat_list_screen.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../providers/navigation_provider.dart';
+import '../../widgets/kuyog_back_button.dart';
 import 'search_screen.dart';
 import 'guide_profile_screen.dart';
+
+enum HomeSubPage { main, crawl, miles }
 
 class TouristHomeTab extends StatefulWidget {
   const TouristHomeTab({super.key});
@@ -33,6 +37,19 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
   List<Guide> _guides = [];
   List<Destination> _destinations = [];
   bool _loading = true;
+  List<HomeSubPage> _subPageStack = [HomeSubPage.main];
+
+  HomeSubPage get _currentSubPage => _subPageStack.last;
+
+  void _pushSubPage(HomeSubPage page) {
+    setState(() => _subPageStack.add(page));
+  }
+
+  void _popSubPage() {
+    if (_subPageStack.length > 1) {
+      setState(() => _subPageStack.removeLast());
+    }
+  }
 
   @override
   void initState() {
@@ -51,76 +68,91 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
     final role = context.watch<RoleProvider>();
     final crawl = context.watch<CrawlProvider>();
     final miles = context.watch<MilesProvider>();
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: KuyogAppBar(title: role.greeting),
-      body: SafeArea(
-        child: _loading
-            ? const DurieLoading()
-            : SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    _buildHero(),
-                    const SizedBox(height: 24),
-                    _padded(Text('What would you like to do?', style: AppTheme.headline(size: 18))),
-                    const SizedBox(height: 12),
-                    _padded(_buildQuickActions()),
-                    const SizedBox(height: 24),
-                    _buildMilesCard(miles),
-                    const SizedBox(height: 24),
-                    _buildCtaCard(),
-                    const SizedBox(height: 28),
-                    _sectionHeader('Featured Tour Guides', 'See All'),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 210,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.only(left: 20),
-                        itemCount: _guides.length,
-                        itemBuilder: (c, i) => Padding(
-                          padding: const EdgeInsets.only(right: 12),
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(context, MaterialPageRoute(
-                              builder: (_) => GuideProfileScreen(guide: _guides[i]),
-                            )),
-                            child: GuideCard(guide: _guides[i]),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    _sectionHeader('Explore Mindanao', 'See All'),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: 180,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.only(left: 20),
-                        itemCount: _destinations.length,
-                        itemBuilder: (c, i) => DestinationCard(destination: _destinations[i]),
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    _buildCrawlBanner(crawl),
-                    const SizedBox(height: 100),
-                  ],
-                ),
-              ),
-      ),
+
+    return PopScope(
+      canPop: _subPageStack.length <= 1,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _subPageStack.length > 1) {
+          _popSubPage();
+        }
+      },
+      child: _buildCurrentPage(role, crawl, miles),
     );
   }
 
+  Widget _buildCurrentPage(RoleProvider role, CrawlProvider crawl, MilesProvider miles) {
+    switch (_currentSubPage) {
+      case HomeSubPage.crawl:
+        return CrawlHomeScreen(onBack: _popSubPage);
+      case HomeSubPage.miles:
+        return MilesDashboardScreen(onBack: _popSubPage);
+      case HomeSubPage.main:
+      default:
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: KuyogAppBar(title: role.greeting),
+          body: SafeArea(
+            child: _loading
+                ? const DurieLoading()
+                : SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
+                        _buildHero(),
+                        const SizedBox(height: 24),
+                        _padded(Text('What would you like to do?', style: AppTheme.headline(size: 18))),
+                        const SizedBox(height: 12),
+                        _padded(_buildQuickActions()),
+                        const SizedBox(height: 28),
+                        _buildTravelCard(),
+                        const SizedBox(height: 28),
+                        _buildMindanaoCrawlSection(crawl, miles),
+                        const SizedBox(height: 28),
+                        _sectionHeader('Featured Tour Guides', 'See All'),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 210,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.only(left: 20),
+                            itemCount: _guides.length,
+                            itemBuilder: (c, i) => Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: GestureDetector(
+                                onTap: () => Navigator.push(context, MaterialPageRoute(
+                                  builder: (_) => GuideProfileScreen(guide: _guides[i]),
+                                )),
+                                child: GuideCard(guide: _guides[i]),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        _sectionHeader('Explore Mindanao', 'See All'),
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          height: 280,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.only(left: 20),
+                            itemCount: _destinations.length,
+                            itemBuilder: (c, i) => DestinationCard(destination: _destinations[i]),
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                      ],
+                    ),
+                  ),
+          ),
+        );
+    }
+  }
+
   Widget _padded(Widget child) => Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: child);
-
-
-
-
 
   Widget _buildHero() {
     return Padding(
@@ -134,13 +166,13 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
             errorWidget: (c, u, e) => Container(height: 190, decoration: BoxDecoration(gradient: LinearGradient(colors: [AppColors.primary, AppColors.primaryLight]))),
           ),
           Positioned.fill(child: Container(
-            decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withValues(alpha: 0.5)])),
+            decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.5)])),
           )),
           Positioned(top: 16, left: 16, right: 16, child: GestureDetector(
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.95), borderRadius: BorderRadius.circular(AppRadius.pill)),
+              decoration: BoxDecoration(color: Colors.white.withOpacity(0.95), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Row(children: [
                 const Icon(Icons.search, color: AppColors.textLight, size: 20),
                 const SizedBox(width: 10),
@@ -170,7 +202,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
       children: items.map((a) => GestureDetector(
         onTap: () => _handleQuickAction(a.$1),
         child: Column(children: [
-          Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: a.$3.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
+          Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: a.$3.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
             child: Icon(a.$2, color: a.$3, size: 24)),
           const SizedBox(height: 6),
           Text(a.$1, style: AppTheme.label(size: 10), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -241,7 +273,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
               child: Row(children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
                   child: Icon(item.$2, size: 22, color: AppColors.primary),
                 ),
                 const SizedBox(width: 12),
@@ -259,61 +291,74 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
   }
 
   Widget _buildMilesCard(MilesProvider miles) {
+    return GestureDetector(
+      onTap: () => _pushSubPage(HomeSubPage.miles),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary, AppColors.primaryLight]),
+          borderRadius: BorderRadius.circular(AppRadius.xxl),
+        ),
+        child: Row(children: [
+          const DurieMascot(size: 50),
+          const SizedBox(width: 16),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('${miles.balance}', style: AppTheme.headline(size: 32, color: Colors.white)),
+            Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white.withOpacity(0.85))),
+            const SizedBox(height: 4),
+            Text('Redeem rewards  \u2192', style: AppTheme.body(size: 12, color: Colors.white.withOpacity(0.7))),
+          ])),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildTravelCard() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MilesDashboardScreen())),
+        onTap: () {
+          context.read<NavigationProvider>().setIndex(3);
+        },
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary, AppColors.primaryLight]),
+            gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary]),
             borderRadius: BorderRadius.circular(AppRadius.xxl),
+            boxShadow: [
+              BoxShadow(color: AppColors.primary.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
+            ],
           ),
           child: Row(children: [
-            const DurieMascot(size: 50),
-            const SizedBox(width: 16),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('${miles.balance}', style: AppTheme.headline(size: 32, color: Colors.white)),
-              Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white.withValues(alpha: 0.85))),
+              Text('Travel', style: AppTheme.headline(size: 20, color: Colors.white)),
               const SizedBox(height: 4),
-              Text('Redeem rewards  \u2192', style: AppTheme.body(size: 12, color: Colors.white.withValues(alpha: 0.7))),
+              Text('Plan your perfect Mindanao adventure. Choose your guide, matching style, and create lasting memories.', style: AppTheme.body(size: 12, color: Colors.white.withOpacity(0.8))),
+              const SizedBox(height: 14),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(AppRadius.pill)),
+                child: const Text('Go to Travel', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+              ),
             ])),
+            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), shape: BoxShape.circle),
+              child: const Icon(Icons.explore_rounded, size: 40, color: Colors.white)),
           ]),
         ),
       ),
     );
   }
 
-  Widget _buildCtaCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        onTap: () {
-          // Switch to itinerary tab (index 3 for tourist)
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Navigating to Itinerary tab...', style: AppTheme.body(size: 14, color: Colors.white)), backgroundColor: AppColors.primary, duration: const Duration(seconds: 1)),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary]), borderRadius: BorderRadius.circular(AppRadius.xxl)),
-          child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Create Itinerary', style: AppTheme.headline(size: 20, color: Colors.white)),
-              const SizedBox(height: 4),
-              Text('Co-create customized itineraries with your guide!', style: AppTheme.body(size: 12, color: Colors.white70)),
-              const SizedBox(height: 14),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text('Start Creating', style: AppTheme.label(size: 13, color: Colors.white)),
-              ),
-            ])),
-            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
-              child: const Icon(Icons.map_rounded, size: 40, color: Colors.white70)),
-          ]),
-        ),
-      ),
+  Widget _buildMindanaoCrawlSection(CrawlProvider crawl, MilesProvider miles) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader('Mindanao Crawl', 'Details'),
+        const SizedBox(height: 12),
+        _buildCrawlBanner(crawl),
+        const SizedBox(height: 16),
+        _padded(_buildMilesCard(miles)),
+      ],
     );
   }
 
@@ -321,27 +366,54 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
-        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CrawlHomeScreen())),
+        onTap: () => _pushSubPage(HomeSubPage.crawl),
         child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(gradient: LinearGradient(colors: [AppColors.accent, AppColors.accentLight]), borderRadius: BorderRadius.circular(AppRadius.xxl)),
-          child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Mindanao Crawl', style: AppTheme.headline(size: 18, color: Colors.white)),
-              const SizedBox(height: 4),
-              Text('Collect stamps, win rewards!', style: AppTheme.body(size: 12, color: Colors.white70)),
-              const SizedBox(height: 8),
-              Text('${crawl.stampCount}/8 stamps', style: AppTheme.label(size: 14, color: Colors.white)),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text('Join the Crawl', style: AppTheme.label(size: 12, color: AppColors.accent)),
+          width: double.infinity,
+          height: 140,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppRadius.xxl),
+            image: const DecorationImage(
+              image: CachedNetworkImageProvider('https://picsum.photos/seed/crawl/600/300'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.xxl),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
               ),
-            ])),
-            Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), shape: BoxShape.circle),
-              child: const Icon(Icons.emoji_events, size: 36, color: Colors.white)),
-          ]),
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Mindanao Crawl', style: AppTheme.headline(size: 18, color: Colors.white)),
+                      const SizedBox(height: 4),
+                      Text('${crawl.stampCount}/8 stamps', style: AppTheme.label(size: 14, color: Colors.white)),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
+                        child: Text('Join the Crawl', style: AppTheme.label(size: 12, color: AppColors.accent)),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
+                  child: const Icon(Icons.emoji_events, size: 32, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

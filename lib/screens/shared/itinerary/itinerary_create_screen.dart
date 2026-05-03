@@ -4,7 +4,8 @@ import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_mascot.dart';
 
 class ItineraryCreateScreen extends StatefulWidget {
-  const ItineraryCreateScreen({super.key});
+  final dynamic preAssignedGuide;
+  const ItineraryCreateScreen({super.key, this.preAssignedGuide});
   @override
   State<ItineraryCreateScreen> createState() => _ItineraryCreateScreenState();
 }
@@ -18,6 +19,14 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
 
   final _guideOptions = ['Rico Magbanua', 'Amina Lidasan', 'Ben Tiumalu'];
   final _destOptions = ['Mt. Apo', 'Samal Island', 'Enchanted River', 'Lake Sebu', 'Tinuy-an Falls', 'Siargao'];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.preAssignedGuide != null) {
+      _selectedGuide = widget.preAssignedGuide.name;
+    }
+  }
 
   @override
   void dispose() { _nameCtrl.dispose(); super.dispose(); }
@@ -68,7 +77,11 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
   Widget _buildStep() {
     switch (_step) {
       case 0: return _stepNameDates();
-      case 1: return _stepChooseGuide();
+      case 1: 
+        if (widget.preAssignedGuide != null) {
+          return _stepPreAssignedGuide();
+        }
+        return _stepChooseGuide();
       case 2: return _stepAddDests();
       case 3: return _stepReview();
       default: return const SizedBox();
@@ -109,6 +122,44 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
   }
 
   String _fmt(DateTime d) => '${d.month}/${d.day}/${d.year}';
+
+  Widget _stepPreAssignedGuide() {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Guide Selected', style: AppTheme.headline(size: 18)),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              border: Border.all(color: AppColors.primary),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.preAssignedGuide.name, style: AppTheme.label(size: 16)),
+                      Text('Assigned to your trip', style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text('Click "Next" to continue adding destinations.', style: AppTheme.body(size: 14)),
+        ],
+      ),
+    );
+  }
 
   Widget _stepChooseGuide() {
     return ListView(padding: const EdgeInsets.all(20), children: [

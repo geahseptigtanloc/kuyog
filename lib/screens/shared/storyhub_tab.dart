@@ -8,25 +8,53 @@ import '../../widgets/kuyog_app_bar.dart';
 import 'story_detail_screen.dart';
 
 class StoryhubTab extends StatefulWidget {
-  const StoryhubTab({super.key});
+  final String? tagFilter;
+  const StoryhubTab({super.key, this.tagFilter});
   @override
   State<StoryhubTab> createState() => _StoryhubTabState();
 }
 
 class _StoryhubTabState extends State<StoryhubTab> {
   int _selectedTab = 0;
-  final _tabs = ['TOP', 'HOT', 'NEW'];
+  final _tabs = ['Top', 'Hot', 'New'];
+  String? _activeTag;
+
+  @override
+  void initState() {
+    super.initState();
+    _activeTag = widget.tagFilter;
+  }
 
   @override
   Widget build(BuildContext context) {
     final storyProvider = context.watch<StoryProvider>();
-    final posts = storyProvider.posts;
+    final posts = _activeTag != null 
+        ? storyProvider.posts.where((p) => p.hashtags.contains(_activeTag)).toList()
+        : storyProvider.posts;
     final loading = storyProvider.isLoading;
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const KuyogAppBar(title: 'StoryHub'),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          if (_activeTag != null)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              color: AppColors.primary.withOpacity(0.1),
+              child: Row(
+                children: [
+                  const Icon(Icons.tag, size: 16, color: AppColors.primary),
+                  const SizedBox(width: 8),
+                  Text('Showing: $_activeTag Stories', style: AppTheme.label(size: 13, color: AppColors.primary)),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 16, color: AppColors.primary),
+                    onPressed: () => setState(() => _activeTag = null),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ),
+            ),
           // Pill Tabs
           Container(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -129,6 +157,22 @@ class _StoryhubTabState extends State<StoryhubTab> {
               child: const Padding(padding: EdgeInsets.all(4), child: Icon(Icons.more_horiz, color: AppColors.textLight, size: 20)),
             ),
           ]),
+          if (post.hashtags.contains('#MindanaoCrawl'))
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.verified, size: 12, color: AppColors.primary),
+                    const SizedBox(width: 4),
+                    Text('Crawl Story', style: AppTheme.label(size: 10, color: AppColors.primary)),
+                  ],
+                ),
+              ),
+            ),
           const SizedBox(height: 12),
           // Post text
           Text(post.content, style: AppTheme.body(size: 14), maxLines: 3, overflow: TextOverflow.ellipsis),
