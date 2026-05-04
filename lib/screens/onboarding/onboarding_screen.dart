@@ -6,15 +6,11 @@ import '../../widgets/kuyog_logo.dart';
 import '../../widgets/durie_mascot.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  final VoidCallback onTouristSelected;
-  final VoidCallback onGuideSelected;
-  final VoidCallback onMerchantSelected;
+  final Function(String role) onRoleSelected;
 
   const OnboardingScreen({
     super.key,
-    required this.onTouristSelected,
-    required this.onGuideSelected,
-    required this.onMerchantSelected,
+    required this.onRoleSelected,
   });
 
   @override
@@ -24,6 +20,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
   int _currentPage = 0;
+  String _selectedRole = 'tourist';
 
   final _pages = [
     ('https://picsum.photos/seed/mindanao_fest/800/1200', 'Welcome to KUYOG', 'Discover exciting activities and make the most of your Mindanao experience!'),
@@ -71,7 +68,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Positioned(
               top: MediaQuery.of(context).padding.top + 8, right: 16,
               child: TextButton(
-                onPressed: widget.onTouristSelected,
+                onPressed: () => widget.onRoleSelected(_selectedRole),
                 child: Text('Skip', style: GoogleFonts.nunito(color: _currentPage == 4 ? AppColors.textPrimary : Colors.white, fontWeight: FontWeight.w600)),
               ),
             ),
@@ -136,14 +133,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               Text('Tell us how you want to experience Mindanao.', style: GoogleFonts.nunito(fontSize: 15, color: Colors.white.withOpacity(0.85)), textAlign: TextAlign.center),
               const SizedBox(height: 32),
               _roleCard(Icons.luggage, "I'm a Tourist", 'I want to explore Mindanao', AppColors.touristBlue, () {
+                setState(() => _selectedRole = 'tourist');
                 _controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
               }),
               const SizedBox(height: 12),
               _roleCard(Icons.explore, "I'm a Tour Guide", 'I want to host travelers', AppColors.primary, () {
+                setState(() => _selectedRole = 'guide');
                 _controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
               }),
               const SizedBox(height: 12),
               _roleCard(Icons.store, "I'm a Merchant", 'I want to list my business', AppColors.merchantAmber, () {
+                setState(() => _selectedRole = 'merchant');
                 _controller.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
               }),
               const Spacer(flex: 3),
@@ -225,7 +225,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: widget.onTouristSelected,
+                onPressed: () => widget.onRoleSelected(_selectedRole),
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 16)),
                 child: const Text('Get Started', style: TextStyle(fontSize: 16)),
               ),

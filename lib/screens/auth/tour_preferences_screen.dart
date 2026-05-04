@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../providers/role_provider.dart';
+import '../../data/services/onboarding_service.dart';
 import '../../widgets/terms_agreement_sheet.dart';
 
 class TourPreferencesScreen extends StatefulWidget {
@@ -22,6 +24,7 @@ class TourPreferencesScreen extends StatefulWidget {
 
 class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
   final Set<String> _selected = {};
+  bool _isLoading = false;
 
   static const List<String> _preferences = [
     'Nature & Outdoors',
@@ -42,8 +45,49 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
     'Beach & Island',
   ];
 
+  Future<void> _handleContinue() async {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final user = roleProvider.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final onboarding = OnboardingService();
+      
+      if (roleProvider.currentRole == UserRole.guide) {
+        await onboarding.saveGuideProfile(
+          userId: user.id,
+          specialties: _selected.toList(),
+        );
+      } else {
+        await onboarding.saveTouristPreferences(
+          userId: user.id,
+          interests: _selected.toList(),
+        );
+      }
+
+      // Mark as onboarded after preferences are set
+      await onboarding.markOnboarded(user.id);
+      
+      // Update local state
+      await roleProvider.initialize();
+
+      widget.onContinue();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving preferences: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,8 +96,8 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.maybePop(context)),
         actions: [
           TextButton(
-            onPressed: () {
-              TermsAgreementSheet.checkAndShow(context, UserRole.tourist, widget.onContinue);
+            onPressed: _isLoading ? null : () {
+              TermsAgreementSheet.checkAndShow(context, roleProvider.currentRole, _handleContinue);
             },
             child: Text('Skip', style: GoogleFonts.nunito(color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
           ),
@@ -132,20 +176,18 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _selected.length >= 3
+                onPressed: (_selected.length >= 3 && !_isLoading)
                     ? () {
-                        TermsAgreementSheet.checkAndShow(context, UserRole.tourist, widget.onContinue);
+                        TermsAgreementSheet.checkAndShow(context, roleProvider.currentRole, _handleContinue);
                       }
-                    : () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Please select at least 3 preferences'), backgroundColor: AppColors.warning),
-                        );
-                      },
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _selected.length >= 3 ? AppColors.primary : AppColors.divider,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: Text('Continue (${_selected.length}/3+)'),
+                child: _isLoading 
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : Text('Continue (${_selected.length}/3+)'),
               ),
             ),
           ),

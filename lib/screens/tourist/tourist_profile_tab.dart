@@ -12,14 +12,18 @@ import '../shared/help_support_screen.dart';
 import '../shared/edit_profile_screen.dart';
 import '../features/notifications/notifications_list_screen.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../data/services/auth_service.dart';
 
 class TouristProfileTab extends StatelessWidget {
   const TouristProfileTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final roleProvider = context.watch<RoleProvider>();
+    final user = roleProvider.currentUser;
     final miles = context.watch<MilesProvider>();
     final crawl = context.watch<CrawlProvider>();
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const KuyogAppBar(title: 'Profile'),
@@ -29,24 +33,39 @@ class TouristProfileTab extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           child: Column(children: [
             const SizedBox(height: 8),
-            CircleAvatar(radius: 44, backgroundColor: AppColors.primary.withValues(alpha: 0.12), child: const Icon(Icons.person, size: 44, color: AppColors.primary)),
+            CircleAvatar(
+              radius: 44, 
+              backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+              backgroundImage: user?.avatarUrl.isNotEmpty == true ? NetworkImage(user!.avatarUrl) : null,
+              child: (user?.avatarUrl.isEmpty == true || user?.avatarUrl == null) 
+                  ? const Icon(Icons.person, size: 44, color: AppColors.primary) 
+                  : null,
+            ),
             const SizedBox(height: 12),
-            Text('Maria Santos', style: AppTheme.headline(size: 22)),
+            Text(user?.name ?? roleProvider.userName, style: AppTheme.headline(size: 22)),
+            if (user?.email.isNotEmpty == true) ...[
+              const SizedBox(height: 4),
+              Text(user!.email, style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+            ],
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('Tourist', style: AppTheme.label(size: 12, color: AppColors.touristBlue)),
+              child: Text(roleProvider.roleDisplayName, style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.touristBlue)),
             ),
             const SizedBox(height: 8),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
-              const SizedBox(width: 4),
-              Text('Verified Email', style: AppTheme.body(size: 12, color: AppColors.verified)),
-              const SizedBox(width: 12),
-              const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
-              const SizedBox(width: 4),
-              Text('Verified Phone', style: AppTheme.body(size: 12, color: AppColors.verified)),
+              if (user?.email.isNotEmpty == true) ...[
+                const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
+                const SizedBox(width: 4),
+                Text('Verified Email', style: AppTheme.body(size: 12, color: AppColors.verified)),
+              ],
+              if (user?.phone.isNotEmpty == true) ...[
+                const SizedBox(width: 12),
+                const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
+                const SizedBox(width: 4),
+                Text('Verified Phone', style: AppTheme.body(size: 12, color: AppColors.verified)),
+              ],
             ]),
             const SizedBox(height: 16),
             OutlinedButton.icon(
@@ -176,9 +195,10 @@ class TouristProfileTab extends StatelessWidget {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
-              context.go('/onboarding');
+              await AuthService().signOut();
+              if (context.mounted) context.go('/onboarding');
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             child: const Text('Log Out'),

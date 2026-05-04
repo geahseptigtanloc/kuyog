@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
+import '../../widgets/kuyog_app_bar.dart';
 
 class AdminSettingsTab extends StatelessWidget {
   const AdminSettingsTab({super.key});
@@ -9,6 +10,7 @@ class AdminSettingsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: const KuyogAppBar(title: 'Settings'),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

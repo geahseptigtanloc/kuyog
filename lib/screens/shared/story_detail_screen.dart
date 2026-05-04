@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../app_theme.dart';
 import '../../models/post.dart';
 import '../../providers/story_provider.dart';
+import '../../providers/role_provider.dart';
+import '../../data/services/story_service.dart';
 
 class StoryDetailScreen extends StatefulWidget {
   final Post post;
@@ -15,6 +17,35 @@ class StoryDetailScreen extends StatefulWidget {
 
 class _StoryDetailScreenState extends State<StoryDetailScreen> {
   final _commentCtrl = TextEditingController();
+  final _storyService = StoryService();
+  List<Map<String, dynamic>> _comments = [];
+  bool _isLoadingComments = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadComments();
+  }
+
+  Future<void> _loadComments() async {
+    if (widget.post.id.startsWith('temp_') || widget.post.id.startsWith('p')) {
+      setState(() => _isLoadingComments = false);
+      return;
+    }
+    
+    try {
+      final comments = await _storyService.getComments(widget.post.id);
+      if (mounted) {
+        setState(() {
+          _comments = comments;
+          _isLoadingComments = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading comments: $e');
+      if (mounted) setState(() => _isLoadingComments = false);
+    }
+  }
 
   @override
   void dispose() { _commentCtrl.dispose(); super.dispose(); }
@@ -46,7 +77,18 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                     CircleAvatar(backgroundImage: NetworkImage(currentPost.userAvatar)),
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(currentPost.userName, style: AppTheme.label(size: 15)),
+                      Row(children: [
+                        Text(currentPost.userName, style: AppTheme.label(size: 15)),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                          decoration: BoxDecoration(
+                            color: _roleChipColor(currentPost.userRole).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(AppRadius.pill),
+                          ),
+                          child: Text(_formatRole(currentPost.userRole), style: AppTheme.label(size: 10, weight: FontWeight.w800, color: _roleChipColor(currentPost.userRole))),
+                        ),
+                      ]),
                       Text('${currentPost.timeAgo} • ${currentPost.location}', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
                     ])),
                     const Icon(Icons.more_horiz, color: AppColors.textLight),
@@ -69,7 +111,11 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                   Row(children: [
                     GestureDetector(
                       onTap: () => storyProvider.upvotePost(currentPost.id),
-                      child: _actionBtn(Icons.arrow_upward, '${currentPost.upvotes}'),
+                      child: _actionBtn(
+                        currentPost.isUpvoted ? Icons.arrow_upward : Icons.arrow_upward_outlined, 
+                        '${currentPost.upvotes}',
+                        active: currentPost.isUpvoted
+                      ),
                     ),
                     const SizedBox(width: 20),
                     _actionBtn(Icons.chat_bubble_outline, '${currentPost.comments}'),
@@ -90,8 +136,20 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text('Comments', style: AppTheme.headline(size: 16)),
                   const SizedBox(height: 16),
-                  _commentTile('Anna B.', 'Beautiful shot! Where exactly is this in Davao?', '2h ago'),
-                  _commentTile('Rico M.', 'Nice to see you exploring my hometown. Let me know if you need recommendations!', '5h ago'),
+                  if (_isLoadingComments)
+                    const Center(child: CircularProgressIndicator())
+                  else if (_comments.isEmpty)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: Center(child: Text('No comments yet. Be the first to reply!')),
+                    )
+                  else
+                    ..._comments.map((c) => _commentTile(
+                      c['profiles']?['name'] ?? 'Unknown', 
+                      c['comment_text'] ?? '', 
+                      _formatTime(c['created_at']),
+                      c['profiles']?['avatarUrl'],
+                    )),
                 ]),
               ),
             ],
@@ -101,7 +159,13 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom + 8, top: 8, left: 16, right: 16),
           decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),
           child: Row(children: [
-            const CircleAvatar(radius: 18, backgroundImage: NetworkImage('https://picsum.photos/seed/user/100/100')),
+            CircleAvatar(
+              radius: 18, 
+              backgroundImage: context.watch<RoleProvider>().currentUser?.avatarUrl.isNotEmpty == true 
+                  ? NetworkImage(context.watch<RoleProvider>().currentUser!.avatarUrl) 
+                  : null,
+              child: context.watch<RoleProvider>().currentUser?.avatarUrl.isEmpty == true ? const Icon(Icons.person) : null,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: TextField(
@@ -118,11 +182,14 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.send, color: AppColors.primary),
-              onPressed: () {
+              onPressed: () async {
                 if (_commentCtrl.text.isNotEmpty) {
+                  final text = _commentCtrl.text;
                   _commentCtrl.clear();
                   FocusScope.of(context).unfocus();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Comment posted!')));
+                  
+                  await storyProvider.addComment(currentPost.id, text);
+                  _loadComments(); // Refresh comments
                 }
               },
             ),
@@ -132,23 +199,41 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     );
   }
 
-  Widget _actionBtn(IconData icon, String count) {
+  String _formatTime(String? dateStr) {
+    if (dateStr == null) return 'now';
+    final date = DateTime.parse(dateStr);
+    final diff = DateTime.now().difference(date);
+    if (diff.inDays > 0) return '${diff.inDays}d ago';
+    if (diff.inHours > 0) return '${diff.inHours}h ago';
+    if (diff.inMinutes > 0) return '${diff.inMinutes}m ago';
+    return 'Just now';
+  }
+
+  Widget _actionBtn(IconData icon, String count, {bool active = false}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.05), borderRadius: BorderRadius.circular(AppRadius.pill)),
+      decoration: BoxDecoration(
+        color: active ? AppColors.primary : AppColors.primary.withOpacity(0.05), 
+        borderRadius: BorderRadius.circular(AppRadius.pill)
+      ),
       child: Row(children: [
-        Icon(icon, size: 16, color: AppColors.primary),
+        Icon(icon, size: 16, color: active ? Colors.white : AppColors.primary),
         const SizedBox(width: 6),
-        Text(count, style: AppTheme.label(size: 13, color: AppColors.primary)),
+        Text(count, style: AppTheme.label(size: 13, color: active ? Colors.white : AppColors.primary)),
       ]),
     );
   }
 
-  Widget _commentTile(String name, String comment, String time) {
+  Widget _commentTile(String name, String comment, String time, String? avatarUrl) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        CircleAvatar(radius: 16, backgroundColor: AppColors.primary.withOpacity(0.1), child: Text(name[0], style: AppTheme.label(size: 14, color: AppColors.primary))),
+        CircleAvatar(
+          radius: 16, 
+          backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
+          backgroundColor: AppColors.primary.withOpacity(0.1), 
+          child: (avatarUrl == null || avatarUrl.isEmpty) ? Text(name.isNotEmpty ? name[0] : '?', style: AppTheme.label(size: 14, color: AppColors.primary)) : null,
+        ),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
@@ -161,5 +246,21 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
         ])),
       ]),
     );
+  }
+
+  Color _roleChipColor(String role) {
+    final r = role.toLowerCase();
+    if (r == 'guide') return AppColors.guideGreen;
+    if (r == 'merchant') return AppColors.merchantAmber;
+    return AppColors.touristBlue;
+  }
+
+  String _formatRole(String role) {
+    final r = role.toLowerCase().trim();
+    if (r == 'guide') return 'Guide';
+    if (r == 'merchant') return 'Merchant';
+    if (r == 'admin') return 'Admin';
+    if (r == 'super_admin' || r == 'superadmin') return 'Super Admin';
+    return 'Tourist';
   }
 }

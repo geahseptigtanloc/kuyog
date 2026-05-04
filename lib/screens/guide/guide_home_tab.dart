@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../providers/role_provider.dart';
 import '../../widgets/kuyog_app_bar.dart';
-import 'verification_gate_screen.dart';
+import '../shared/verification_gate_screen.dart';
 
 
 class GuideHomeTab extends StatelessWidget {
@@ -20,11 +20,18 @@ class GuideHomeTab extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(children: [
-              const Icon(Icons.verified, size: 14, color: AppColors.verified),
-              const SizedBox(width: 4),
-              Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified)),
-            ]),
+            if (role.currentUser?.verificationStatus == 'approved')
+              Row(children: [
+                const Icon(Icons.verified, size: 14, color: AppColors.verified),
+                const SizedBox(width: 4),
+                Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified)),
+              ])
+            else
+              Row(children: [
+                Icon(Icons.pending_actions, size: 14, color: AppColors.textSecondary),
+                const SizedBox(width: 4),
+                Text('Unverified Guide', style: AppTheme.label(size: 12, color: AppColors.textSecondary)),
+              ]),
             const SizedBox(height: 24),
             // Stats Dashboard
             Row(children: [
@@ -132,23 +139,66 @@ class GuideHomeTab extends StatelessWidget {
   }
 
   Widget _verifyBanner(BuildContext context) {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final status = roleProvider.currentUser?.verificationStatus ?? 'pending';
+    
+    if (status == 'approved') return const SizedBox.shrink(); // Hide if approved
+
+    Color bgColor;
+    Color iconColor;
+    IconData icon;
+    String title;
+    String subtitle;
+
+    switch (status) {
+      case 'submitted':
+        bgColor = AppColors.touristBlue.withValues(alpha: 0.1);
+        iconColor = AppColors.touristBlue;
+        icon = Icons.hourglass_top;
+        title = 'Verification in Progress';
+        subtitle = 'Your documents are being reviewed by our team.';
+        break;
+      case 'draft':
+        bgColor = AppColors.accent.withValues(alpha: 0.1);
+        iconColor = AppColors.accent;
+        icon = Icons.upload_file;
+        title = 'Resume Verification';
+        subtitle = 'Finish uploading your required documents.';
+        break;
+      case 'rejected':
+        bgColor = AppColors.error.withValues(alpha: 0.1);
+        iconColor = AppColors.error;
+        icon = Icons.error_outline;
+        title = 'Action Required';
+        subtitle = 'Your verification was rejected. Please review and update.';
+        break;
+      case 'pending':
+      default:
+        bgColor = AppColors.warning.withValues(alpha: 0.1);
+        iconColor = AppColors.warning;
+        icon = Icons.verified_user;
+        title = 'Complete Verification';
+        subtitle = 'Upload documents to unlock all features.';
+        break;
+    }
+
     return GestureDetector(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VerificationGateScreen())),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.warning.withValues(alpha: 0.1),
+          color: bgColor,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+          border: Border.all(color: iconColor.withValues(alpha: 0.3)),
         ),
         child: Row(children: [
-          const Icon(Icons.verified_user, size: 28, color: AppColors.warning),
+          Icon(icon, size: 28, color: iconColor),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Complete Verification', style: AppTheme.label(size: 14, color: AppColors.warning)),
-            Text('Upload documents to unlock all features', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+            Text(title, style: AppTheme.label(size: 14, color: iconColor)),
+            Text(subtitle, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
           ])),
-          const Icon(Icons.chevron_right, color: AppColors.warning),
+          Icon(Icons.chevron_right, color: iconColor),
         ]),
       ),
     );

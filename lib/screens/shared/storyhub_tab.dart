@@ -90,24 +90,32 @@ class _StoryhubTabState extends State<StoryhubTab> {
           Expanded(
             child: loading
               ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-              : _buildFeed(_getFilteredPosts(posts)),
+              : RefreshIndicator(
+                  onRefresh: () => storyProvider.refreshPosts(),
+                  color: AppColors.primary,
+                  child: _buildFeed(_getFilteredPosts(posts)),
+                ),
           ),
         ]),
     );
   }
 
   List<Post> _getFilteredPosts(List<Post> posts) {
+    List<Post> filtered = List.from(posts);
     switch (_selectedTab) {
-      case 1: return posts.reversed.toList();
-      case 2: return posts;
-      default: return posts..sort((a, b) => b.upvotes.compareTo(a.upvotes));
+      case 1: // HOT (most comments)
+        return filtered..sort((a, b) => b.comments.compareTo(a.comments));
+      case 2: // NEW
+        return filtered..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      default: // TOP (upvotes)
+        return filtered..sort((a, b) => b.upvotes.compareTo(a.upvotes));
     }
   }
 
   Widget _buildFeed(List<Post> posts) {
     if (posts.isEmpty) return const Center(child: Text('No posts yet'));
     return ListView.builder(
-      physics: const BouncingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
       itemCount: posts.length,
       itemBuilder: (context, i) => _postCard(posts[i]),
@@ -141,7 +149,7 @@ class _StoryhubTabState extends State<StoryhubTab> {
                     color: _roleChipColor(post.userRole).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
-                  child: Text(post.userRole, style: AppTheme.label(size: 9, color: _roleChipColor(post.userRole))),
+                  child: Text(_formatRole(post.userRole), style: AppTheme.label(size: 10, weight: FontWeight.w800, color: _roleChipColor(post.userRole))),
                 ),
               ]),
               Row(children: [
@@ -215,15 +223,19 @@ class _StoryhubTabState extends State<StoryhubTab> {
               child: Padding(
                 padding: const EdgeInsets.all(4),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.arrow_upward, size: 18, color: post.upvotes > 100 ? AppColors.primary : AppColors.textSecondary),
+                  Icon(
+                    post.isUpvoted ? Icons.arrow_upward : Icons.arrow_upward_outlined, 
+                    size: 18, 
+                    color: post.isUpvoted ? AppColors.primary : AppColors.textSecondary
+                  ),
                   const SizedBox(width: 4),
-                  Text('${post.upvotes}', style: AppTheme.body(size: 12, color: post.upvotes > 100 ? AppColors.primary : AppColors.textSecondary)),
+                  Text('${post.upvotes}', style: AppTheme.body(size: 12, color: post.isUpvoted ? AppColors.primary : AppColors.textSecondary)),
                 ]),
               ),
             ),
             const SizedBox(width: 16),
             InkWell(
-              onTap: () {},
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => StoryDetailScreen(post: post))),
               borderRadius: BorderRadius.circular(8),
               child: Padding(
                 padding: const EdgeInsets.all(4),
@@ -330,10 +342,18 @@ class _StoryhubTabState extends State<StoryhubTab> {
   }
 
   Color _roleChipColor(String role) {
-    switch (role) {
-      case 'Guide': return AppColors.guideGreen;
-      case 'Merchant': return AppColors.merchantAmber;
-      default: return AppColors.touristBlue;
-    }
+    final r = role.toLowerCase();
+    if (r == 'guide') return AppColors.guideGreen;
+    if (r == 'merchant') return AppColors.merchantAmber;
+    return AppColors.touristBlue;
+  }
+
+  String _formatRole(String role) {
+    final r = role.toLowerCase().trim();
+    if (r == 'guide') return 'Guide';
+    if (r == 'merchant') return 'Merchant';
+    if (r == 'admin') return 'Admin';
+    if (r == 'super_admin' || r == 'superadmin') return 'Super Admin';
+    return 'Tourist';
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import '../../core/supabase/client.dart';
 import '../../models/user.dart';
 
@@ -10,14 +12,38 @@ class ProfileService {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return null;
 
+    // Join with verification tables. Note: merchant_verifications links to merchant_profiles, not profiles.
     final response = await _client
         .from(_tableName)
-        .select()
+        .select('*, guide_verifications!guide_verifications_guide_id_fkey(status), merchant_profiles(merchant_verifications(status))')
         .eq('id', userId)
         .maybeSingle();
 
     if (response == null) return null;
-    return User.fromJson(response);
+
+    // Extract status from joins
+    String vStatus = 'pending';
+    
+    // guide_verifications is a 1-to-1 relationship, so it returns a Map, not a List
+    if (response['guide_verifications'] != null && response['guide_verifications'] is Map) {
+      vStatus = response['guide_verifications']['status'] ?? 'pending';
+    } else if (response['merchant_profiles'] != null && response['merchant_profiles'] is Map) {
+      final merchantProfile = response['merchant_profiles'];
+      if (merchantProfile['merchant_verifications'] != null && merchantProfile['merchant_verifications'] is Map) {
+        vStatus = merchantProfile['merchant_verifications']['status'] ?? 'pending';
+      } else if (merchantProfile['merchant_verifications'] != null && merchantProfile['merchant_verifications'] is List && (merchantProfile['merchant_verifications'] as List).isNotEmpty) {
+         vStatus = merchantProfile['merchant_verifications'][0]['status'] ?? 'pending';
+      }
+    } else if (response['guide_verifications'] != null && response['guide_verifications'] is List && (response['guide_verifications'] as List).isNotEmpty) {
+      // Just in case it ever returns a list
+      vStatus = response['guide_verifications'][0]['status'] ?? 'pending';
+    }
+
+    // Merge status into the map before creating User object
+    final userData = Map<String, dynamic>.from(response);
+    userData['verificationStatus'] = vStatus;
+    
+    return User.fromJson(userData);
   }
 
   /// Create or update a profile
@@ -51,5 +77,29 @@ class ProfileService {
     return (response as List)
         .map((json) => User.fromJson(json))
         .toList();
+  }
+
+  /// Upload an avatar image and return the public URL
+  Future<String> uploadAvatar(String userId, List<int> imageBytes, String fileExtension) async {
+    // Sanitize extension - if it's a blob URL or has no dots, default to jpg
+    String ext = fileExtension.toLowerCase();
+    final extRegex = RegExp(r'^[a-z0-9]+$');
+    if (ext.contains(':') || ext.length > 5 || !extRegex.hasMatch(ext)) {
+      ext = 'jpg';
+    }
+
+    final fileName = '$userId-${DateTime.now().millisecondsSinceEpoch}.$ext';
+    final filePath = 'avatars/$fileName';
+
+    await _client.storage.from('avatars').uploadBinary(
+      filePath,
+      Uint8List.fromList(imageBytes),
+      fileOptions: FileOptions(
+        contentType: 'image/$ext',
+        upsert: true,
+      ),
+    );
+
+    return _client.storage.from('avatars').getPublicUrl(filePath);
   }
 }

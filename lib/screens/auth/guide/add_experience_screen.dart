@@ -1,16 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
+import '../../../data/services/onboarding_service.dart';
+import '../../../providers/role_provider.dart';
 
-class AddExperienceScreen extends StatelessWidget {
+class AddExperienceScreen extends StatefulWidget {
   final VoidCallback onNext;
 
   const AddExperienceScreen({super.key, required this.onNext});
 
   @override
-  Widget build(BuildContext context) {
-    final languages = ['English', 'Español', '日本語', 'Persian', 'Suahil', 'Français', 'Deutsch', '正體語', 'Cebuano/Bisaya'];
+  State<AddExperienceScreen> createState() => _AddExperienceScreenState();
+}
 
+class _AddExperienceScreenState extends State<AddExperienceScreen> {
+  final Set<String> _selectedLanguages = {'English'};
+  bool _isLoading = false;
+
+  final List<String> _languages = [
+    'English', 'Español', '日本語', 'Persian', 'Suahil', 'Français', 'Deutsch', '正體語', 'Cebuano/Bisaya'
+  ];
+
+  Future<void> _handleNext() async {
+    final roleProvider = Provider.of<RoleProvider>(context, listen: false);
+    final user = roleProvider.currentUser;
+    if (user == null) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final onboarding = OnboardingService();
+      await onboarding.saveGuideProfile(
+        userId: user.id,
+        languages: _selectedLanguages.toList(),
+      );
+      
+      widget.onNext();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving languages: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -18,9 +56,6 @@ class AddExperienceScreen extends StatelessWidget {
         elevation: 0,
         title: Text('Add Experience', style: GoogleFonts.nunito(fontWeight: FontWeight.w700)),
         leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.maybePop(context)),
-        actions: [
-          IconButton(icon: const Icon(Icons.add_circle_outline, color: AppColors.primary), onPressed: () {}),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -47,30 +82,36 @@ class AddExperienceScreen extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: languages.map((lang) => GestureDetector(
-                onTap: () {},
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: lang == 'English' ? AppColors.primary.withOpacity(0.12) : Colors.white,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                    border: Border.all(color: lang == 'English' ? AppColors.primary : AppColors.divider),
-                  ),
-                  child: Text(
-                    lang,
-                    style: GoogleFonts.nunito(
-                      fontSize: 13,
-                      fontWeight: lang == 'English' ? FontWeight.w700 : FontWeight.w500,
-                      color: lang == 'English' ? AppColors.primary : AppColors.textPrimary,
+              children: _languages.map((lang) {
+                final isSelected = _selectedLanguages.contains(lang);
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        if (_selectedLanguages.length > 1) _selectedLanguages.remove(lang);
+                      } else {
+                        _selectedLanguages.add(lang);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isSelected ? AppColors.primary.withOpacity(0.12) : Colors.white,
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                      border: Border.all(color: isSelected ? AppColors.primary : AppColors.divider),
+                    ),
+                    child: Text(
+                      lang,
+                      style: GoogleFonts.nunito(
+                        fontSize: 13,
+                        fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                        color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                      ),
                     ),
                   ),
-                ),
-              )).toList(),
-            ),
-            const SizedBox(height: 4),
-            TextButton(
-              onPressed: () {},
-              child: Text('More →', style: GoogleFonts.nunito(color: AppColors.primary, fontWeight: FontWeight.w600)),
+                );
+              }).toList(),
             ),
           ],
         ),
@@ -79,13 +120,15 @@ class AddExperienceScreen extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Row(
           children: [
-            Expanded(child: OutlinedButton(onPressed: () => Navigator.maybePop(context), child: const Text('Back'))),
+            Expanded(child: OutlinedButton(onPressed: _isLoading ? null : () => Navigator.maybePop(context), child: const Text('Back'))),
             const SizedBox(width: 12),
             Expanded(
               child: ElevatedButton(
-                onPressed: onNext,
+                onPressed: _isLoading ? null : _handleNext,
                 style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-                child: const Text('Next'),
+                child: _isLoading 
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                    : const Text('Next'),
               ),
             ),
           ],

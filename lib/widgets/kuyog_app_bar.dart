@@ -5,8 +5,13 @@ import '../app_theme.dart';
 import '../providers/chat_provider.dart';
 import '../screens/shared/chat/chat_list_screen.dart';
 import '../screens/features/notifications/notifications_screen.dart';
+import '../providers/role_provider.dart';
 import 'kuyog_logo.dart';
 import 'kuyog_back_button.dart';
+import '../screens/tourist/tourist_profile_tab.dart';
+import '../screens/guide/guide_profile_tab.dart';
+import '../screens/merchant/merchant_profile_tab.dart';
+import '../screens/admin/admin_settings_tab.dart';
 
 class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -21,6 +26,8 @@ class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = Navigator.canPop(context);
+
     return AppBar(
       backgroundColor: AppColors.background,
       elevation: 0,

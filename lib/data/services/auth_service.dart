@@ -2,7 +2,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase/client.dart';
 
 class AuthService {
-  final _client = AppSupabase.client;
+  SupabaseClient get _client => AppSupabase.client;
 
   /// Get the current session
   Session? get currentSession => _client.auth.currentSession;
@@ -17,10 +17,16 @@ class AuthService {
   Future<AuthResponse> signUp({
     required String email,
     required String password,
+    required String name,
+    required String role,
   }) async {
     return await _client.auth.signUp(
       email: email,
       password: password,
+      data: {
+        'name': name,
+        'role': role,
+      },
     );
   }
 
