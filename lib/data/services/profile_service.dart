@@ -12,10 +12,10 @@ class ProfileService {
     final userId = _client.auth.currentUser?.id;
     if (userId == null) return null;
 
-    // Join with verification tables. Note: merchant_verifications links to merchant_profiles, not profiles.
+    // Join with verification tables and preferences
     final response = await _client
         .from(_tableName)
-        .select('*, guide_verifications!guide_verifications_guide_id_fkey(status), merchant_profiles(merchant_verifications(status))')
+        .select('*, guide_verifications!guide_verifications_guide_id_fkey(status), merchant_profiles(merchant_verifications(status)), tourist_preferences(interests)')
         .eq('id', userId)
         .maybeSingle();
 

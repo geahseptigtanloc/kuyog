@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/group_trip.dart';
 import '../models/guide.dart';
 import '../models/tour_operator.dart';
@@ -13,8 +14,8 @@ class TravelProvider extends ChangeNotifier {
   List<GroupMember> _members = [];
   String _selectedGuideId = '';
   
-  // Tourist Preferences (Mocked for now, in a real app would come from UserProvider)
-  final List<String> _userPrefs = ['Adventure Travel', 'Mountain Trekking', 'Photography'];
+  // Tourist Preferences
+  List<String> _userPrefs = [];
 
   // AI Matching Data
   List<Guide> _allGuides = [];
@@ -31,13 +32,80 @@ class TravelProvider extends ChangeNotifier {
   List<String> get userPrefs => _userPrefs;
 
   TravelProvider() {
-    _loadData();
+    refresh();
   }
 
-  Future<void> _loadData() async {
-    _allGuides = await MockData.getGuides();
-    _allOperators = await MockData.getTourOperators();
-    _isLoadingMatches = false;
+  Future<void> refresh() async {
+    _isLoadingMatches = true;
+    notifyListeners();
+    
+    try {
+      // 1. Load Real Guides from Supabase
+      final guideRes = await Supabase.instance.client
+          .from('guide_profiles')
+          .select('*, profiles(*)');
+      
+      final List<Guide> realGuides = (guideRes as List).map((data) {
+        final profile = data['profiles'];
+        if (profile == null) return null; // Skip orphaned profiles
+        
+        final List<String> specialties = List<String>.from(data['specialties'] ?? []);
+        
+        return Guide(
+          id: data['profile_id'],
+          name: profile['name'] ?? 'Unknown Guide',
+          city: profile['location'] ?? 'Cotabato City',
+          specialties: specialties,
+          rating: (data['rating'] as num?)?.toDouble() ?? 5.0,
+          tripCount: data['tripCount'] ?? 0,
+          reviewCount: data['reviewCount'] ?? 0,
+          bio: profile['bio'] ?? '',
+          certifications: List<String>.from(data['certifications'] ?? []),
+          photoUrl: profile['avatarUrl'] ?? '',
+          bannerUrl: data['bannerUrl'] ?? 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=2070',
+          isVerified: profile['isVerified'] ?? false,
+          itineraryPhotos: List<String>.from(data['itineraryPhotos'] ?? []),
+          yearsExperience: data['yearsExperience'] ?? 0,
+          languages: List<String>.from(profile['languages'] ?? ['English', 'Filipino']),
+          priceRange: data['priceRange'] ?? '₱₱',
+          specialty: data['specialty'] ?? 'Local Expert',
+          guideType: data['guideType'] ?? 'community',
+          matchScore: 0, 
+          dotAccredited: data['dotAccredited'] ?? false,
+          lguEndorsed: data['lguEndorsed'] ?? true,
+          trainingDays: data['trainingDays'] ?? 0,
+          storyExcerpt: data['storyExcerpt'] ?? '',
+          fullStory: data['fullStory'] ?? '',
+          acceptedPayments: List<String>.from(data['acceptedPayments'] ?? ['Cash']),
+          pricingStatus: data['pricingStatus'] ?? 'active',
+          communityArea: data['communityArea'] ?? '',
+          maxGroupSize: data['maxGroupSize'] ?? 5,
+          groupToursExperience: data['groupToursExperience'] ?? true,
+          matchTags: specialties,
+        );
+      }).whereType<Guide>().toList();
+
+      // 2. Load Mock Guides for fallback/demo variety
+      final mockGuides = await MockData.getGuides();
+      
+      // Combine (Real guides first)
+      _allGuides = [...realGuides, ...mockGuides];
+      
+      // 3. Load Operators
+      _allOperators = await MockData.getTourOperators();
+      
+    } catch (e) {
+      debugPrint('Error loading travel data: $e');
+      _allGuides = await MockData.getGuides();
+      _allOperators = await MockData.getTourOperators();
+    } finally {
+      _isLoadingMatches = false;
+      notifyListeners();
+    }
+  }
+
+  void updateUserPreferences(List<String> interests) {
+    _userPrefs = interests;
     notifyListeners();
   }
 

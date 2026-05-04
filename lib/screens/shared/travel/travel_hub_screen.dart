@@ -13,6 +13,8 @@ import 'group_setup_screen.dart';
 import 'ai_matching_screen.dart';
 import '../itinerary/tourist_itinerary_hub_screen.dart';
 import '../itinerary/guide_itinerary_hub_screen.dart';
+import '../itinerary/itinerary_create_screen.dart';
+import '../itinerary/itinerary_browse_screen.dart';
 
 enum TravelSubPage {
   main,
@@ -83,6 +85,9 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
   Widget _buildCurrentPage(UserRole role) {
     switch (_currentSubPage) {
       case TravelSubPage.itineraries:
+        if (role == UserRole.guide) {
+          return GuideItineraryHubScreen(onBack: _popSubPage);
+        }
         return TouristItineraryHubScreen(
           onBack: _popSubPage,
           onFindGuide: () => _pushSubPage(TravelSubPage.guideType),
@@ -190,7 +195,9 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader('My Itineraries'),
+        _buildSectionHeader('My Itineraries', trailing: 'See All', onTrailingTap: () {
+           _pushSubPage(TravelSubPage.itineraries);
+        }),
         _buildItineraryStats(isGuide: true),
         const SizedBox(height: 12),
         ..._recentItineraries.map((it) => _buildItineraryCard(it, isGuide: true)).toList(),
@@ -207,6 +214,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
                 label: 'Create Template',
                 color: AppColors.primary,
                 icon: Icons.add_to_photos_outlined,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryCreateScreen())),
               ),
             ),
             const SizedBox(width: 12),
@@ -215,6 +223,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
                 label: 'Browse Hub',
                 color: Colors.amber[700]!,
                 icon: Icons.search_outlined,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ItineraryBrowseScreen())),
               ),
             ),
           ],
@@ -592,19 +601,23 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
     );
   }
 
-  Widget _buildOptionCard({required String label, required Color color, required IconData icon}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: Colors.white, size: 28),
-          const SizedBox(height: 8),
-          Text(label, style: AppTheme.label(size: 14, color: Colors.white)),
-        ],
+  Widget _buildOptionCard({required String label, required Color color, required IconData icon, VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.white, size: 28),
+            const SizedBox(height: 8),
+            Text(label, style: AppTheme.label(size: 14, color: Colors.white)),
+          ],
+        ),
       ),
     );
   }

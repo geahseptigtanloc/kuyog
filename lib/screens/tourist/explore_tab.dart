@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../app_theme.dart';
 import '../../data/mock_data.dart';
 import '../../models/guide.dart';
@@ -14,6 +15,7 @@ import '../../providers/travel_provider.dart';
 import '../shared/travel/travel_type_screen.dart';
 import '../shared/travel/group_setup_screen.dart';
 import '../shared/travel/ai_matching_screen.dart';
+import '../../providers/role_provider.dart';
 
 class ExploreTab extends StatefulWidget {
   const ExploreTab({super.key});
@@ -38,9 +40,79 @@ class _ExploreTabState extends State<ExploreTab> {
   }
 
   Future<void> _load() async {
-    final g = await MockData.getGuides();
-    final d = await MockData.getDestinations();
-    if (mounted) setState(() { _guides = g; _destinations = d; _loading = false; });
+    try {
+      final supabase = Supabase.instance.client;
+      final currentUser = context.read<RoleProvider>().currentUser;
+      final userInterests = currentUser?.interests ?? [];
+
+      final guideRes = await supabase
+          .from('profiles')
+          .select('*, guide_profiles(*)')
+          .eq('role', 'guide')
+          .eq('isVerified', true);
+          
+      final List<Guide> loadedGuides = (guideRes as List).map((e) {
+        final dynamic gpData = e['guide_profiles'];
+        final Map<String, dynamic> gp = (gpData is List && gpData.isNotEmpty) 
+            ? gpData.first 
+            : (gpData is Map<String, dynamic> ? gpData : {});
+        
+        String priceString = '₱₱';
+        if (gp['price_min'] != null && gp['price_max'] != null) {
+          priceString = '₱${gp['price_min']} - ₱${gp['price_max']} / hr';
+        }
+
+        // Calculate dynamic match score
+        final guideSpecialties = List<String>.from(gp['specialties'] ?? []);
+        int matchScore = 70; // default minimum for verified guides
+        
+        if (userInterests.isNotEmpty && guideSpecialties.isNotEmpty) {
+          final common = userInterests.where((interest) => 
+            guideSpecialties.any((spec) => spec.toLowerCase().contains(interest.toLowerCase()) || 
+                                           interest.toLowerCase().contains(spec.toLowerCase()))
+          ).toList();
+          
+          if (common.isNotEmpty) {
+            matchScore = ((common.length / userInterests.length) * 100).round();
+            if (matchScore < 75) matchScore = 75; // boost slightly for presentation
+            if (matchScore > 98) matchScore = 98; // keep it realistic
+          }
+        }
+
+        return Guide(
+          id: e['id'],
+          name: e['name'] ?? 'Unknown Guide',
+          city: e['location'] ?? 'Philippines',
+          specialties: guideSpecialties,
+          rating: (gp['rating'] ?? 5.0).toDouble(),
+          tripCount: gp['tripCount'] ?? 0,
+          bio: e['bio'] ?? 'Hello, I am a tour guide.',
+          certifications: List<String>.from(gp['certifications'] ?? []),
+          photoUrl: e['avatarUrl'] ?? 'https://picsum.photos/seed/${e['id']}/200/200',
+          bannerUrl: gp['bannerUrl'] ?? 'https://picsum.photos/seed/banner_${e['id']}/400/200',
+          isVerified: e['isVerified'] ?? false,
+          languages: List<String>.from(e['languages'] ?? ['English']),
+          priceRange: priceString,
+          yearsExperience: gp['yearsExperience'] ?? 1,
+          guideType: gp['guideType'] ?? 'community',
+          communityArea: gp['communityArea'] ?? '',
+          fullStory: gp['fullStory'] ?? '',
+          acceptedPayments: List<String>.from(gp['acceptedPayments'] ?? ['Cash']),
+          matchScore: matchScore, 
+        );
+      }).toList();
+
+      final mGuides = await MockData.getGuides();
+      final allGuides = [...loadedGuides, ...mGuides];
+
+      final d = await MockData.getDestinations();
+      if (mounted) setState(() { _guides = allGuides; _destinations = d; _loading = false; });
+    } catch (e) {
+      debugPrint('Error loading real guides: $e');
+      final g = await MockData.getGuides();
+      final d = await MockData.getDestinations();
+      if (mounted) setState(() { _guides = g; _destinations = d; _loading = false; });
+    }
   }
 
   @override
@@ -93,7 +165,11 @@ class _ExploreTabState extends State<ExploreTab> {
         Expanded(
           child: _loading
             ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
-            : _buildContent(),
+            : RefreshIndicator(
+                onRefresh: _load,
+                color: AppColors.primary,
+                child: _buildContent(),
+              ),
         ),
       ]),
     );

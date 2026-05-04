@@ -39,11 +39,16 @@ class AdminVerificationDetailScreen extends StatelessWidget {
 
   Map<String, String?> _extractDocuments() {
     if (type == 'guide') {
+      final portfolioUrls = data['portfolio_urls'];
+      String? firstPortfolioUrl;
+      if (portfolioUrls != null && portfolioUrls is List && portfolioUrls.isNotEmpty) {
+        firstPortfolioUrl = portfolioUrls.first.toString();
+      }
+
       return {
-        'ID Front': data['id_front_url'],
-        'ID Back': data['id_back_url'],
-        'Selfie': data['selfie_url'],
+        'Valid ID': data['id_url'],
         'CV/Resume': data['cv_url'],
+        'Portfolio': firstPortfolioUrl,
         'DOT Accreditation': data['dot_cert_url'],
         'Barangay Clearance': data['barangay_clearance_url'],
         'Birth Certificate': data['birth_cert_url'],

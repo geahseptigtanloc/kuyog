@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/itinerary_provider.dart';
 import '../../../app_theme.dart';
 import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_mascot.dart';
+
+class _GuideOption {
+  final String id;
+  final String name;
+  _GuideOption({required this.id, required this.name});
+}
 
 class ItineraryCreateScreen extends StatefulWidget {
   final dynamic preAssignedGuide;
@@ -13,18 +22,105 @@ class ItineraryCreateScreen extends StatefulWidget {
 class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
   int _step = 0;
   final _nameCtrl = TextEditingController(text: 'My Mindanao Adventure');
-  String _selectedGuide = '';
+  List<_GuideOption> _guideOptions = [
+    _GuideOption(id: 'mock_1', name: 'Rico Magbanua'),
+    _GuideOption(id: 'mock_2', name: 'Amina Lidasan'),
+    _GuideOption(id: 'mock_3', name: 'Ben Tiumalu'),
+  ];
+  _GuideOption? _selectedGuideOption;
+  
   final List<String> _selectedDests = [];
   DateTimeRange? _dates;
 
-  final _guideOptions = ['Rico Magbanua', 'Amina Lidasan', 'Ben Tiumalu'];
   final _destOptions = ['Mt. Apo', 'Samal Island', 'Enchanted River', 'Lake Sebu', 'Tinuy-an Falls', 'Siargao'];
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     if (widget.preAssignedGuide != null) {
-      _selectedGuide = widget.preAssignedGuide.name;
+      _selectedGuideOption = _GuideOption(
+        id: widget.preAssignedGuide.id,
+        name: widget.preAssignedGuide.name,
+      );
+    }
+    _fetchGuides();
+  }
+
+  Future<void> _fetchGuides() async {
+    try {
+      final res = await Supabase.instance.client
+          .from('profiles')
+          .select('id, name')
+          .eq('role', 'guide')
+          .limit(10);
+      
+      if ((res as List).isNotEmpty) {
+        if (mounted) {
+          setState(() {
+            _guideOptions = res.map((g) => _GuideOption(id: g['id'], name: g['name'])).toList();
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching guides, using mock data: $e');
+    }
+  }
+
+  Future<void> _submitItinerary() async {
+    setState(() => _isLoading = true);
+    try {
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
+      
+      // Calculate duration
+      int duration = 1;
+      if (_dates != null) {
+        duration = _dates!.end.difference(_dates!.start).inDays + 1;
+      }
+
+      String? guideId;
+      if (widget.preAssignedGuide != null) {
+        guideId = widget.preAssignedGuide.id;
+      } else if (_selectedGuideOption != null) {
+        guideId = _selectedGuideOption!.id;
+      }
+
+      // Validate if it's a real UUID. Mock IDs like 'g2' will crash Postgres.
+      final uuidRegex = RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$');
+      if (guideId != null && !uuidRegex.hasMatch(guideId)) {
+        guideId = null;
+      }
+
+      await supabase.from('itineraries').insert({
+        'touristId': userId,
+        'guideId': guideId,
+        'title': _nameCtrl.text,
+        'status': 'Draft',
+        'start_date': _dates?.start.toIso8601String(),
+        'end_date': _dates?.end.toIso8601String(),
+        'durationDays': duration,
+        'creationMode': 'own',
+        'destination': _selectedDests.isNotEmpty ? _selectedDests.first : 'Mindanao',
+      });
+      
+      if (mounted) {
+        context.read<ItineraryProvider>().refresh();
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Itinerary created successfully!', style: AppTheme.body(size: 14, color: Colors.white)), backgroundColor: AppColors.primary)
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error creating itinerary: $e'), backgroundColor: AppColors.warning)
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -167,9 +263,13 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
       const SizedBox(height: 4),
       Text('A local guide can help customize your trip', style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
       const SizedBox(height: 16),
-      ..._guideOptions.map((g) => _selectableTile(g, _selectedGuide == g, Icons.explore, () => setState(() => _selectedGuide = g))),
+      ..._guideOptions.map((g) => _selectableTile(
+            g.name, 
+            _selectedGuideOption?.id == g.id, 
+            Icons.explore, 
+            () => setState(() => _selectedGuideOption = g))),
       const SizedBox(height: 12),
-      TextButton(onPressed: () => setState(() => _selectedGuide = ''), child: const Text('Skip — I\'ll explore solo')),
+      TextButton(onPressed: () => setState(() => _selectedGuideOption = null), child: const Text('Skip — I\'ll explore solo')),
     ]);
   }
 
@@ -195,7 +295,7 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
         const SizedBox(height: 16),
         _reviewRow('Trip Name', _nameCtrl.text),
         _reviewRow('Dates', _dates != null ? '${_fmt(_dates!.start)} - ${_fmt(_dates!.end)}' : 'Not set'),
-        _reviewRow('Guide', _selectedGuide.isEmpty ? 'Solo trip' : _selectedGuide),
+        _reviewRow('Guide', _selectedGuideOption == null ? 'Solo trip' : _selectedGuideOption!.name),
         _reviewRow('Destinations', _selectedDests.isEmpty ? 'None selected' : _selectedDests.join(', ')),
         const SizedBox(height: 24),
         Container(
@@ -256,13 +356,14 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
           Expanded(child: OutlinedButton(onPressed: () => setState(() => _step--), child: const Text('Back'))),
         if (_step > 0) const SizedBox(width: 12),
         Expanded(child: ElevatedButton(
-          onPressed: () {
+          onPressed: _isLoading ? null : () {
             if (_step < 3) { setState(() => _step++); }
-            else { Navigator.pop(context); ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Itinerary created!', style: AppTheme.body(size: 14, color: Colors.white)), backgroundColor: AppColors.primary)); }
+            else { _submitItinerary(); }
           },
           style: ElevatedButton.styleFrom(backgroundColor: _step == 3 ? AppColors.accent : AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 14)),
-          child: Text(_step == 3 ? 'Create Itinerary' : 'Next', style: const TextStyle(fontSize: 15)),
+          child: _isLoading 
+            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+            : Text(_step == 3 ? 'Create Itinerary' : 'Next', style: const TextStyle(fontSize: 15)),
         )),
       ]),
     );

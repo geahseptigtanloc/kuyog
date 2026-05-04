@@ -20,7 +20,7 @@ class GuideHomeTab extends StatelessWidget {
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.all(20),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (role.currentUser?.verificationStatus == 'approved')
+            if (role.currentUser?.isVerified == true)
               Row(children: [
                 const Icon(Icons.verified, size: 14, color: AppColors.verified),
                 const SizedBox(width: 4),
@@ -140,9 +140,11 @@ class GuideHomeTab extends StatelessWidget {
 
   Widget _verifyBanner(BuildContext context) {
     final roleProvider = Provider.of<RoleProvider>(context, listen: false);
-    final status = roleProvider.currentUser?.verificationStatus ?? 'pending';
+    final isVerified = roleProvider.currentUser?.isVerified ?? false;
     
-    if (status == 'approved') return const SizedBox.shrink(); // Hide if approved
+    if (isVerified) return const SizedBox.shrink(); // Hide if approved
+    
+    final status = 'pending'; // In the future, we could query `guide_verifications` for accurate status.
 
     Color bgColor;
     Color iconColor;

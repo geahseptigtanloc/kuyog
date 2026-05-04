@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../app_theme.dart';
 import '../../widgets/kuyog_back_button.dart';
+import '../../providers/role_provider.dart';
 
 class GuidePricingScreen extends StatefulWidget {
   const GuidePricingScreen({super.key});
@@ -9,8 +12,75 @@ class GuidePricingScreen extends StatefulWidget {
 }
 
 class _GuidePricingScreenState extends State<GuidePricingScreen> {
-  final _hourlyCtrl = TextEditingController(text: '350');
-  final _dailyCtrl = TextEditingController(text: '2500');
+  final _hourlyCtrl = TextEditingController();
+  final _dailyCtrl = TextEditingController();
+  bool _isLoading = true;
+  bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPricing();
+  }
+
+  Future<void> _loadPricing() async {
+    final user = context.read<RoleProvider>().currentUser;
+    if (user == null) {
+      if (mounted) setState(() => _isLoading = false);
+      return;
+    }
+
+    try {
+      final res = await Supabase.instance.client
+          .from('guide_profiles')
+          .select('price_min, price_max')
+          .eq('profile_id', user.id)
+          .maybeSingle();
+
+      if (res != null && mounted) {
+        _hourlyCtrl.text = res['price_min']?.toString() ?? '';
+        _dailyCtrl.text = res['price_max']?.toString() ?? '';
+      }
+    } catch (e) {
+      debugPrint('Error loading pricing: $e');
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _savePricing() async {
+    final user = context.read<RoleProvider>().currentUser;
+    if (user == null) return;
+
+    setState(() => _isSaving = true);
+    
+    try {
+      final updates = {
+        'price_min': double.tryParse(_hourlyCtrl.text) ?? 0.0,
+        'price_max': double.tryParse(_dailyCtrl.text) ?? 0.0,
+      };
+
+      await Supabase.instance.client
+          .from('guide_profiles')
+          .update(updates)
+          .eq('profile_id', user.id);
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Rates updated successfully!'), backgroundColor: AppColors.success)
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update rates: $e'), backgroundColor: AppColors.error)
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
 
   @override
   void dispose() { _hourlyCtrl.dispose(); _dailyCtrl.dispose(); super.dispose(); }
@@ -30,7 +100,9 @@ class _GuidePricingScreenState extends State<GuidePricingScreen> {
             ]),
           ),
           Expanded(
-            child: ListView(
+            child: _isLoading 
+            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            : ListView(
               padding: const EdgeInsets.all(20),
               physics: const BouncingScrollPhysics(),
               children: [
@@ -48,11 +120,10 @@ class _GuidePricingScreenState extends State<GuidePricingScreen> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Rates updated'), backgroundColor: AppColors.primary));
-                },
-                child: const Text('Save Rates'),
+                onPressed: _isLoading || _isSaving ? null : _savePricing,
+                child: _isSaving 
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : const Text('Save Rates'),
               ),
             ),
           ),

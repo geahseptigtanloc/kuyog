@@ -52,7 +52,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
       // Save to verification table (upsert)
       await onboarding.submitGuideVerification(
         userId: user.id,
-        idFrontUrl: idUrl,
+        idUrl: idUrl,
       );
       
       widget.onNext();

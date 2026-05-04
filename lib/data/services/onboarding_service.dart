@@ -79,8 +79,6 @@ class OnboardingService {
     required String userId,
     String status = 'submitted',
     String? cvUrl,
-    String? idFrontUrl,
-    String? idBackUrl,
     String? selfieUrl,
     String? dotCertUrl,
     String? barangayClearanceUrl,
@@ -88,13 +86,12 @@ class OnboardingService {
     String? nbiClearanceUrl,
     String? applicationFormUrl,
     List<String>? portfolioUrls,
+    String? idUrl,
   }) async {
     final data = {
       'guide_id': userId,
       'status': status,
       if (cvUrl != null) 'cv_url': cvUrl,
-      if (idFrontUrl != null) 'id_front_url': idFrontUrl,
-      if (idBackUrl != null) 'id_back_url': idBackUrl,
       if (selfieUrl != null) 'selfie_url': selfieUrl,
       if (dotCertUrl != null) 'dot_cert_url': dotCertUrl,
       if (barangayClearanceUrl != null) 'barangay_clearance_url': barangayClearanceUrl,
@@ -102,6 +99,7 @@ class OnboardingService {
       if (nbiClearanceUrl != null) 'nbi_clearance_url': nbiClearanceUrl,
       if (applicationFormUrl != null) 'application_form_url': applicationFormUrl,
       if (portfolioUrls != null) 'portfolio_urls': portfolioUrls,
+      if (idUrl != null) 'id_url': idUrl,
       'submitted_at': DateTime.now().toIso8601String(),
     };
 

@@ -11,6 +11,8 @@ class User {
   final DateTime joinedDate;
   final String bio;
   final bool isOnboarded;
+  final List<String> languages;
+  final List<String> interests;
 
   const User({
     required this.id,
@@ -25,6 +27,8 @@ class User {
     required this.joinedDate,
     this.bio = '',
     this.isOnboarded = false,
+    this.languages = const [],
+    this.interests = const [],
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -43,6 +47,12 @@ class User {
           : DateTime.now(),
       bio: json['bio'] ?? '',
       isOnboarded: json['is_onboarded'] ?? false,
+      languages: json['languages'] != null ? List<String>.from(json['languages']) : [],
+      interests: json['tourist_preferences'] != null && json['tourist_preferences'] is Map 
+          ? List<String>.from(json['tourist_preferences']['interests'] ?? []) 
+          : (json['tourist_preferences'] != null && json['tourist_preferences'] is List && (json['tourist_preferences'] as List).isNotEmpty
+              ? List<String>.from(json['tourist_preferences'][0]['interests'] ?? [])
+              : []),
     );
   }
 
@@ -60,6 +70,8 @@ class User {
       'joinedDate': joinedDate.toIso8601String(),
       'bio': bio,
       'is_onboarded': isOnboarded,
+      'languages': languages,
+      'interests': interests,
     };
   }
 
@@ -76,6 +88,7 @@ class User {
     DateTime? joinedDate,
     String? bio,
     bool? isOnboarded,
+    List<String>? languages,
   }) {
     return User(
       id: id ?? this.id,
@@ -90,6 +103,8 @@ class User {
       joinedDate: joinedDate ?? this.joinedDate,
       bio: bio ?? this.bio,
       isOnboarded: isOnboarded ?? this.isOnboarded,
+      languages: languages ?? this.languages,
+      interests: interests ?? this.interests,
     );
   }
 }
