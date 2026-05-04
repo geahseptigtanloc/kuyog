@@ -4,7 +4,8 @@ import '../../../app_theme.dart';
 import '../../../widgets/kuyog_back_button.dart';
 
 class ItineraryBrowseScreen extends StatefulWidget {
-  const ItineraryBrowseScreen({super.key});
+  final dynamic preAssignedGuide;
+  const ItineraryBrowseScreen({super.key, this.preAssignedGuide});
   @override
   State<ItineraryBrowseScreen> createState() => _ItineraryBrowseScreenState();
 }
@@ -37,6 +38,28 @@ class _ItineraryBrowseScreenState extends State<ItineraryBrowseScreen> {
               Text('Browse Itineraries', style: AppTheme.headline(size: 22)),
             ]),
           ),
+          if (widget.preAssignedGuide != null)
+            Container(
+              margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: AppColors.primary, size: 18),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Guide selected: ${widget.preAssignedGuide.name}. This guide will be assigned to whichever itinerary you choose.',
+                      style: AppTheme.body(size: 12, color: AppColors.primary),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           const SizedBox(height: 12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),

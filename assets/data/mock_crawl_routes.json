@@ -1,0 +1,32 @@
+[
+  {
+    "id": "route_001",
+    "name": "Davao Coffee Crawl",
+    "region": "Davao Region",
+    "guide_id": "g001",
+    "duration_hours": 4,
+    "max_pax": 12,
+    "stops_count": 5,
+    "miles_earned": 600,
+    "price_per_person": 850,
+    "type": "guide_led",
+    "inclusions": ["Stamps Included", "Miles Earned", "Merch Discount"],
+    "photo_url": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800",
+    "stops": ["cs001", "cs003", "cs005", "cs007", "cs009"]
+  },
+  {
+    "id": "route_002",
+    "name": "T'boli Heritage Trail",
+    "region": "South Cotabato",
+    "guide_id": "g002",
+    "duration_hours": 8,
+    "max_pax": 8,
+    "stops_count": 6,
+    "miles_earned": 1000,
+    "price_per_person": 1200,
+    "type": "guide_led",
+    "inclusions": ["Cultural Guide", "Local Lunch", "Weaving Demo"],
+    "photo_url": "https://images.unsplash.com/photo-1540959733332-e94e270b4d48?w=800",
+    "stops": ["cs010", "cs011", "cs012"]
+  }
+]

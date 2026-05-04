@@ -53,6 +53,12 @@ class CrawlSpot {
   final String description;
   final String imageUrl;
   final bool isCollected;
+  final int milesReward;
+  final bool isFeatured;
+  final bool durieHere;
+  final String proximityHint;
+  final List<String> guideLedRoutes;
+  final bool seasonMerchAvailable;
 
   const CrawlSpot({
     required this.id,
@@ -62,6 +68,12 @@ class CrawlSpot {
     this.description = '',
     this.imageUrl = '',
     this.isCollected = false,
+    this.milesReward = 100,
+    this.isFeatured = false,
+    this.durieHere = false,
+    this.proximityHint = 'cold',
+    this.guideLedRoutes = const [],
+    this.seasonMerchAvailable = false,
   });
 
   factory CrawlSpot.fromJson(Map<String, dynamic> json) {
@@ -73,6 +85,12 @@ class CrawlSpot {
       description: json['description'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
       isCollected: json['isCollected'] ?? false,
+      milesReward: json['miles_reward'] ?? 100,
+      isFeatured: json['is_featured'] ?? false,
+      durieHere: json['durie_here'] ?? false,
+      proximityHint: json['proximity_hint'] ?? 'cold',
+      guideLedRoutes: List<String>.from(json['guide_led_routes'] ?? []),
+      seasonMerchAvailable: json['season_merch_available'] ?? false,
     );
   }
 }

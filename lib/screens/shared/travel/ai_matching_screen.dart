@@ -8,11 +8,14 @@ import '../../../models/tour_operator.dart';
 import '../../../providers/travel_provider.dart';
 import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_mascot.dart';
+import '../../../widgets/kuyog_app_bar.dart';
+import '../../tourist/guide_profile_screen.dart';
 
 class AIMatchingScreen extends StatefulWidget {
-  final String nextRoute;
+  final String? nextRoute;
+  final VoidCallback? onBack;
   
-  const AIMatchingScreen({super.key, required this.nextRoute});
+  const AIMatchingScreen({super.key, this.nextRoute, this.onBack});
 
   @override
   State<AIMatchingScreen> createState() => _AIMatchingScreenState();
@@ -56,11 +59,19 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
           length: hasOperators ? 2 : 1,
           child: Scaffold(
             backgroundColor: AppColors.background,
-            appBar: AppBar(
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: KuyogBackButton(onTap: () => Navigator.pop(context)),
-              title: Text('Your Perfect Matches', style: AppTheme.headline(size: 20)),
+            appBar: KuyogAppBar(
+              title: 'Your Perfect Match',
+              leading: widget.onBack != null
+                  ? IconButton(
+                      icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+                      onPressed: widget.onBack,
+                    )
+                  : (Navigator.canPop(context) 
+                      ? IconButton(
+                          icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      : null),
               bottom: hasOperators ? TabBar(
                 labelColor: AppColors.primary,
                 unselectedLabelColor: AppColors.textSecondary,
@@ -237,7 +248,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                         children: [
                           Row(
                             children: [
-                              Text(guide.name, style: AppTheme.headline(size: 18, color: Colors.white)),
+                              Expanded(child: Text(guide.name, style: AppTheme.headline(size: 18, color: Colors.white))),
                               if (guide.isVerified) ...[
                                 const SizedBox(width: 4),
                                 const Icon(Icons.verified, size: 16, color: Colors.blue),
@@ -248,9 +259,24 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                             children: [
                               const Icon(Icons.location_on, size: 12, color: Colors.white70),
                               const SizedBox(width: 4),
-                              Text(guide.city, style: AppTheme.body(size: 12, color: Colors.white70)),
+                              Expanded(child: Text(guide.city, style: AppTheme.body(size: 12, color: Colors.white70))),
                             ],
                           ),
+                          if (provider.travelType == 'group') ...[
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.group, size: 12, color: AppColors.accent),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    'Available for groups of up to ${guide.maxGroupSize} people',
+                                    style: AppTheme.label(size: 10, color: AppColors.accent),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -305,9 +331,10 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                   child: ElevatedButton(
                     onPressed: () {
                       provider.selectGuide(guide.id);
-                      // Navigator to the next step (itinerary create or profile)
-                      // In a real app, we'd handle the navigation differently depending on entry point
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Guide Selected!')));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => GuideProfileScreen(guide: guide)),
+                      );
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
                     child: const Text('Select Guide'),

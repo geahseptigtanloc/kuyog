@@ -5,6 +5,7 @@ import '../providers/role_provider.dart';
 import '../widgets/kuyog_bottom_nav.dart';
 import '../widgets/role_switcher_fab.dart';
 import '../widgets/offline_banner.dart';
+import '../providers/navigation_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -20,8 +21,7 @@ import 'guide/guide_home_tab.dart';
 import 'guide/clients_tab.dart';
 import 'guide/match_requests_screen.dart';
 import 'guide/guide_profile_tab.dart';
-import 'shared/itinerary/tourist_itinerary_hub_screen.dart';
-import 'shared/itinerary/guide_itinerary_hub_screen.dart';
+import 'shared/travel/travel_hub_screen.dart';
 import 'merchant/merchant_dashboard_tab.dart';
 import 'merchant/merchant_listings_tab.dart';
 import 'merchant/merchant_orders_tab.dart';
@@ -43,14 +43,13 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int _currentIndex = 0;
 
   List<Widget> _getTabs(UserRole role) {
     switch (role) {
       case UserRole.tourist:
-        return [const TouristHomeTab(), const ExploreTab(), const StoryhubTab(), const TouristItineraryHubScreen()];
+        return const [TouristHomeTab(), ExploreTab(), StoryhubTab(), TravelHubScreen(), TouristProfileTab()];
       case UserRole.guide:
-        return [const GuideHomeTab(), const ClientsTab(), const ExploreTab(), const GuideItineraryHubScreen()];
+        return const [GuideHomeTab(), ClientsTab(), ExploreTab(), TravelHubScreen(), GuideProfileTab()];
       case UserRole.merchant:
         return [const MerchantDashboardTab(), const MerchantListingsTab(), const MerchantOrdersTab(), const MerchantProfileTab()];
       case UserRole.admin:
@@ -66,13 +65,15 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RoleProvider>(
-      builder: (context, roleProvider, _) {
+    return Consumer2<RoleProvider, NavigationProvider>(
+      builder: (context, roleProvider, navProvider, _) {
         final tabs = _getTabs(roleProvider.currentRole);
-        final safeIndex = _currentIndex.clamp(0, tabs.length - 1);
-        if (safeIndex != _currentIndex) {
+        final currentIndex = navProvider.selectedIndex;
+        final safeIndex = currentIndex.clamp(0, tabs.length - 1);
+        
+        if (safeIndex != currentIndex) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() => _currentIndex = safeIndex);
+            navProvider.setIndex(safeIndex);
           });
         }
 
@@ -94,7 +95,7 @@ class _AppShellState extends State<AppShell> {
           bottomNavigationBar: KuyogBottomNav(
             currentIndex: safeIndex,
             role: roleProvider.currentRole,
-            onTap: (i) => setState(() => _currentIndex = i),
+            onTap: (i) => navProvider.setIndex(i),
           ),
           floatingActionButton: _buildFabs(roleProvider.currentRole, safeIndex),
           floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:kuyog/models/crawl_route.dart';
 import '../models/guide.dart';
 import '../models/destination.dart';
 import '../models/post.dart';
@@ -28,6 +29,8 @@ class MockData {
   static List<MatchRequest>? _matchRequests;
   static List<TourOperator>? _tourOperators;
   static List<GroupTrip>? _groupTrips;
+  static List<CrawlRoute>? _crawlRoutes;
+  static List<Map<String, dynamic>>? _crawlMerch;
 
   static Future<List<T>> _load<T>(String path, T Function(Map<String, dynamic>) fromJson) async {
     final data = await rootBundle.loadString(path);
@@ -98,5 +101,19 @@ class MockData {
   static Future<List<GroupTrip>> getGroupTrips() async {
     _groupTrips ??= await _load('assets/data/mock_group_trips.json', GroupTrip.fromJson);
     return _groupTrips!;
+  }
+
+  static Future<List<CrawlRoute>> getCrawlRoutes() async {
+    _crawlRoutes ??= await _load('assets/data/mock_crawl_routes.json', CrawlRoute.fromJson);
+    return _crawlRoutes!;
+  }
+
+  static Future<List<Map<String, dynamic>>> getCrawlMerch() async {
+    if (_crawlMerch == null) {
+      final data = await rootBundle.loadString('assets/data/crawl_merch.json');
+      final list = json.decode(data) as List;
+      _crawlMerch = list.map((e) => e as Map<String, dynamic>).toList();
+    }
+    return _crawlMerch!;
   }
 }

@@ -4,11 +4,15 @@ import '../../../app_theme.dart';
 import '../../../providers/travel_provider.dart';
 import '../../../widgets/durie_mascot.dart';
 import '../../../widgets/kuyog_back_button.dart';
+import 'group_setup_screen.dart';
+import 'ai_matching_screen.dart';
 
 class TravelTypeScreen extends StatefulWidget {
-  final VoidCallback onContinue;
+  final String? initialType; // 'Solo' or 'Group'
+  final VoidCallback? onBack;
+  final Function(String travelType, String guideType)? onContinue;
 
-  const TravelTypeScreen({super.key, required this.onContinue});
+  const TravelTypeScreen({super.key, this.initialType, this.onBack, this.onContinue});
 
   @override
   State<TravelTypeScreen> createState() => _TravelTypeScreenState();
@@ -19,19 +23,39 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
   String? _selectedGuideType;
   bool _showComparison = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _selectedTravelType = widget.initialType?.toLowerCase() ?? 'solo';
+  }
+
   void _onContinue(BuildContext context) {
     if (_selectedTravelType != null && _selectedGuideType != null) {
-      context.read<TravelProvider>().setTravelAndGuideType(
-            _selectedTravelType!,
-            _selectedGuideType!,
+      if (widget.onContinue != null) {
+        widget.onContinue!(_selectedTravelType!, _selectedGuideType!);
+      } else {
+        context.read<TravelProvider>().setTravelAndGuideType(
+              _selectedTravelType!,
+              _selectedGuideType!,
+            );
+        if (_selectedTravelType == 'group') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const GroupSetupScreen()),
           );
-      widget.onContinue();
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AIMatchingScreen()),
+          );
+        }
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool canContinue = _selectedTravelType != null && _selectedGuideType != null;
+    final bool canContinue = _selectedGuideType != null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -49,26 +73,30 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
                     const DurieMascot(size: 80),
                     const SizedBox(height: 16),
                     Text(
-                      'Choose your travel style to get the best guide recommendations.',
+                      'Select your guide type to get the best matches for your ${_selectedTravelType ?? ''} trip.',
                       style: AppTheme.body(size: 15, color: AppColors.textSecondary),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
-                    _buildTravelCard(
-                      type: 'solo',
-                      icon: Icons.person_outline,
-                      title: 'Travel as Individual',
-                      description: 'Just you, exploring Mindanao at your own pace.',
+                    
+                    _buildGuideCard(
+                      type: 'community',
+                      icon: Icons.nature_people,
+                      title: 'Community Guide',
+                      description: 'Local barangay-level guide. LGU endorsed. 7-day training. Best for local spots, cultural immersion, and hidden gems.',
+                      badge: 'Community Certified',
+                      color: AppColors.primary,
                     ),
                     const SizedBox(height: 16),
-                    _buildTravelCard(
-                      type: 'group',
-                      icon: Icons.groups_outlined,
-                      title: 'Travel as Group',
-                      description: 'Traveling with friends, family, or colleagues? Let\'s plan together.',
+                    _buildGuideCard(
+                      type: 'regional',
+                      icon: Icons.hiking,
+                      title: 'Regional Guide',
+                      description: 'DOT accredited. 30-day training. Covers broader regional destinations, national parks, and multi-day cross-province tours.',
+                      badge: 'DOT Accredited',
+                      color: Colors.blue[700]!,
                     ),
-                    const SizedBox(height: 24),
-                    _buildComparisonSection(),
+                    
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -86,43 +114,40 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
       padding: const EdgeInsets.fromLTRB(12, 12, 20, 12),
       child: Row(
         children: [
-          KuyogBackButton(onTap: () => Navigator.pop(context)),
+          KuyogBackButton(onTap: widget.onBack ?? () => Navigator.pop(context)),
           Expanded(
             child: Text(
-              'How are you traveling?',
+              'Choose Your Guide Type',
               style: AppTheme.headline(size: 20),
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(width: 40), // Balance back button
+          const SizedBox(width: 40), 
         ],
       ),
     );
   }
 
-  Widget _buildTravelCard({
+  Widget _buildGuideCard({
     required String type,
     required IconData icon,
     required String title,
     required String description,
+    required String badge,
+    required Color color,
   }) {
-    final bool isSelected = _selectedTravelType == type;
+    final bool isSelected = _selectedGuideType == type;
 
     return GestureDetector(
-      onTap: () => setState(() {
-        if (_selectedTravelType != type) {
-          _selectedTravelType = type;
-          _selectedGuideType = null; // Reset guide type on travel type change
-        }
-      }),
+      onTap: () => setState(() => _selectedGuideType = type),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.divider,
+            color: isSelected ? color : AppColors.divider,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected ? AppShadows.cardHover : AppShadows.card,
@@ -132,201 +157,30 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
           children: [
             Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary.withOpacity(0.1) : AppColors.background,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(icon, color: isSelected ? AppColors.primary : AppColors.textSecondary),
-                ),
+                Icon(icon, size: 32, color: color),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: AppTheme.headline(size: 18, color: isSelected ? AppColors.primary : AppColors.textPrimary)),
+                      Text(title, style: AppTheme.headline(size: 18, color: isSelected ? color : AppColors.textPrimary)),
                       const SizedBox(height: 4),
-                      Text(description, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                        child: Text(badge, style: AppTheme.label(size: 10, color: color)),
+                      ),
                     ],
                   ),
                 ),
+                if (isSelected)
+                   Icon(Icons.check_circle, color: color, size: 24),
               ],
             ),
-            if (isSelected) ...[
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 12),
-              Text('Select Guide Type:', style: AppTheme.label(size: 13)),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildGuideChip(
-                      guideType: 'community',
-                      label: 'Community Guide',
-                      icon: Icons.eco,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildGuideChip(
-                      guideType: 'regional',
-                      label: 'Regional Guide',
-                      icon: Icons.terrain,
-                      color: AppColors.touristBlue,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            const SizedBox(height: 16),
+            Text(description, style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildGuideChip({
-    required String guideType,
-    required String label,
-    required IconData icon,
-    required Color color,
-  }) {
-    final bool isSelected = _selectedGuideType == guideType;
-
-    return GestureDetector(
-      onTap: () => setState(() => _selectedGuideType = guideType),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? color : Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(
-            color: isSelected ? color : color.withOpacity(0.5),
-            width: 1.5,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 20, color: isSelected ? Colors.white : color),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: AppTheme.label(
-                size: 11,
-                color: isSelected ? Colors.white : AppColors.textPrimary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildComparisonSection() {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () => setState(() => _showComparison = !_showComparison),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("What's the difference?", style: AppTheme.label(size: 14, color: AppColors.primary)),
-              const SizedBox(width: 4),
-              Icon(
-                _showComparison ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-                color: AppColors.primary,
-              ),
-            ],
-          ),
-        ),
-        if (_showComparison) ...[
-          const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(AppRadius.lg),
-              boxShadow: AppShadows.card,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.eco, size: 16, color: AppColors.primary),
-                              const SizedBox(width: 6),
-                              Expanded(child: Text('Community Guide', style: AppTheme.label(size: 14, color: AppColors.primary))),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          _comparisonItem('Local community area'),
-                          _comparisonItem('7-day training'),
-                          _comparisonItem('LGU endorsed'),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Best for: local spots, barangay experiences, cultural immersion',
-                            style: AppTheme.body(size: 11, color: AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(width: 1, height: 140, color: AppColors.divider, margin: const EdgeInsets.symmetric(horizontal: 12)),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.terrain, size: 16, color: AppColors.touristBlue),
-                              const SizedBox(width: 6),
-                              Expanded(child: Text('Regional Guide', style: AppTheme.label(size: 14, color: AppColors.touristBlue))),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          _comparisonItem('Broader regional coverage'),
-                          _comparisonItem('30-day training'),
-                          _comparisonItem('DOT Accredited'),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Best for: cross-province adventures, national parks, multi-day tours',
-                            style: AppTheme.body(size: 11, color: AppColors.textSecondary),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _comparisonItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 4),
-            child: Icon(Icons.circle, size: 4, color: AppColors.textSecondary),
-          ),
-          const SizedBox(width: 6),
-          Expanded(child: Text(text, style: AppTheme.body(size: 12))),
-        ],
       ),
     );
   }

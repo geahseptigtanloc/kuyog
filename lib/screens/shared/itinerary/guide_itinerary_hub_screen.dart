@@ -242,17 +242,20 @@ class _GuideItineraryHubScreenState extends State<GuideItineraryHubScreen> {
                 ]),
               ],
               const SizedBox(height: 4),
-              Row(children: [
-                const Icon(Icons.place, size: 12, color: AppColors.textLight),
-                Text(' ${itin.stopsCount} stops', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                const SizedBox(width: 8),
-                const Icon(Icons.calendar_today, size: 12, color: AppColors.textLight),
-                Text(' ${itin.dateRange.isNotEmpty ? itin.dateRange : '${itin.durationDays}d'}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                if (itin.estimatedCost > 0) ...[
-                  const SizedBox(width: 8),
-                  const Icon(Icons.payments, size: 12, color: AppColors.textLight),
-                  Text(' ₱${itin.estimatedCost.toStringAsFixed(0)}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
-                ],
+              Wrap(spacing: 8, runSpacing: 4, children: [
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.place, size: 12, color: AppColors.textLight),
+                  Text(' ${itin.stopsCount} stops', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                ]),
+                Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.calendar_today, size: 12, color: AppColors.textLight),
+                  Text(' ${itin.dateRange.isNotEmpty ? itin.dateRange : '${itin.durationDays}d'}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                ]),
+                if (itin.estimatedCost > 0)
+                  Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Icon(Icons.payments, size: 12, color: AppColors.textLight),
+                    Text(' ₱${itin.estimatedCost.toStringAsFixed(0)}', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                  ]),
               ]),
               const SizedBox(height: 4),
               Row(children: [

@@ -3,15 +3,23 @@ import '../../../app_theme.dart';
 import '../../../widgets/kuyog_back_button.dart';
 
 class ItineraryDetailScreen extends StatelessWidget {
-  final String title;
-  final String status;
-  final Color statusColor;
+  final String? title;
+  final String? status;
+  final Color? statusColor;
+  final String? itineraryId;
+  final bool isDraft;
+  final bool isCollaborative;
+  final dynamic preAssignedGuide;
 
   const ItineraryDetailScreen({
     super.key,
-    required this.title,
-    required this.status,
-    required this.statusColor,
+    this.title,
+    this.status,
+    this.statusColor,
+    this.itineraryId,
+    this.isDraft = false,
+    this.isCollaborative = false,
+    this.preAssignedGuide,
   });
 
   @override
@@ -28,6 +36,7 @@ class ItineraryDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
+                  if (isCollaborative) _buildCollaborationBanner(),
                   const SizedBox(height: 24),
                   _buildDays(),
                   const SizedBox(height: 80),
@@ -59,6 +68,11 @@ class ItineraryDetailScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
+    final displayStatus = isDraft ? 'Draft' : (status ?? 'Active');
+    final displayStatusColor = isDraft ? AppColors.warning : (statusColor ?? AppColors.primary);
+    final displayTitle = title ?? (isDraft ? 'New Collaborative Trip' : 'My Mindanao Adventure');
+    final guideName = preAssignedGuide?.name ?? 'Rico Magbanua';
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -67,12 +81,12 @@ class ItineraryDetailScreen extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(title, style: AppTheme.headline(size: 24)),
+                child: Text(displayTitle, style: AppTheme.headline(size: 24)),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text(status, style: AppTheme.label(size: 11, color: statusColor)),
+                decoration: BoxDecoration(color: displayStatusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                child: Text(displayStatus, style: AppTheme.label(size: 11, color: displayStatusColor)),
               ),
             ],
           ),
@@ -89,8 +103,32 @@ class ItineraryDetailScreen extends StatelessWidget {
             children: [
               const Icon(Icons.person, size: 16, color: AppColors.textLight),
               const SizedBox(width: 6),
-              Text('Guide: Rico Magbanua', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+              Text('Guide: $guideName', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCollaborationBanner() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.handshake, color: AppColors.primary, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              'Co-creating with ${preAssignedGuide?.name ?? "your guide"}. Any changes you make will be visible to them.',
+              style: AppTheme.body(size: 12, color: AppColors.primary),
+            ),
           ),
         ],
       ),

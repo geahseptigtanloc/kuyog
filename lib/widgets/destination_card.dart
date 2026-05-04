@@ -90,6 +90,7 @@ class DestinationCard extends StatelessWidget {
                     destination.province,
                     style: AppTheme.body(size: 11, color: Colors.white70),
                     maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),

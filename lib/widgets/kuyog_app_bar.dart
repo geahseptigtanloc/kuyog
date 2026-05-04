@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../app_theme.dart';
 import '../providers/chat_provider.dart';
 import '../screens/shared/chat/chat_list_screen.dart';
 import '../screens/features/notifications/notifications_screen.dart';
 import '../providers/role_provider.dart';
 import 'kuyog_logo.dart';
+import 'kuyog_back_button.dart';
 import '../screens/tourist/tourist_profile_tab.dart';
 import '../screens/guide/guide_profile_tab.dart';
 import '../screens/merchant/merchant_profile_tab.dart';
@@ -13,12 +15,14 @@ import '../screens/admin/admin_settings_tab.dart';
 
 class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? leading;
   final Widget? extraAction;
+  final PreferredSizeWidget? bottom;
   
-  const KuyogAppBar({super.key, required this.title, this.extraAction});
+  const KuyogAppBar({super.key, required this.title, this.leading, this.extraAction, this.bottom});
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +31,13 @@ class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: AppColors.background,
       elevation: 0,
+      leading: leading ?? (Navigator.canPop(context) ? const Center(child: KuyogBackButton()) : null),
+      centerTitle: false,
       titleSpacing: 0,
-      leadingWidth: canPop ? null : 100,
-      leading: canPop 
-        ? const BackButton(color: AppColors.primary)
-        : const Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: KuyogLogo(fontSize: 24),
-              ),
-            ),
-          ),
+      bottom: bottom,
       title: Padding(
-        padding: EdgeInsets.only(left: canPop ? 0 : 12),
-        child: Text(title, style: AppTheme.headline(size: 20)),
+        padding: EdgeInsets.only(left: (leading == null && !Navigator.canPop(context)) ? 16 : 0),
+        child: Text(title, style: AppTheme.headline(size: 20, color: AppColors.primary)),
       ),
       actions: [
         if (extraAction != null) extraAction!,
@@ -91,52 +86,18 @@ class KuyogAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
         // Avatar
-        Consumer<RoleProvider>(
-          builder: (context, roleProvider, child) {
-            final user = roleProvider.currentUser;
-            return Padding(
-              padding: const EdgeInsets.only(right: 16, left: 8),
-              child: GestureDetector(
-                onTap: () {
-                  // Only navigate if we're not already on a profile/settings screen
-                  final currentRoute = ModalRoute.of(context)?.settings.name;
-                  if (currentRoute == 'profile' || currentRoute == 'settings') return;
-
-                  Widget profileScreen;
-                  String routeName = 'profile';
-                  
-                  switch (roleProvider.currentRole) {
-                    case UserRole.tourist:
-                      profileScreen = const TouristProfileTab();
-                    case UserRole.guide:
-                      profileScreen = const GuideProfileTab();
-                    case UserRole.merchant:
-                      profileScreen = const MerchantProfileTab();
-                    case UserRole.admin:
-                    case UserRole.superAdmin:
-                      profileScreen = const AdminSettingsTab();
-                      routeName = 'settings';
-                  }
-
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(
-                      settings: RouteSettings(name: routeName),
-                      builder: (_) => profileScreen
-                    )
-                  );
-                },
-                child: CircleAvatar(
-                  radius: 16,
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                  backgroundImage: user?.avatarUrl.isNotEmpty == true ? NetworkImage(user!.avatarUrl) : null,
-                  child: (user?.avatarUrl.isEmpty == true || user?.avatarUrl == null) 
-                      ? const Icon(Icons.person, size: 16, color: AppColors.primary) 
-                      : null,
-                ),
-              ),
-            );
-          },
+        Padding(
+          padding: const EdgeInsets.only(right: 16, left: 8),
+          child: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: 'https://picsum.photos/seed/user/100/100',
+              width: 32,
+              height: 32,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Container(color: AppColors.background),
+              errorWidget: (context, url, error) => const Icon(Icons.person, color: AppColors.primary, size: 20),
+            ),
+          ),
         ),
       ],
     );

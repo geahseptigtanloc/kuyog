@@ -22,14 +22,16 @@ class KuyogBottomNav extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
           BottomNavigationBarItem(icon: Icon(Icons.auto_stories_rounded), label: 'StoryHub'),
-          BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Itinerary'),
+          BottomNavigationBarItem(icon: Icon(Icons.travel_explore), label: 'Travel'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ];
       case UserRole.guide:
         return const [
           BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.people_alt_rounded), label: 'Clients'),
           BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
-          BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Itinerary'),
+          BottomNavigationBarItem(icon: Icon(Icons.travel_explore), label: 'Travel'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
         ];
       case UserRole.merchant:
         return const [

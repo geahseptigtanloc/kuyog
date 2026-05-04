@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cm001",
+    "name": "Durie Plushie — Season Edition",
+    "season": "Davao Summer 2025",
+    "price": 850,
+    "stock": 45,
+    "limited": true,
+    "photo_url": "https://images.unsplash.com/photo-1559454403-b8fb88521f11?w=400",
+    "description": "Limited edition Durie plushie dressed for Mindanao summer. Only available during the Davao Summer Crawl."
+  },
+  {
+    "id": "cm002",
+    "name": "Davao Crawl Tote Bag",
+    "season": "Davao Summer 2025",
+    "price": 350,
+    "stock": 100,
+    "limited": true,
+    "photo_url": "https://images.unsplash.com/photo-1544816153-12ad5d713312?w=400",
+    "description": "Stamped with all 8 region icons. Durable and stylish."
+  },
+  {
+    "id": "cm003",
+    "name": "Mindanao Passport Holder",
+    "season": "All Seasons",
+    "price": 550,
+    "stock": 25,
+    "limited": false,
+    "photo_url": "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400",
+    "description": "Leather-style, Kuyog branded passport holder."
+  }
+]

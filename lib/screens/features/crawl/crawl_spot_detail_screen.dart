@@ -32,6 +32,8 @@ class CrawlSpotDetailScreen extends StatelessWidget {
                   CachedNetworkImage(
                     imageUrl: event.imageUrl,
                     fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(color: AppColors.divider),
+                    errorWidget: (context, url, error) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.image, color: AppColors.primary, size: 48)),
                   ),
                   Container(
                     decoration: BoxDecoration(
@@ -168,35 +170,121 @@ class CrawlSpotDetailScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
-      child: Row(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        boxShadow: AppShadows.card,
+        border: spot.isFeatured ? Border.all(color: AppColors.primary.withOpacity(0.3), width: 1.5) : null,
+      ),
+      child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(AppRadius.md)),
-            child: const Icon(Icons.store, color: AppColors.textSecondary),
+          Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                child: CachedNetworkImage(
+                  imageUrl: spot.imageUrl,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(color: AppColors.background),
+                  errorWidget: (context, url, error) => Container(color: AppColors.divider, child: const Icon(Icons.place, color: AppColors.textLight)),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: Text(spot.name, style: AppTheme.label(size: 14))),
+                        if (spot.isFeatured)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(4)),
+                            child: const Text('FEATURED', style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(spot.address, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.star_rounded, size: 14, color: AppColors.primary),
+                        const SizedBox(width: 4),
+                        Text('${spot.milesReward} Miles', style: AppTheme.label(size: 12, color: AppColors.primary)),
+                        const Spacer(),
+                        _buildProximityHint(spot.proximityHint),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(spot.name, style: AppTheme.label(size: 14)),
-                const SizedBox(height: 2),
-                Text(spot.address, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-              ],
-            ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.directions_outlined, size: 16),
+                  label: const Text('Get Directions', style: TextStyle(fontSize: 12)),
+                  style: OutlinedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    foregroundColor: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              if (spot.isCollected)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(color: AppColors.success.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: AppColors.success, size: 16),
+                      const SizedBox(width: 4),
+                      Text('Stamped', style: AppTheme.label(size: 12, color: AppColors.success)),
+                    ],
+                  ),
+                )
+              else
+                const Icon(Icons.qr_code_2, color: AppColors.primary),
+            ],
           ),
-          if (spot.isCollected)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(color: AppColors.success.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
-              child: Text('Stamped', style: AppTheme.label(size: 11, color: AppColors.success)),
-            )
-          else
-            const Icon(Icons.qr_code, color: AppColors.textLight),
         ],
       ),
+    );
+  }
+
+  Widget _buildProximityHint(String hint) {
+    Color color;
+    String label;
+    switch (hint.toLowerCase()) {
+      case 'hot':
+        color = Colors.red;
+        label = 'Hot!';
+        break;
+      case 'warm':
+        color = Colors.orange;
+        label = 'Warmer';
+        break;
+      case 'durie':
+        color = Colors.red;
+        label = 'Durie is HERE!';
+        break;
+      default:
+        color = Colors.grey;
+        label = 'Cold';
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+      child: Text(label, style: AppTheme.label(size: 10, color: color)),
     );
   }
 }
