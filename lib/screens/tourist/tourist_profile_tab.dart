@@ -13,6 +13,7 @@ import '../shared/edit_profile_screen.dart';
 import '../features/notifications/notifications_list_screen.dart';
 import '../../widgets/kuyog_app_bar.dart';
 import '../../data/services/auth_service.dart';
+import 'tourist_preferences_screen.dart';
 
 class TouristProfileTab extends StatelessWidget {
   const TouristProfileTab({super.key});
@@ -77,6 +78,7 @@ class TouristProfileTab extends StatelessWidget {
             _statsRow(miles, crawl),
             const SizedBox(height: 24),
             _menuItem(Icons.map, 'My Itineraries', '3 trips'),
+            _menuItem(Icons.auto_awesome, 'Match Preferences', 'Adjust', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TouristPreferencesScreen()))),
             _menuItem(Icons.bookmark, 'Saved Guides', '5 saved'),
             _menuItem(Icons.favorite, 'Wishlist', '8 items'),
             _menuItem(Icons.stars, 'Kuyog Miles', '${miles.balance} miles', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MilesDashboardScreen()))),

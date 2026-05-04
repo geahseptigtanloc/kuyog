@@ -6,6 +6,7 @@ import '../../../app_theme.dart';
 import '../../../models/guide.dart';
 import '../../../models/tour_operator.dart';
 import '../../../providers/travel_provider.dart';
+import '../../../providers/role_provider.dart';
 import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_mascot.dart';
 import '../../../widgets/kuyog_app_bar.dart';
@@ -32,6 +33,17 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
     _pulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500))..repeat(reverse: true);
     _rotateCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 3))..repeat();
     
+    // Sync user preferences and refresh guide data from Supabase
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final roleProvider = context.read<RoleProvider>();
+      final travelProvider = context.read<TravelProvider>();
+      
+      if (roleProvider.currentUser != null) {
+        travelProvider.updateUserPreferences(roleProvider.currentUser!.interests);
+      }
+      travelProvider.refresh();
+    });
+
     // Simulate AI thinking
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) setState(() => _isLoading = false);

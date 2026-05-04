@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/itinerary.dart';
 import '../data/mock_data.dart';
 
@@ -25,9 +26,41 @@ class ItineraryProvider extends ChangeNotifier {
   }
 
   Future<void> _loadItineraries() async {
-    _itineraries = await MockData.getItineraries();
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final supabase = Supabase.instance.client;
+      final userId = supabase.auth.currentUser?.id;
+      
+      if (userId != null) {
+        final res = await supabase
+            .from('itineraries')
+            .select()
+            .eq('touristId', userId)
+            .order('created_at', ascending: false);
+
+        final List<Itinerary> fetchedItineraries = (res as List).map((json) => Itinerary.fromJson(json)).toList();
+        
+        if (fetchedItineraries.isNotEmpty) {
+           _itineraries = fetchedItineraries;
+        } else {
+           _itineraries = await MockData.getItineraries();
+        }
+      } else {
+        _itineraries = await MockData.getItineraries();
+      }
+    } catch (e) {
+      debugPrint('Error loading itineraries: $e');
+      _itineraries = await MockData.getItineraries();
+    }
+
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> refresh() async {
+    await _loadItineraries();
   }
 
   void setFilter(String status) {
@@ -40,7 +73,14 @@ class ItineraryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteItinerary(String id) {
+  Future<void> deleteItinerary(String id) async {
+    try {
+      if (!id.startsWith('mock_')) {
+        await Supabase.instance.client.from('itineraries').delete().eq('id', id);
+      }
+    } catch (e) {
+      debugPrint('Error deleting itinerary: $e');
+    }
     _itineraries.removeWhere((i) => i.id == id);
     notifyListeners();
   }

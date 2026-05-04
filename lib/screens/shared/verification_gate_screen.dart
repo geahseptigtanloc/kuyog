@@ -49,6 +49,11 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
             _uploads['birth'] = docs['birth_cert_url'];
             _uploads['nbi'] = docs['nbi_clearance_url'];
             _uploads['app_form'] = docs['application_form_url'];
+            _uploads['id'] = docs['id_url'];
+            _uploads['cv'] = docs['cv_url'];
+            _uploads['portfolio'] = (docs['portfolio_urls'] != null && (docs['portfolio_urls'] as List).isNotEmpty) 
+                ? (docs['portfolio_urls'] as List).first 
+                : null;
           }
           // Check if post-onboarding documents are actually uploaded
           bool hasAllRequired = false;
@@ -59,7 +64,11 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
                              docs['barangay_clearance_url'] != null && 
                              docs['birth_cert_url'] != null && 
                              docs['nbi_clearance_url'] != null && 
-                             docs['application_form_url'] != null;
+                             docs['application_form_url'] != null &&
+                             docs['id_url'] != null &&
+                             docs['cv_url'] != null &&
+                             docs['portfolio_urls'] != null && 
+                             (docs['portfolio_urls'] as List).isNotEmpty;
           }
 
           if (hasAllRequired && (docs['status'] == 'submitted' || docs['status'] == 'approved')) {
@@ -87,6 +96,9 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
         _DocRequirement('birth', 'Birth Certificate', 'PSA or NSO copy', Icons.child_care),
         _DocRequirement('nbi', 'NBI Clearance', 'Valid NBI clearance certificate', Icons.security),
         _DocRequirement('app_form', 'Application Form', 'Completed and signed form', Icons.assignment),
+        _DocRequirement('id', 'Valid ID', 'Government issued ID', Icons.badge),
+        _DocRequirement('cv', 'CV / Resume', 'Professional experience', Icons.contact_page),
+        _DocRequirement('portfolio', 'Portfolio', 'Past tour packages or experiences', Icons.photo_library),
       ];
     }
   }
@@ -128,6 +140,9 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
             birthCertUrl: _uploads['birth'],
             nbiClearanceUrl: _uploads['nbi'],
             applicationFormUrl: _uploads['app_form'],
+            idUrl: _uploads['id'],
+            cvUrl: _uploads['cv'],
+            portfolioUrls: _uploads['portfolio'] != null ? [_uploads['portfolio']!] : null,
           );
         }
       } catch (e) {
@@ -159,6 +174,9 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
           birthCertUrl: _uploads['birth'],
           nbiClearanceUrl: _uploads['nbi'],
           applicationFormUrl: _uploads['app_form'],
+          idUrl: _uploads['id'],
+          cvUrl: _uploads['cv'],
+          portfolioUrls: _uploads['portfolio'] != null ? [_uploads['portfolio']!] : null,
         );
       }
       

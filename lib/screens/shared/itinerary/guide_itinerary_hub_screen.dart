@@ -11,7 +11,8 @@ import 'itinerary_browse_screen.dart';
 import '../../../widgets/kuyog_app_bar.dart';
 
 class GuideItineraryHubScreen extends StatefulWidget {
-  const GuideItineraryHubScreen({super.key});
+  final VoidCallback? onBack;
+  const GuideItineraryHubScreen({super.key, this.onBack});
   @override
   State<GuideItineraryHubScreen> createState() => _GuideItineraryHubScreenState();
 }
@@ -25,6 +26,12 @@ class _GuideItineraryHubScreenState extends State<GuideItineraryHubScreen> {
       backgroundColor: AppColors.background,
       appBar: KuyogAppBar(
         title: 'My Itineraries',
+        leading: widget.onBack != null 
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back, color: AppColors.primary),
+              onPressed: widget.onBack,
+            )
+          : null,
         extraAction: IconButton(
           icon: const Icon(Icons.filter_list, color: AppColors.primary),
           onPressed: () {},
