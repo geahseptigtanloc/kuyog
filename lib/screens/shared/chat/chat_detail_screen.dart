@@ -64,7 +64,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       padding: const EdgeInsets.fromLTRB(12, 12, 20, 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 4, offset: const Offset(0, 2))],
       ),
       child: Row(
         children: [
@@ -98,7 +98,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                  decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                   child: Text(thread.participantRole, style: AppTheme.label(size: 9, color: AppColors.primary)),
                 ),
               ]),
@@ -178,7 +178,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   bottomLeft: Radius.circular(msg.isMe ? 16 : 4),
                   bottomRight: Radius.circular(msg.isMe ? 4 : 16),
                 ),
-                boxShadow: msg.isMe ? null : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 1))],
+                boxShadow: msg.isMe ? null : [BoxShadow(color: Colors.black.withAlpha(13), blurRadius: 4, offset: const Offset(0, 1))],
               ),
               child: Text(msg.text, style: AppTheme.body(size: 14, color: msg.isMe ? Colors.white : AppColors.textPrimary)),
             ),
@@ -201,7 +201,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, -2))],
+        boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, -2))],
       ),
       child: Row(
         children: [
@@ -251,3 +251,4 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     );
   }
 }
+

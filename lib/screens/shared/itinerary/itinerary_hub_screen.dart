@@ -165,9 +165,9 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
     return Expanded(child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withAlpha(20),
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withAlpha(51)),
       ),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Icon(icon, size: 14, color: color),
@@ -184,9 +184,9 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withAlpha(26),
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withAlpha(51)),
         ),
         child: Column(children: [
           Icon(icon, size: 28, color: color),
@@ -238,7 +238,7 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
               child: CachedNetworkImage(
                 imageUrl: itin.imageUrl, width: 70, height: 70, fit: BoxFit.cover,
                 placeholder: (c, u) => Container(width: 70, height: 70, color: AppColors.divider),
-                errorWidget: (c, u, e) => Container(width: 70, height: 70, color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.map, color: AppColors.primary)),
+                errorWidget: (c, u, e) => Container(width: 70, height: 70, color: AppColors.primary.withAlpha(26), child: const Icon(Icons.map, color: AppColors.primary)),
               ),
             ),
             const SizedBox(width: 12),
@@ -269,14 +269,14 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
               Row(children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                  decoration: BoxDecoration(color: statusColor.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                   child: Text(itin.status, style: AppTheme.label(size: 10, color: statusColor)),
                 ),
                 if (itin.isOfflineAvailable) ...[
                   const SizedBox(width: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                    decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
                       const Icon(Icons.download_done, size: 10, color: AppColors.primary),
                       const SizedBox(width: 2),
@@ -312,9 +312,9 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
       child: Stack(children: [
         CachedNetworkImage(imageUrl: imageUrl, width: 170, height: 210, fit: BoxFit.cover,
           placeholder: (c, u) => Container(width: 170, height: 210, color: AppColors.divider),
-          errorWidget: (c, u, e) => Container(width: 170, height: 210, color: AppColors.primary.withOpacity(0.2))),
+          errorWidget: (c, u, e) => Container(width: 170, height: 210, color: AppColors.primary.withAlpha(51))),
         Positioned.fill(child: DecoratedBox(
-          decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.7)])),
+          decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withAlpha(178)])),
         )),
         Positioned(bottom: 12, left: 12, right: 12, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(title, style: AppTheme.label(size: 14, color: Colors.white)),
@@ -346,3 +346,4 @@ class _ItineraryHubScreenState extends State<ItineraryHubScreen> {
     }
   }
 }
+

@@ -22,7 +22,7 @@ class MindanaoMap extends StatelessWidget {
           _pin(left: 0.15, top: 0.4, label: 'Lake Sebu', color: AppColors.primaryDark),
           Positioned(top: 8, left: 12, child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: Colors.white.withOpacity(0.85), borderRadius: BorderRadius.circular(AppRadius.sm)),
+            decoration: BoxDecoration(color: Colors.white.withAlpha(217), borderRadius: BorderRadius.circular(AppRadius.sm)),
             child: Text('Mindanao Travel Map', style: AppTheme.label(size: 11, color: AppColors.primary)),
           )),
         ]),
@@ -37,7 +37,7 @@ class MindanaoMap extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.85), borderRadius: BorderRadius.circular(AppRadius.sm)),
+          decoration: BoxDecoration(color: Colors.white.withAlpha(217), borderRadius: BorderRadius.circular(AppRadius.sm)),
           child: Text(label, style: AppTheme.label(size: 9, color: color)),
         ),
         Icon(Icons.location_on, size: 20, color: color),
@@ -50,11 +50,11 @@ class _MindanaoMapPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.primary.withOpacity(0.1)
+      ..color = AppColors.primary.withAlpha(25)
       ..style = PaintingStyle.fill;
 
     final borderPaint = Paint()
-      ..color = AppColors.primary.withOpacity(0.3)
+      ..color = AppColors.primary.withAlpha(77)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 

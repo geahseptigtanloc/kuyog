@@ -53,7 +53,7 @@ class AdminManageRolesScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md), boxShadow: AppShadows.card),
       child: Row(children: [
-        CircleAvatar(radius: 20, backgroundColor: AppColors.primary.withOpacity(0.1), child: Text(name[0], style: AppTheme.label(size: 16, color: AppColors.primary))),
+        CircleAvatar(radius: 20, backgroundColor: AppColors.primary.withAlpha(26), child: Text(name[0], style: AppTheme.label(size: 16, color: AppColors.primary))),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 15)),
@@ -61,10 +61,11 @@ class AdminManageRolesScreen extends StatelessWidget {
         ])),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+          decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
           child: Text(role, style: AppTheme.label(size: 12, color: AppColors.primary)),
         ),
       ]),
     );
   }
 }
+

@@ -35,7 +35,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
   List<Itinerary> _recentItineraries = [];
   List<TourOperator> _tourOperators = [];
   bool _isLoading = true;
-  List<TravelSubPage> _subPageStack = [TravelSubPage.main];
+  final List<TravelSubPage> _subPageStack = [TravelSubPage.main];
 
   TravelSubPage get _currentSubPage => _subPageStack.last;
 
@@ -181,7 +181,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
         }),
         _buildItineraryStats(),
         const SizedBox(height: 12),
-        ..._recentItineraries.map((it) => _buildItineraryCard(it)).toList(),
+        ..._recentItineraries.map((it) => _buildItineraryCard(it)),
         const SizedBox(height: 24),
         _buildSectionHeader('Popular in Mindanao', trailing: 'Browse All'),
         const SizedBox(height: 12),
@@ -200,7 +200,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
         }),
         _buildItineraryStats(isGuide: true),
         const SizedBox(height: 12),
-        ..._recentItineraries.map((it) => _buildItineraryCard(it, isGuide: true)).toList(),
+        ..._recentItineraries.map((it) => _buildItineraryCard(it, isGuide: true)),
         const SizedBox(height: 24),
         _buildSectionHeader('Co-Create Requests'),
         _buildCoCreateRequests(),
@@ -272,7 +272,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+              decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.md)),
               child: Icon(icon, size: 24, color: color),
             ),
             const SizedBox(height: 16),
@@ -296,7 +296,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.05),
+              color: AppColors.primary.withAlpha(13),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             child: Row(
@@ -338,11 +338,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.primary, AppColors.primaryLight],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: AppShadows.card,
       ),
@@ -364,7 +360,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
                 Text('Find Your Guide', style: AppTheme.headline(size: 18, color: Colors.white)),
                 const SizedBox(height: 4),
                 Text('Let our system match you with the perfect local guide.', 
-                  style: AppTheme.body(size: 13, color: Colors.white.withOpacity(0.8))),
+                  style: AppTheme.body(size: 13, color: Colors.white.withAlpha(204))),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -484,7 +480,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
               fit: BoxFit.cover,
               placeholder: (context, url) => Container(color: AppColors.background),
               errorWidget: (context, url, error) => Container(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withAlpha(26),
                 child: const Icon(Icons.image_not_supported_outlined, color: AppColors.primary, size: 24),
               ),
             ),
@@ -501,7 +497,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withAlpha(26),
                     borderRadius: BorderRadius.circular(AppRadius.xs),
                   ),
                   child: Text(it.status, style: AppTheme.label(size: 10, color: AppColors.primary)),
@@ -548,7 +544,7 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                        colors: [Colors.transparent, Colors.black.withAlpha(178)],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -643,3 +639,4 @@ class _TravelHubScreenState extends State<TravelHubScreen> {
     );
   }
 }
+

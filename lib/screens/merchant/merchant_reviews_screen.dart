@@ -54,7 +54,7 @@ class MerchantReviewsScreen extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md), boxShadow: AppShadows.card),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          CircleAvatar(radius: 16, backgroundColor: AppColors.primary.withOpacity(0.1), child: Text(name[0], style: AppTheme.label(size: 14, color: AppColors.primary))),
+          CircleAvatar(radius: 16, backgroundColor: AppColors.primary.withAlpha(26), child: Text(name[0], style: AppTheme.label(size: 14, color: AppColors.primary))),
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(name, style: AppTheme.label(size: 14)),
@@ -89,3 +89,4 @@ class MerchantReviewsScreen extends StatelessWidget {
     );
   }
 }
+

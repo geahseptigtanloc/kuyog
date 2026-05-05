@@ -17,9 +17,9 @@ class VerifiedContentBadge extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: config.color.withOpacity(0.1),
+          color: config.color.withAlpha(25),
           borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: config.color.withOpacity(0.3), width: 0.5),
+          border: Border.all(color: config.color.withAlpha(77), width: 0.5),
         ),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
           Icon(config.icon, size: fontSize + 2, color: config.color),
@@ -31,9 +31,9 @@ class VerifiedContentBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: config.color.withOpacity(0.1),
+        color: config.color.withAlpha(25),
         borderRadius: BorderRadius.circular(AppRadius.sm),
-        border: Border.all(color: config.color.withOpacity(0.3), width: 0.5),
+        border: Border.all(color: config.color.withAlpha(77), width: 0.5),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(config.icon, size: fontSize + 4, color: config.color),

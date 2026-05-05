@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../providers/role_provider.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../widgets/core/kuyog_card.dart';
+import '../../widgets/core/kuyog_badge.dart';
+import '../../widgets/core/kuyog_section_header.dart';
+import '../../widgets/core/kuyog_button.dart';
 import '../shared/verification_gate_screen.dart';
-
 
 class GuideHomeTab extends StatelessWidget {
   const GuideHomeTab({super.key});
@@ -18,60 +21,63 @@ class GuideHomeTab extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.lg, AppSpacing.xl, AppSpacing.xxxl),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             if (role.currentUser?.isVerified == true)
-              Row(children: [
-                const Icon(Icons.verified, size: 14, color: AppColors.verified),
-                const SizedBox(width: 4),
-                Text('Verified Kuyog Guide', style: AppTheme.label(size: 12, color: AppColors.verified)),
-              ])
+              const KuyogBadge(
+                label: 'Verified Kuyog Guide',
+                color: AppColors.verified,
+                icon: Icons.verified,
+              )
             else
-              Row(children: [
-                Icon(Icons.pending_actions, size: 14, color: AppColors.textSecondary),
-                const SizedBox(width: 4),
-                Text('Unverified Guide', style: AppTheme.label(size: 12, color: AppColors.textSecondary)),
-              ]),
-            const SizedBox(height: 24),
+              const KuyogBadge(
+                label: 'Unverified Guide',
+                color: AppColors.textSecondary,
+                icon: Icons.pending_actions,
+              ),
+            const SizedBox(height: AppSpacing.xl),
             // Stats Dashboard
             Row(children: [
               _statCard(Icons.calendar_month, 'Bookings', '12', AppColors.touristBlue),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.md),
               _statCard(Icons.star, 'Rating', '4.9', AppColors.warning),
             ]),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.md),
             Row(children: [
               _statCard(Icons.attach_money, 'Earnings', '₱24.5K', AppColors.primary),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.md),
               _statCard(Icons.people, 'Tourists', '47', AppColors.accent),
             ]),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.xl),
             _verifyBanner(context),
-            const SizedBox(height: 24),
-            Text('Quick Actions', style: AppTheme.headline(size: 18)),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.xxl),
+            const KuyogSectionHeader(title: 'Quick Actions', padding: EdgeInsets.zero),
+            const SizedBox(height: AppSpacing.lg),
             _quickActionsGrid(),
-            const SizedBox(height: 24),
-            Text('Upcoming Bookings', style: AppTheme.headline(size: 18)),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.xxl),
+            const KuyogSectionHeader(title: 'Upcoming Bookings', padding: EdgeInsets.zero),
+            const SizedBox(height: AppSpacing.lg),
             _bookingCard('Anna Reyes', 'Davao City Explorer', 'May 5-7, 2026', 'Confirmed', AppColors.primary),
             _bookingCard('Mike Torres', 'CDO Adventure Tour', 'May 10-12, 2026', 'Pending', AppColors.warning),
             _bookingCard('Sarah Kim', 'Lake Sebu Cultural', 'May 15-16, 2026', 'Confirmed', AppColors.primary),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
             // Create Itinerary CTA
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary]), borderRadius: BorderRadius.circular(AppRadius.xxl)),
+            KuyogCard(
+              color: AppColors.primary,
+              padding: const EdgeInsets.all(AppSpacing.xl),
               child: Row(children: [
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Create Itinerary', style: AppTheme.headline(size: 18, color: Colors.white)),
-                  const SizedBox(height: 4),
-                  Text('Build custom tours for your clients', style: AppTheme.body(size: 12, color: Colors.white70)),
-                  const SizedBox(height: 12),
-                  Container(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                    child: Text('Start Creating', style: AppTheme.label(size: 13, color: AppColors.primary))),
+                  Text('Create Itinerary', style: AppTheme.headline(size: 20, color: Colors.white)),
+                  const SizedBox(height: AppSpacing.xs),
+                  Text('Build custom tours for your clients', style: AppTheme.body(size: 13, color: Colors.white70)),
+                  const SizedBox(height: AppSpacing.lg),
+                  KuyogButton(
+                    label: 'Start Creating',
+                    variant: KuyogButtonVariant.secondary,
+                    onPressed: () {},
+                  ),
                 ])),
-                const Icon(Icons.map_rounded, size: 48, color: Colors.white30),
+                const Icon(Icons.map_rounded, size: 56, color: Colors.white24),
               ]),
             ),
             const SizedBox(height: 80),
@@ -82,15 +88,14 @@ class GuideHomeTab extends StatelessWidget {
   }
 
   Widget _statCard(IconData icon, String label, String value, Color color) {
-    return Expanded(child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
+    return Expanded(child: KuyogCard(
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Row(children: [
         Icon(icon, size: 24, color: color),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(value, style: AppTheme.headline(size: 18, color: color)),
-          Text(label, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+          Text(label, style: AppTheme.body(size: 11, color: AppColors.textSecondary)),
         ]),
       ]),
     ));
@@ -109,32 +114,37 @@ class GuideHomeTab extends StatelessWidget {
     ];
     return GridView.count(
       crossAxisCount: 4, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12, crossAxisSpacing: 8, childAspectRatio: 0.85,
+      mainAxisSpacing: AppSpacing.md, crossAxisSpacing: AppSpacing.sm, childAspectRatio: 0.8,
       children: items.map((a) => Column(children: [
-        Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: a.$3.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
-          child: Icon(a.$2, color: a.$3, size: 22)),
-        const SizedBox(height: 6),
+        KuyogCard(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          color: a.$3.withAlpha(26),
+          radius: AppRadius.lg,
+          shadow: const [],
+          onTap: () {},
+          child: Icon(a.$2, color: a.$3, size: 20),
+        ),
+        const SizedBox(height: AppSpacing.xs),
         Text(a.$1, style: AppTheme.label(size: 10), textAlign: TextAlign.center, maxLines: 1),
       ])).toList(),
     );
   }
 
   Widget _bookingCard(String name, String tour, String date, String status, Color statusColor) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
-      child: Row(children: [
-        CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withValues(alpha: 0.15), child: const Icon(Icons.person, color: AppColors.primary)),
-        const SizedBox(width: 12),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(name, style: AppTheme.label(size: 14)),
-          Text('$tour · $date', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-        ])),
-        Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(color: statusColor.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-          child: Text(status, style: AppTheme.label(size: 11, color: statusColor))),
-      ]),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: KuyogCard(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Row(children: [
+          CircleAvatar(radius: 22, backgroundColor: AppColors.primary.withAlpha(31), child: const Icon(Icons.person, color: AppColors.primary)),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(name, style: AppTheme.label(size: 14)),
+            Text('$tour · $date', style: AppTheme.body(size: 11, color: AppColors.textSecondary)),
+          ])),
+          KuyogBadge(label: status, color: statusColor),
+        ]),
+      ),
     );
   }
 
@@ -142,11 +152,10 @@ class GuideHomeTab extends StatelessWidget {
     final roleProvider = Provider.of<RoleProvider>(context, listen: false);
     final isVerified = roleProvider.currentUser?.isVerified ?? false;
     
-    if (isVerified) return const SizedBox.shrink(); // Hide if approved
+    if (isVerified) return const SizedBox.shrink(); 
     
-    final status = 'pending'; // In the future, we could query `guide_verifications` for accurate status.
+    const status = 'pending'; 
 
-    Color bgColor;
     Color iconColor;
     IconData icon;
     String title;
@@ -154,55 +163,48 @@ class GuideHomeTab extends StatelessWidget {
 
     switch (status) {
       case 'submitted':
-        bgColor = AppColors.touristBlue.withValues(alpha: 0.1);
         iconColor = AppColors.touristBlue;
         icon = Icons.hourglass_top;
         title = 'Verification in Progress';
-        subtitle = 'Your documents are being reviewed by our team.';
+        subtitle = 'Your documents are being reviewed.';
         break;
       case 'draft':
-        bgColor = AppColors.accent.withValues(alpha: 0.1);
         iconColor = AppColors.accent;
         icon = Icons.upload_file;
         title = 'Resume Verification';
-        subtitle = 'Finish uploading your required documents.';
+        subtitle = 'Finish uploading your documents.';
         break;
       case 'rejected':
-        bgColor = AppColors.error.withValues(alpha: 0.1);
         iconColor = AppColors.error;
         icon = Icons.error_outline;
         title = 'Action Required';
-        subtitle = 'Your verification was rejected. Please review and update.';
+        subtitle = 'Verification was rejected. Please update.';
         break;
       case 'pending':
       default:
-        bgColor = AppColors.warning.withValues(alpha: 0.1);
         iconColor = AppColors.warning;
         icon = Icons.verified_user;
         title = 'Complete Verification';
-        subtitle = 'Upload documents to unlock all features.';
+        subtitle = 'Unlock all features for guides.';
         break;
     }
 
-    return GestureDetector(
+    return KuyogCard(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VerificationGateScreen())),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: iconColor.withValues(alpha: 0.3)),
-        ),
-        child: Row(children: [
-          Icon(icon, size: 28, color: iconColor),
-          const SizedBox(width: 12),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: AppTheme.label(size: 14, color: iconColor)),
-            Text(subtitle, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-          ])),
-          Icon(Icons.chevron_right, color: iconColor),
-        ]),
-      ),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      color: iconColor.withAlpha(20),
+      borderSide: BorderSide(color: iconColor.withAlpha(76)),
+      child: Row(children: [
+        Icon(icon, size: 28, color: iconColor),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(title, style: AppTheme.label(size: 14, color: iconColor)),
+          Text(subtitle, style: AppTheme.body(size: 11, color: AppColors.textSecondary)),
+        ])),
+        Icon(Icons.chevron_right, color: iconColor),
+      ]),
     );
   }
 }
+
+

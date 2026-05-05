@@ -33,7 +33,7 @@ class FindingDurieCelebration extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text('You earned 300 Bonus Miles + a Season Exclusive Durie Pin!', 
                   textAlign: TextAlign.center,
-                  style: AppTheme.body(size: 16, color: Colors.white.withOpacity(0.9))),
+                  style: AppTheme.body(size: 16, color: Colors.white.withAlpha(230))),
                 const SizedBox(height: 40),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
@@ -69,7 +69,7 @@ class ConfettiPainter extends CustomPainter {
     final colors = [Colors.red, Colors.blue, Colors.yellow, Colors.green, Colors.pink, Colors.orange];
     
     for (int i = 0; i < 100; i++) {
-      final paint = Paint()..color = colors[i % colors.length].withOpacity(0.6);
+      final paint = Paint()..color = colors[i % colors.length].withAlpha(153);
       final x = (i * 137.5) % size.width;
       final y = (i * 221.7) % size.height;
       final radius = (i % 5) + 2.0;
@@ -85,3 +85,4 @@ class ConfettiPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
+

@@ -27,22 +27,16 @@ class _TourPreferencesScreenState extends State<TourPreferencesScreen> {
   bool _isLoading = false;
 
   static const List<String> _preferences = [
-    'Nature & Outdoors',
-    'Water Sports',
-    'Culture & Heritage',
-    'Food & Culinary',
-    'Trekking',
-    'Photography',
-    'Festivals',
-    'Diving & Snorkeling',
-    'Volcano Tours',
-    'River Adventures',
-    'Village & Homestay',
-    'Wildlife & Birdwatching',
-    'Arts & Crafts',
-    'Wellness & Spa',
-    'Cycling Tours',
-    'Beach & Island',
+    // Nature & Adventure
+    'Trekking & Hiking', 'Waterfalls', 'Caves', 'Mountain Climbing', 'Forests', 'Rivers', 'Camping', 'Zipline', 'ATV Riding', 'Rock Climbing', 'Wildlife & Birdwatching', 'Nature Reserves', 'Eco-Parks', 'Botanical Gardens',
+    // Beach & Island
+    'Island Hopping', 'White Sand Beaches', 'Surfing', 'Scuba Diving', 'Snorkeling', 'Free Diving', 'Wakeboarding', 'Kayaking', 'Sunset Viewing',
+    // Culture & Heritage
+    'Indigenous Tribes', 'Historical Landmarks', 'Museums', 'Local Festivals (Kadayawan, etc.)', 'Heritage Tours', 'Traditional Crafts', 'Weaving', 'Local Music & Dance', 'Architecture', 'Monuments',
+    // Food & Culinary
+    'Durian Tasting', 'Coffee Shops', 'Cacao & Chocolate (Malagos)', 'Street Food', 'Seafood', 'Halal Food', 'Local Delicacies', 'Farm to Table', 'Night Markets', 'Cooking Classes',
+    // Leisure & City
+    'Shopping', 'Spa & Wellness', 'City Tours', 'Nightlife', 'Theme Parks', 'Photography Walks', 'Staycations', 'Golfing', 'Resorts', 'Souvenir Shopping',
   ];
 
   Future<void> _handleContinue() async {

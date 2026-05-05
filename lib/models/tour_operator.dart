@@ -17,6 +17,12 @@ class TourOperator {
   final int maxGroupSize;
   final int totalTours;
   final int matchScore;
+  // V4 additions
+  final String dotAccreditationNumber;
+  final String responseRate;
+  final String responseTime;
+  final String phone;
+  final String email;
 
   const TourOperator({
     required this.id,
@@ -36,6 +42,11 @@ class TourOperator {
     this.maxGroupSize = 0,
     this.totalTours = 0,
     this.matchScore = 0,
+    this.dotAccreditationNumber = '',
+    this.responseRate = '95%',
+    this.responseTime = 'Within 2 hours',
+    this.phone = '',
+    this.email = '',
   });
 
   factory TourOperator.fromJson(Map<String, dynamic> json) {
@@ -60,6 +71,11 @@ class TourOperator {
       maxGroupSize: json['maxGroupSize'] ?? json['max_group_size'] ?? 0,
       totalTours: json['totalTours'] ?? json['total_tours'] ?? 0,
       matchScore: json['matchScore'] ?? 0,
+      dotAccreditationNumber: json['dotAccreditationNumber'] ?? '',
+      responseRate: json['responseRate'] ?? '95%',
+      responseTime: json['responseTime'] ?? 'Within 2 hours',
+      phone: json['phone'] ?? '',
+      email: json['email'] ?? '',
     );
   }
 }
@@ -76,6 +92,24 @@ class TourPackage {
   final double groupPricePerPerson;
   final int maxPax;
   final String duration;
+  // V4 — Full spec fields
+  final String operatorId;
+  final List<String> heroPhotos;
+  final String whyThisTour;
+  final List<Map<String, dynamic>> highlights;
+  final List<Map<String, dynamic>> fullItinerary;
+  final List<String> exclusions;
+  final List<Map<String, dynamic>> entranceFees;
+  final List<Map<String, String>> faqs;
+  final String difficulty;
+  final List<String> languagesAvailable;
+  final bool pickupAvailable;
+  final int minGroupSize;
+  final List<String> categoryTags;
+  final double rating;
+  final int reviewCount;
+  final String hookLine;
+  final List<Map<String, dynamic>> addOns;
 
   const TourPackage({
     required this.id,
@@ -88,6 +122,23 @@ class TourPackage {
     this.groupPricePerPerson = 0,
     this.maxPax = 1,
     this.duration = '',
+    this.operatorId = '',
+    this.heroPhotos = const [],
+    this.whyThisTour = '',
+    this.highlights = const [],
+    this.fullItinerary = const [],
+    this.exclusions = const [],
+    this.entranceFees = const [],
+    this.faqs = const [],
+    this.difficulty = 'Easy',
+    this.languagesAvailable = const ['English'],
+    this.pickupAvailable = true,
+    this.minGroupSize = 1,
+    this.categoryTags = const [],
+    this.rating = 4.5,
+    this.reviewCount = 0,
+    this.hookLine = '',
+    this.addOns = const [],
   });
 
   factory TourPackage.fromJson(Map<String, dynamic> json) {
@@ -102,6 +153,38 @@ class TourPackage {
       groupPricePerPerson: (json['groupPricePerPerson'] ?? json['group_price_per_person'] ?? 0).toDouble(),
       maxPax: json['maxPax'] ?? json['max_pax'] ?? 1,
       duration: json['duration'] ?? '',
+      operatorId: json['operatorId'] ?? '',
+      heroPhotos: List<String>.from(json['heroPhotos'] ?? []),
+      whyThisTour: json['whyThisTour'] ?? '',
+      highlights: (json['highlights'] as List<dynamic>?)
+              ?.map((h) => Map<String, dynamic>.from(h))
+              .toList() ??
+          [],
+      fullItinerary: (json['fullItinerary'] as List<dynamic>?)
+              ?.map((d) => Map<String, dynamic>.from(d))
+              .toList() ??
+          [],
+      exclusions: List<String>.from(json['exclusions'] ?? []),
+      entranceFees: (json['entranceFees'] as List<dynamic>?)
+              ?.map((e) => Map<String, dynamic>.from(e))
+              .toList() ??
+          [],
+      faqs: (json['faqs'] as List<dynamic>?)
+              ?.map((f) => Map<String, String>.from(f))
+              .toList() ??
+          [],
+      difficulty: json['difficulty'] ?? 'Easy',
+      languagesAvailable: List<String>.from(json['languagesAvailable'] ?? ['English']),
+      pickupAvailable: json['pickupAvailable'] ?? true,
+      minGroupSize: json['minGroupSize'] ?? 1,
+      categoryTags: List<String>.from(json['categoryTags'] ?? []),
+      rating: (json['rating'] ?? 4.5).toDouble(),
+      reviewCount: json['reviewCount'] ?? 0,
+      hookLine: json['hookLine'] ?? '',
+      addOns: (json['addOns'] as List<dynamic>?)
+              ?.map((a) => Map<String, dynamic>.from(a))
+              .toList() ??
+          [],
     );
   }
 }

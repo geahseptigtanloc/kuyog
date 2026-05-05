@@ -20,7 +20,7 @@ class MerchantListingsTab extends StatelessWidget {
           Padding(padding: const EdgeInsets.fromLTRB(20, 16, 20, 16), child: Row(children: [
             Text('My Products', style: AppTheme.headline(size: 24)),
             const Spacer(),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('${products.length} active', style: AppTheme.label(size: 12, color: AppColors.primary))),
           ])),
           Expanded(child: productProvider.isLoading 
@@ -57,8 +57,8 @@ class MerchantListingsTab extends StatelessWidget {
             width: 56,
             height: 56,
             fit: BoxFit.cover,
-            placeholder: (context, url) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
-            errorWidget: (context, url, error) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+            placeholder: (context, url) => Container(color: AppColors.primary.withAlpha(26), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+            errorWidget: (context, url, error) => Container(color: AppColors.primary.withAlpha(26), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
           ),
         ),
         const SizedBox(width: 12),
@@ -71,3 +71,4 @@ class MerchantListingsTab extends StatelessWidget {
     );
   }
 }
+

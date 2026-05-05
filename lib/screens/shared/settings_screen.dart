@@ -36,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _sectionHeader('Preferences'),
                 _switchTile('Push Notifications', 'Receive alerts for bookings and chats', _pushNotifications, (v) => setState(() => _pushNotifications = v)),
                 _switchTile('Email Notifications', 'Receive marketing and recap emails', _emailNotifications, (v) => setState(() => _emailNotifications = v)),
-                _switchTile('Location Services', 'Needed for Mindanao Crawl stamps', _locationServices, (v) => setState(() => _locationServices = v)),
+                _switchTile('Location Services', 'Needed for Madayaw Crawl stamps', _locationServices, (v) => setState(() => _locationServices = v)),
                 _switchTile('Dark Mode', 'Toggle dark theme (coming soon)', _darkMode, (v) => setState(() => _darkMode = v)),
                 const SizedBox(height: 24),
                 _sectionHeader('Account & Privacy'),
@@ -70,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         subtitle: Text(subtitle, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
         value: value,
         onChanged: onChanged,
-        activeColor: AppColors.primary,
+        activeThumbColor: AppColors.primary,
         contentPadding: EdgeInsets.zero,
       ),
     );

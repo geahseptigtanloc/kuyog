@@ -219,7 +219,7 @@ class _GuideEditProfileScreenState extends State<GuideEditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                          backgroundColor: AppColors.primary.withAlpha(31),
                           backgroundImage: _imageFile != null 
                               ? (kIsWeb ? NetworkImage(_imageFile!.path) : FileImage(File(_imageFile!.path)) as ImageProvider)
                               : (user?.avatarUrl != null && user!.avatarUrl.isNotEmpty ? NetworkImage(user.avatarUrl) : null),
@@ -259,7 +259,7 @@ class _GuideEditProfileScreenState extends State<GuideEditProfileScreen> {
                       label: Text(s),
                       selected: isSelected,
                       onSelected: (_) => _toggleSpecialty(s),
-                      selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                      selectedColor: AppColors.primary.withAlpha(51),
                       checkmarkColor: AppColors.primary,
                       labelStyle: AppTheme.body(size: 13, color: isSelected ? AppColors.primary : AppColors.textPrimary),
                     );
@@ -280,7 +280,7 @@ class _GuideEditProfileScreenState extends State<GuideEditProfileScreen> {
                   data: SliderTheme.of(context).copyWith(
                     activeTrackColor: AppColors.primary,
                     thumbColor: AppColors.primary,
-                    inactiveTrackColor: AppColors.primaryLight.withValues(alpha: 0.3),
+                    inactiveTrackColor: AppColors.primaryLight.withAlpha(76),
                   ),
                   child: Slider(
                     value: _maxGroupSize,
@@ -357,3 +357,4 @@ class _GuideEditProfileScreenState extends State<GuideEditProfileScreen> {
     ]);
   }
 }
+

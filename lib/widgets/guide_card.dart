@@ -34,7 +34,7 @@ class GuideCard extends StatelessWidget {
                   height: 210,
                   width: 160,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.primary, AppColors.primaryLight]),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: const Icon(Icons.person, color: Colors.white54, size: 40),
@@ -48,7 +48,7 @@ class GuideCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                    colors: [Colors.transparent, const Color(0xB3000000)],
                   ),
                 ),
               ),
@@ -84,7 +84,7 @@ class GuideCard extends StatelessWidget {
                     children: guide.specialties.take(1).map((s) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withAlpha(51),
                         borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       child: Text(s, style: AppTheme.body(size: 9, color: Colors.white)),

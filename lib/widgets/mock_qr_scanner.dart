@@ -40,7 +40,7 @@ class _MockQrScannerState extends State<MockQrScanner> {
             child: _scanned 
                 ? const Icon(Icons.check_circle, color: AppColors.success, size: 80)
                 : Stack(children: [
-                    Container(color: Colors.white.withOpacity(0.1)),
+                    Container(color: Colors.white.withAlpha(25)),
                     const Center(child: CircularProgressIndicator(color: AppColors.primary)),
                   ]),
           ),
@@ -58,7 +58,7 @@ class _MockQrScannerState extends State<MockQrScanner> {
           left: 0, right: 0,
           child: Center(
             child: Text(
-              _scanned ? 'Stamp Collected!' : 'Scanning for Mindanao Crawl QR...',
+              _scanned ? 'Stamp Collected!' : 'Scanning for Madayaw Crawl QR...',
               style: AppTheme.headline(size: 18, color: Colors.white),
             ),
           ),

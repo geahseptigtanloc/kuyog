@@ -97,7 +97,7 @@ class _GuideCertificationsScreenState extends State<GuideCertificationsScreen> {
                         Container(
                           margin: const EdgeInsets.only(bottom: 20),
                           padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(color: AppColors.error.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+                          decoration: BoxDecoration(color: AppColors.error.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.md)),
                           child: Text(
                             'Rejection Reason: ${_verificationRecord!['rejection_reason'] ?? 'Please update your documents.'}', 
                             style: AppTheme.body(size: 14, color: AppColors.error)
@@ -140,7 +140,7 @@ class _GuideCertificationsScreenState extends State<GuideCertificationsScreen> {
       child: Row(children: [
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
+          decoration: BoxDecoration(color: color.withAlpha(26), shape: BoxShape.circle),
           child: Icon(icon, size: 24, color: color),
         ),
         const SizedBox(width: 16),
@@ -153,3 +153,4 @@ class _GuideCertificationsScreenState extends State<GuideCertificationsScreen> {
     );
   }
 }
+

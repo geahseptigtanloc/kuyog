@@ -56,15 +56,15 @@ class NotificationsListScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isUnread ? AppColors.primary.withOpacity(0.05) : Colors.white,
+        color: isUnread ? AppColors.primary.withAlpha(13) : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: isUnread ? Border.all(color: AppColors.primary.withOpacity(0.3)) : null,
+        border: isUnread ? Border.all(color: AppColors.primary.withAlpha(76)) : null,
         boxShadow: isUnread ? null : AppShadows.card,
       ),
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+          decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), shape: BoxShape.circle),
           child: Icon(icon, size: 20, color: AppColors.primary),
         ),
         const SizedBox(width: 12),
@@ -82,3 +82,4 @@ class NotificationsListScreen extends StatelessWidget {
     );
   }
 }
+

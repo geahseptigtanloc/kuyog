@@ -85,7 +85,7 @@ class ItineraryDetailScreen extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: displayStatusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                decoration: BoxDecoration(color: displayStatusColor.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                 child: Text(displayStatus, style: AppTheme.label(size: 11, color: displayStatusColor)),
               ),
             ],
@@ -116,9 +116,9 @@ class ItineraryDetailScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withAlpha(26),
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withAlpha(76)),
       ),
       child: Row(
         children: [
@@ -183,7 +183,7 @@ class ItineraryDetailScreen extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), shape: BoxShape.circle),
                 child: Icon(icon, size: 16, color: AppColors.primary),
               ),
               if (!isLast)
@@ -241,3 +241,4 @@ class ItineraryDetailScreen extends StatelessWidget {
     );
   }
 }
+

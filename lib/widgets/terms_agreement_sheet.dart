@@ -5,7 +5,7 @@ import '../providers/role_provider.dart';
 
 class TermsAgreementSheet extends StatefulWidget {
   final UserRole role;
-  final VoidCallback onAgreed;
+  final Future<void> Function() onAgreed;
 
   const TermsAgreementSheet({
     super.key,
@@ -13,13 +13,13 @@ class TermsAgreementSheet extends StatefulWidget {
     required this.onAgreed,
   });
 
-  static Future<void> checkAndShow(BuildContext context, UserRole role, VoidCallback onAgreed) async {
+  static Future<void> checkAndShow(BuildContext context, UserRole role, Future<void> Function() onAgreed) async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'terms_agreed_${role.name}';
     final hasAgreed = prefs.getBool(key) ?? false;
 
     if (hasAgreed) {
-      onAgreed();
+      await onAgreed();
     } else {
       if (!context.mounted) return;
       showModalBottomSheet(
@@ -34,7 +34,7 @@ class TermsAgreementSheet extends StatefulWidget {
             await prefs.setBool(key, true);
             if (!ctx.mounted) return;
             Navigator.pop(ctx);
-            onAgreed();
+            await onAgreed();
           },
         ),
       );
@@ -201,7 +201,7 @@ class _TermsAgreementSheetState extends State<TermsAgreementSheet> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(color: AppColors.warning.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.md)),
+                      decoration: BoxDecoration(color: AppColors.warning.withAlpha(25), borderRadius: BorderRadius.circular(AppRadius.md)),
                       child: Row(children: [
                         const Icon(Icons.info_outline, size: 16, color: AppColors.warning),
                         const SizedBox(width: 8),
@@ -231,7 +231,7 @@ class _TermsAgreementSheetState extends State<TermsAgreementSheet> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), offset: const Offset(0, -4), blurRadius: 8)],
+              boxShadow: [BoxShadow(color: Colors.black.withAlpha(13), offset: const Offset(0, -4), blurRadius: 8)],
             ),
             child: Column(
               children: [

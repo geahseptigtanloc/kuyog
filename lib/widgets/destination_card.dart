@@ -34,7 +34,7 @@ class DestinationCard extends StatelessWidget {
                   height: 180,
                   width: 200,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.primary, AppColors.primaryLight]),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   child: const Icon(Icons.landscape, color: Colors.white54, size: 40),
@@ -48,7 +48,7 @@ class DestinationCard extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.65)],
+                    colors: [Colors.transparent, const Color(0xA5000000)],
                   ),
                 ),
               ),
@@ -59,7 +59,7 @@ class DestinationCard extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha(230),
                   borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Row(

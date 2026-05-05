@@ -97,7 +97,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.primary.withOpacity(0.12) : Colors.white,
+                      color: isSelected ? AppColors.primary.withAlpha(31) : Colors.white,
                       borderRadius: BorderRadius.circular(AppRadius.pill),
                       border: Border.all(color: isSelected ? AppColors.primary : AppColors.divider),
                     ),
@@ -151,3 +151,4 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
     );
   }
 }
+

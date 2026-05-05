@@ -69,12 +69,12 @@ class _MerchantOrdersTabState extends State<MerchantOrdersTab> with SingleTicker
           Row(children: [
             Text(id, style: AppTheme.label(size: 13, color: AppColors.textSecondary)),
             const Spacer(),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text(status, style: AppTheme.label(size: 11, color: color))),
           ]),
           const Divider(height: 20),
           Row(children: [
-            CircleAvatar(radius: 18, backgroundColor: color.withOpacity(0.15), child: const Icon(Icons.person, size: 18)),
+            CircleAvatar(radius: 18, backgroundColor: color.withAlpha(38), child: const Icon(Icons.person, size: 18)),
             const SizedBox(width: 10),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(name, style: AppTheme.label(size: 14)),
@@ -89,9 +89,10 @@ class _MerchantOrdersTabState extends State<MerchantOrdersTab> with SingleTicker
 
   Widget _emptyState() {
     return Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Icon(Icons.inbox, size: 64, color: AppColors.textLight.withOpacity(0.3)),
+      Icon(Icons.inbox, size: 64, color: AppColors.textLight.withAlpha(76)),
       const SizedBox(height: 16),
       Text('No cancelled orders', style: AppTheme.body(size: 16, color: AppColors.textSecondary)),
     ]));
   }
 }
+

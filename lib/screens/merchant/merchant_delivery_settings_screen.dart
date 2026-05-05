@@ -77,7 +77,7 @@ class _MerchantDeliverySettingsScreenState extends State<MerchantDeliverySetting
         subtitle: Text(subtitle, style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
         value: value,
         onChanged: onChanged,
-        activeColor: AppColors.merchantAmber,
+        activeThumbColor: AppColors.merchantAmber,
         contentPadding: EdgeInsets.zero,
       ),
     );

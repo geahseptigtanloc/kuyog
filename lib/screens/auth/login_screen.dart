@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +6,7 @@ import '../../app_theme.dart';
 import '../../widgets/kuyog_logo.dart';
 import '../../data/services/auth_service.dart';
 import '../../providers/role_provider.dart';
+import '../../widgets/core/kuyog_button.dart';
 
 class LoginScreen extends StatefulWidget {
   final String role;
@@ -29,9 +29,15 @@ class _LoginScreenState extends State<LoginScreen> {
   String _getFriendlyErrorMessage(Object e) {
     if (e is AuthException) {
       final msg = e.message.toLowerCase();
-      if (msg.contains('invalid login credentials')) return 'Invalid email or password. Please try again.';
-      if (msg.contains('email not confirmed')) return 'Please verify your email address before logging in.';
-      if (msg.contains('too many requests')) return 'Too many attempts. Please try again later.';
+      if (msg.contains('invalid login credentials')) {
+        return 'Invalid email or password. Please try again.';
+      }
+      if (msg.contains('email not confirmed')) {
+        return 'Please verify your email address before logging in.';
+      }
+      if (msg.contains('too many requests')) {
+        return 'Too many attempts. Please try again later.';
+      }
       return e.message;
     }
     return 'An unexpected error occurred. Please check your connection.';
@@ -71,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: email,
         password: password,
       );
-      
+
       if (context.mounted) {
         await Provider.of<RoleProvider>(context, listen: false).initialize();
         context.go('/auth/loading');
@@ -83,12 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(
             content: Row(children: [
               const Icon(Icons.error_outline, color: Colors.white),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpacing.md),
               Expanded(child: Text(_generalError!)),
             ]),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.md)),
           ),
         );
       }
@@ -117,32 +124,28 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpacing.xl),
               const KuyogLogo(fontSize: 32, showTagline: false),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppSpacing.xxxl),
               Text(
                 'Welcome back',
-                style: GoogleFonts.nunito(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.textPrimary,
-                ),
+                style: AppTheme.headline(size: 24),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 'Log in to continue planning your trip.',
-                style: GoogleFonts.nunito(
-                  fontSize: 14,
+                style: AppTheme.body(
+                  size: 14,
                   color: AppColors.textSecondary,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: AppSpacing.xxxl),
               // Email field
               TextField(
                 controller: _emailController,
@@ -157,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.lg),
               // Password field
               TextField(
                 controller: _passwordController,
@@ -172,50 +175,49 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: AppColors.textLight,
                     ),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.md),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
                   child: Text(
                     'Forgot password?',
-                    style: GoogleFonts.nunito(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                    style: AppTheme.label(
+                      size: 14,
                       color: AppColors.primary,
+                      weight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
               // Log in button
-              SizedBox(
+              KuyogButton(
+                label: 'Log in',
+                onPressed: _logIn,
+                isLoading: _isLoading,
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _logIn,
-                  child: _isLoading 
-                      ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                      : const Text('Log in'),
-                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxxl),
               // Divider
               Row(
                 children: [
                   const Expanded(child: Divider(color: AppColors.divider)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                     child: Text(
                       'Or',
-                      style: GoogleFonts.nunito(
-                        fontSize: 13,
+                      style: AppTheme.label(
+                        size: 13,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -223,28 +225,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Expanded(child: Divider(color: AppColors.divider)),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxxl),
               // Signup link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Don\'t have an account? ',
-                    style: GoogleFonts.nunito(color: AppColors.textSecondary),
+                    style: AppTheme.body(color: AppColors.textSecondary),
                   ),
                   TextButton(
-                    onPressed: () => context.go('/auth', extra: {'role': widget.role}),
+                    onPressed: () =>
+                        context.go('/auth', extra: {'role': widget.role}),
                     child: Text(
                       'Sign up',
-                      style: GoogleFonts.nunito(
+                      style: AppTheme.label(
                         color: AppColors.primary,
-                        fontWeight: FontWeight.w700,
+                        weight: FontWeight.w700,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
             ],
           ),
         ),
@@ -252,3 +255,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

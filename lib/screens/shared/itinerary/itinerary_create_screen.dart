@@ -230,7 +230,7 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.1),
+              color: AppColors.primary.withAlpha(26),
               borderRadius: BorderRadius.circular(AppRadius.md),
               border: Border.all(color: AppColors.primary),
             ),
@@ -300,7 +300,7 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
         const SizedBox(height: 24),
         Container(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.08), borderRadius: BorderRadius.circular(AppRadius.md)),
+          decoration: BoxDecoration(color: AppColors.primary.withAlpha(20), borderRadius: BorderRadius.circular(AppRadius.md)),
           child: Row(children: [
             const Icon(Icons.info_outline, color: AppColors.primary, size: 20),
             const SizedBox(width: 12),
@@ -333,7 +333,7 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primary.withOpacity(0.1) : Colors.white,
+          color: selected ? AppColors.primary.withAlpha(26) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(color: selected ? AppColors.primary : AppColors.divider, width: 1.5),
         ),
@@ -350,7 +350,7 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
   Widget _buildBottomButtons() {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, -2))]),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, -2))]),
       child: Row(children: [
         if (_step > 0)
           Expanded(child: OutlinedButton(onPressed: () => setState(() => _step--), child: const Text('Back'))),
@@ -369,3 +369,4 @@ class _ItineraryCreateScreenState extends State<ItineraryCreateScreen> {
     );
   }
 }
+

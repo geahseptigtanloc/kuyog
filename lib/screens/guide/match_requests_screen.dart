@@ -103,7 +103,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Icon(
             type == 'pending' ? Icons.hourglass_empty : type == 'accepted' ? Icons.check_circle_outline : Icons.cancel_outlined,
-            size: 64, color: AppColors.primary.withOpacity(0.3),
+            size: 64, color: AppColors.primary.withAlpha(76),
           ),
           const SizedBox(height: 16),
           Text(
@@ -129,7 +129,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: AppShadows.card,
-        border: request.status == 'pending' ? Border.all(color: AppColors.primary.withOpacity(0.2)) : null,
+        border: request.status == 'pending' ? Border.all(color: AppColors.primary.withAlpha(51)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +145,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
                     const SizedBox(width: 6),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: AppColors.touristBlue.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                      decoration: BoxDecoration(color: AppColors.touristBlue.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                       child: Text('Tourist', style: AppTheme.label(size: 9, color: AppColors.touristBlue)),
                     ),
                   ]),
@@ -155,7 +155,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withAlpha(26),
                   borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
                 child: Text('${request.matchScore}% Match', style: AppTheme.label(size: 11, color: AppColors.primary)),
@@ -168,9 +168,9 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
             children: request.travelPreferences.map((pref) => Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withAlpha(20),
                 borderRadius: BorderRadius.circular(AppRadius.pill),
-                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                border: Border.all(color: AppColors.primary.withAlpha(51)),
               ),
               child: Text(pref, style: AppTheme.body(size: 11, color: AppColors.primary)),
             )).toList(),
@@ -228,7 +228,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+              decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.sm)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 const Icon(Icons.check_circle, size: 14, color: AppColors.primary),
                 const SizedBox(width: 4),
@@ -240,7 +240,7 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(color: AppColors.error.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+              decoration: BoxDecoration(color: AppColors.error.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.sm)),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 const Icon(Icons.cancel, size: 14, color: AppColors.error),
                 const SizedBox(width: 4),
@@ -309,3 +309,4 @@ class _MatchRequestsScreenState extends State<MatchRequestsScreen> with SingleTi
     );
   }
 }
+

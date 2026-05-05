@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../app_theme.dart';
 import '../../../data/services/onboarding_service.dart';
 import '../../../providers/role_provider.dart';
-import '../../../widgets/terms_agreement_sheet.dart';
 
 class ProfessionalProfileScreen extends StatefulWidget {
   final VoidCallback onNext;

@@ -13,7 +13,7 @@ class VerifiedBadge extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
-          color: AppColors.verified.withOpacity(0.1),
+          color: AppColors.verified.withAlpha(25),
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         child: Row(

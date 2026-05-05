@@ -29,7 +29,7 @@ class HelpSupportScreen extends StatelessWidget {
                 Text('Frequently Asked Questions', style: AppTheme.headline(size: 16)),
                 const SizedBox(height: 12),
                 _faqTile('How do I become a verified guide?', 'Go to the Guide Dashboard and complete the 3-step verification process by uploading your valid IDs and DOT accreditation.'),
-                _faqTile('How does the Mindanao Crawl work?', 'Scan QR codes at participating tourist spots to earn stamps. Collect enough stamps to unlock exclusive discounts and merchandise.'),
+                _faqTile('How does the Madayaw Crawl work?', 'Scan QR codes at participating tourist spots to earn stamps. Collect enough stamps to unlock exclusive discounts and merchandise.'),
                 _faqTile('Are the products authentic?', 'Yes! All merchants with the "Official Kuyog Merchant" badge are verified locals selling authentic Mindanao-made crafts and food.'),
                 _faqTile('What payment methods are supported?', 'Currently, we support GCash, Maya, and major credit cards via our secure payment gateway.'),
                 _faqTile('How can I contact my guide?', 'Once you book an itinerary, a secure chat room will open between you and your guide in the Chat Hub.'),
@@ -48,7 +48,7 @@ class HelpSupportScreen extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text('Need immediate help?', style: AppTheme.headline(size: 18, color: Colors.white)),
         const SizedBox(height: 8),
-        Text('Our support team is available 24/7 to assist you with your bookings and inquiries.', style: AppTheme.body(size: 13, color: Colors.white.withOpacity(0.9))),
+        Text('Our support team is available 24/7 to assist you with your bookings and inquiries.', style: AppTheme.body(size: 13, color: Colors.white.withAlpha(230))),
         const SizedBox(height: 16),
         ElevatedButton.icon(
           onPressed: () {},
@@ -80,3 +80,4 @@ class HelpSupportScreen extends StatelessWidget {
     );
   }
 }
+

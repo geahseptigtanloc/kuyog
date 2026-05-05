@@ -16,6 +16,8 @@ import 'providers/match_provider.dart';
 import 'providers/itinerary_provider.dart';
 import 'providers/travel_provider.dart';
 import 'providers/navigation_provider.dart';
+import 'providers/booking_provider.dart';
+import 'providers/transport_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +53,8 @@ class KuyogApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ItineraryProvider()),
         ChangeNotifierProvider(create: (_) => TravelProvider()),
         ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => BookingProvider()),
+        ChangeNotifierProvider(create: (_) => TransportProvider()),
       ],
       child: MaterialApp.router(
         title: 'Kuyog',

@@ -48,7 +48,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.notifications_off_outlined, size: 64, color: AppColors.textLight.withOpacity(0.5)),
+                      Icon(Icons.notifications_off_outlined, size: 64, color: AppColors.textLight.withAlpha(128)),
                       const SizedBox(height: 16),
                       Text('No new notifications', style: AppTheme.headline(size: 18)),
                       const SizedBox(height: 8),
@@ -95,14 +95,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
 
     return Container(
-      color: n.isRead ? Colors.transparent : AppColors.primary.withOpacity(0.05),
+      color: n.isRead ? Colors.transparent : AppColors.primary.withAlpha(13),
       padding: const EdgeInsets.all(20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+            decoration: BoxDecoration(color: color.withAlpha(26), shape: BoxShape.circle),
             child: Icon(icon, color: color, size: 20),
           ),
           const SizedBox(width: 16),
@@ -131,3 +131,4 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     );
   }
 }
+

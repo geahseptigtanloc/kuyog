@@ -118,14 +118,14 @@ class _CvUploadScreenState extends State<CvUploadScreen> {
                     width: 1.5
                   ),
                   borderRadius: BorderRadius.circular(AppRadius.lg),
-                  color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withOpacity(0.04),
+                  color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withAlpha(10),
                 ),
                 child: Column(
                   children: [
                     Icon(
                       _pickedFile != null ? Icons.check_circle : Icons.upload_file, 
                       size: 48, 
-                      color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withOpacity(0.6)
+                      color: (_pickedFile != null ? AppColors.verified : AppColors.primary).withAlpha(153)
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -205,3 +205,4 @@ class _CvUploadScreenState extends State<CvUploadScreen> {
 
   VoidCallback get onNext => widget.onNext;
 }
+

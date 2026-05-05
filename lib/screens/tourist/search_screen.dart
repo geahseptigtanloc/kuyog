@@ -175,7 +175,7 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Text('$count', style: AppTheme.label(size: 11, color: AppColors.primary)),
           ),
         ],
@@ -195,7 +195,7 @@ class _SearchScreenState extends State<SearchScreen> {
             borderRadius: BorderRadius.circular(AppRadius.sm),
             child: CachedNetworkImage(imageUrl: imageUrl, width: 48, height: 48, fit: BoxFit.cover,
               placeholder: (c, u) => Container(width: 48, height: 48, color: AppColors.divider),
-              errorWidget: (c, u, e) => Container(width: 48, height: 48, color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.image, size: 20, color: AppColors.primary))),
+              errorWidget: (c, u, e) => Container(width: 48, height: 48, color: AppColors.primary.withAlpha(26), child: const Icon(Icons.image, size: 20, color: AppColors.primary))),
           ),
           const SizedBox(width: 12),
           Expanded(child: Column(
@@ -207,7 +207,7 @@ class _SearchScreenState extends State<SearchScreen> {
           )),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(color: catColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            decoration: BoxDecoration(color: catColor.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Text(category, style: AppTheme.label(size: 10, color: catColor)),
           ),
         ],
@@ -215,3 +215,4 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
+

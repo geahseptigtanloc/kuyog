@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../app_theme.dart';
 import '../../data/mock_data.dart';
-import '../../models/guide.dart';
-import '../../models/destination.dart';
+import '../../models/tour_operator.dart';
 import '../../providers/role_provider.dart';
-import '../../providers/crawl_provider.dart';
-import '../../providers/miles_provider.dart';
-import '../../widgets/guide_card.dart';
-import '../../widgets/destination_card.dart';
 import '../../widgets/durie_mascot.dart';
-import '../../widgets/durie_loading.dart';
-import '../features/marketplace/marketplace_home_screen.dart';
-import '../features/crawl/crawl_home_screen.dart';
-import '../features/help/sos_helpdesk_screen.dart';
-import '../features/notifications/notifications_screen.dart';
-import '../features/cultural/cultural_guide_screen.dart';
-import '../features/miles/miles_dashboard_screen.dart';
-import '../shared/chat/chat_list_screen.dart';
-import '../../widgets/kuyog_app_bar.dart';
-import '../../providers/navigation_provider.dart';
-import '../../widgets/kuyog_back_button.dart';
-import 'search_screen.dart';
-import 'guide_profile_screen.dart';
-
-enum HomeSubPage { main, crawl, miles }
+import '../../widgets/core/kuyog_card.dart';
+import '../../widgets/core/kuyog_section_header.dart';
+import '../../widgets/core/kuyog_badge.dart';
+import 'just_show_up/just_show_up_screen.dart';
+import 'just_show_up/package_detail_screen.dart';
+import 'roam_free/roam_free_screen.dart';
+import 'roam_free/transport_booking_screen.dart';
+import 'discover_davao_screen.dart';
+import 'events_calendar_screen.dart';
+import '../shared/my_trips_screen.dart';
 
 class TouristHomeTab extends StatefulWidget {
   const TouristHomeTab({super.key});
@@ -34,382 +25,644 @@ class TouristHomeTab extends StatefulWidget {
 }
 
 class _TouristHomeTabState extends State<TouristHomeTab> {
-  List<Guide> _guides = [];
-  List<Destination> _destinations = [];
+  List<TourPackage> _packages = [];
+  List<TourOperator> _operators = [];
   bool _loading = true;
-  List<HomeSubPage> _subPageStack = [HomeSubPage.main];
-
-  HomeSubPage get _currentSubPage => _subPageStack.last;
-
-  void _pushSubPage(HomeSubPage page) {
-    setState(() => _subPageStack.add(page));
-  }
-
-  void _popSubPage() {
-    if (_subPageStack.length > 1) {
-      setState(() => _subPageStack.removeLast());
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _load();
   }
 
-  Future<void> _loadData() async {
-    final g = await MockData.getGuides();
-    final d = await MockData.getDestinations();
-    if (mounted) setState(() { _guides = g; _destinations = d; _loading = false; });
+  Future<void> _load() async {
+    final pkgs = await MockData.getTourPackages();
+    final ops = await MockData.getTourOperators();
+    if (mounted) {
+      setState(() {
+        _packages = pkgs;
+        _operators = ops;
+        _loading = false;
+      });
+    }
+  }
+
+  TourOperator? _opFor(String id) {
+    try {
+      return _operators.firstWhere((o) => o.id == id);
+    } catch (_) {
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final role = context.watch<RoleProvider>();
-    final crawl = context.watch<CrawlProvider>();
-    final miles = context.watch<MilesProvider>();
-
-    return PopScope(
-      canPop: _subPageStack.length <= 1,
-      onPopInvokedWithResult: (didPop, result) {
-        if (!didPop && _subPageStack.length > 1) {
-          _popSubPage();
-        }
-      },
-      child: _buildCurrentPage(role, crawl, miles),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: _loading
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.primary))
+          : CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // Hero Section
+                SliverToBoxAdapter(child: _heroSection(role)),
+                // Madayaw Points
+                SliverToBoxAdapter(child: _madayawPointsBar()),
+                // Two Legs
+                SliverToBoxAdapter(child: _twoLegs()),
+                // Quick Actions
+                SliverToBoxAdapter(child: _quickActions()),
+                // Recommended Packages
+                SliverToBoxAdapter(
+                  child: const KuyogSectionHeader(
+                    title: 'Recommended for You',
+                    subtitle: 'AI-matched to your interests',
+                    padding: EdgeInsets.fromLTRB(AppSpacing.xl, 32, AppSpacing.xl, 12),
+                  ),
+                ),
+                SliverToBoxAdapter(child: _packageStrip()),
+                // Featured Destinations
+                SliverToBoxAdapter(
+                  child: const KuyogSectionHeader(
+                    title: 'From StoryHub',
+                    subtitle: 'Stories from fellow travelers',
+                    padding: EdgeInsets.fromLTRB(AppSpacing.xl, 32, AppSpacing.xl, 12),
+                  ),
+                ),
+                SliverToBoxAdapter(child: _storyHubPreview()),
+                // Madayaw Crawl Banner
+                SliverToBoxAdapter(child: _crawlBanner()),
+                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              ],
+            ),
     );
   }
 
-  Widget _buildCurrentPage(RoleProvider role, CrawlProvider crawl, MilesProvider miles) {
-    switch (_currentSubPage) {
-      case HomeSubPage.crawl:
-        return CrawlHomeScreen(onBack: _popSubPage);
-      case HomeSubPage.miles:
-        return MilesDashboardScreen(onBack: _popSubPage);
-      case HomeSubPage.main:
-      default:
-        return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: KuyogAppBar(title: role.greeting),
-          body: SafeArea(
-            child: _loading
-                ? const DurieLoading()
-                : SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
+  Widget _heroSection(RoleProvider role) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.xxl),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+
+              // Greeting and Durie row
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 20),
-                        _buildHero(),
-                        const SizedBox(height: 24),
-                        _padded(Text('What would you like to do?', style: AppTheme.headline(size: 18))),
-                        const SizedBox(height: 12),
-                        _padded(_buildQuickActions()),
-                        const SizedBox(height: 28),
-                        _buildTravelCard(),
-                        const SizedBox(height: 28),
-                        _buildMindanaoCrawlSection(crawl, miles),
-                        const SizedBox(height: 28),
-                        _sectionHeader('Featured Tour Guides', 'See All'),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 210,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(left: 20),
-                            itemCount: _guides.length,
-                            itemBuilder: (c, i) => Padding(
-                              padding: const EdgeInsets.only(right: 12),
-                              child: GestureDetector(
-                                onTap: () => Navigator.push(context, MaterialPageRoute(
-                                  builder: (_) => GuideProfileScreen(guide: _guides[i]),
-                                )),
-                                child: GuideCard(guide: _guides[i]),
-                              ),
-                            ),
+                        Text(
+                          'Kuyog ta, ${role.currentUser?.name ?? "Traveler"}!',
+                          style: GoogleFonts.baloo2(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
-                        const SizedBox(height: 28),
-                        _sectionHeader('Explore Mindanao', 'See All'),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 280,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.only(left: 20),
-                            itemCount: _destinations.length,
-                            itemBuilder: (c, i) => DestinationCard(destination: _destinations[i]),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Experience Davao. Your Way.',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14,
+                            color: Colors.white.withAlpha(191),
+                            fontWeight: FontWeight.w400,
                           ),
                         ),
-                        const SizedBox(height: 40),
                       ],
                     ),
                   ),
-          ),
-        );
-    }
-  }
-
-  Widget _padded(Widget child) => Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: child);
-
-  Widget _buildHero() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.xxl),
-        child: Stack(children: [
-          CachedNetworkImage(
-            imageUrl: 'https://picsum.photos/seed/davao_hero2/800/400', height: 190, width: double.infinity, fit: BoxFit.cover,
-            placeholder: (c, u) => Container(height: 190, color: AppColors.divider),
-            errorWidget: (c, u, e) => Container(height: 190, decoration: BoxDecoration(gradient: LinearGradient(colors: [AppColors.primary, AppColors.primaryLight]))),
-          ),
-          Positioned.fill(child: Container(
-            decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.5)])),
-          )),
-          Positioned(top: 16, left: 16, right: 16, child: GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SearchScreen())),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.95), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Row(children: [
-                const Icon(Icons.search, color: AppColors.textLight, size: 20),
-                const SizedBox(width: 10),
-                Text('Where do you want to go?', style: AppTheme.body(size: 14, color: AppColors.textLight)),
-              ]),
-            ),
-          )),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildQuickActions() {
-    final items = [
-      ('Services', Icons.miscellaneous_services_rounded, AppColors.primary),
-      ('Citizen Guide', Icons.menu_book_rounded, AppColors.touristBlue),
-      ('E-Services', Icons.phone_android_rounded, AppColors.adminPurple),
-      ('Emergency', Icons.emergency_rounded, AppColors.error),
-      ('Utilities', Icons.electrical_services_rounded, AppColors.warning),
-      ('Transport', Icons.directions_bus_rounded, const Color(0xFF0891B2)),
-      ('Marketplace', Icons.store_rounded, AppColors.accent),
-      ('View More', Icons.grid_view_rounded, AppColors.textSecondary),
-    ];
-    return GridView.count(
-      crossAxisCount: 4, shrinkWrap: true, physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12, crossAxisSpacing: 8, childAspectRatio: 0.8,
-      children: items.map((a) => GestureDetector(
-        onTap: () => _handleQuickAction(a.$1),
-        child: Column(children: [
-          Container(padding: const EdgeInsets.all(14), decoration: BoxDecoration(color: a.$3.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.lg)),
-            child: Icon(a.$2, color: a.$3, size: 24)),
-          const SizedBox(height: 6),
-          Text(a.$1, style: AppTheme.label(size: 10), textAlign: TextAlign.center, maxLines: 1, overflow: TextOverflow.ellipsis),
-        ]),
-      )).toList(),
-    );
-  }
-
-  void _handleQuickAction(String label) {
-    switch (label) {
-      case 'Marketplace':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const MarketplaceHomeScreen()));
-      case 'Citizen Guide':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const CulturalGuideScreen()));
-      case 'Emergency':
-        Navigator.push(context, MaterialPageRoute(builder: (_) => const SosHelpdeskScreen()));
-      case 'Services':
-        _showInfoSheet('Services', [
-          ('Tour Booking', Icons.calendar_today, 'Book tours with verified guides'),
-          ('Transportation', Icons.directions_car, 'Habal-habal, taxi, bus routes'),
-          ('Accommodation', Icons.hotel, 'Find lodging and homestays'),
-          ('Activities', Icons.surfing, 'Water sports, trekking, diving'),
-          ('Emergency Services', Icons.local_hospital, 'Hospitals, police, fire'),
-        ]);
-      case 'E-Services':
-        _showInfoSheet('E-Services', [
-          ('DOT Online Portal', Icons.language, 'Department of Tourism portal'),
-          ('LGU Tourism Office', Icons.business, 'Local government tourism'),
-          ('Tourist Hotlines', Icons.phone, '1-555-TOUR (mock)'),
-        ]);
-      case 'Utilities':
-        _showInfoSheet('Utilities', [
-          ('Currency Converter', Icons.currency_exchange, '1 USD = 56.50 PHP'),
-          ('Weather', Icons.cloud, 'Davao: 31C, Partly Cloudy'),
-          ('Local Time', Icons.access_time, 'Philippine Standard Time (UTC+8)'),
-          ('Contacts', Icons.contacts, 'Emergency & utility numbers'),
-        ]);
-      case 'Transport':
-        _showInfoSheet('Transport Options', [
-          ('Habal-habal', Icons.two_wheeler, 'P50-150 per ride'),
-          ('E-Trike', Icons.electric_rickshaw, 'P30-80 per ride'),
-          ('Taxi / Grab', Icons.local_taxi, 'P100-500, metered'),
-          ('Bus Routes', Icons.directions_bus, 'Davao-GenSan, Davao-Cagayan'),
-        ]);
-      case 'View More':
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('More services coming soon!', style: AppTheme.body(size: 14, color: Colors.white)), backgroundColor: AppColors.primary),
-        );
-    }
-  }
-
-  void _showInfoSheet(String title, List<(String, IconData, String)> items) {
-    showModalBottomSheet(
-      context: context, backgroundColor: Colors.transparent, isScrollControlled: true,
-      builder: (ctx) => Container(
-        padding: EdgeInsets.only(left: 24, right: 24, top: 24, bottom: MediaQuery.of(ctx).viewInsets.bottom + 24),
-        decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
-        child: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(width: 40, height: 4, decoration: BoxDecoration(color: AppColors.divider, borderRadius: BorderRadius.circular(2))),
-            const SizedBox(height: 16),
-            Text(title, style: AppTheme.headline(size: 20)),
-            const SizedBox(height: 16),
-            ...items.map((item) => Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(AppRadius.md)),
-              child: Row(children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
-                  child: Icon(item.$2, size: 22, color: AppColors.primary),
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(item.$1, style: AppTheme.label(size: 14)),
-                  Text(item.$3, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-                ])),
-              ]),
-            )),
-            const SizedBox(height: 8),
-          ]),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMilesCard(MilesProvider miles) {
-    return GestureDetector(
-      onTap: () => _pushSubPage(HomeSubPage.miles),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary, AppColors.primaryLight]),
-          borderRadius: BorderRadius.circular(AppRadius.xxl),
-        ),
-        child: Row(children: [
-          const DurieMascot(size: 50),
-          const SizedBox(width: 16),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('${miles.balance}', style: AppTheme.headline(size: 32, color: Colors.white)),
-            Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white.withOpacity(0.85))),
-            const SizedBox(height: 4),
-            Text('Redeem rewards  \u2192', style: AppTheme.body(size: 12, color: Colors.white.withOpacity(0.7))),
-          ])),
-        ]),
-      ),
-    );
-  }
-
-  Widget _buildTravelCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        onTap: () {
-          context.read<NavigationProvider>().setIndex(3);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppColors.primaryDark, AppColors.primary]),
-            borderRadius: BorderRadius.circular(AppRadius.xxl),
-            boxShadow: [
-              BoxShadow(color: AppColors.primary.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4)),
-            ],
-          ),
-          child: Row(children: [
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Travel', style: AppTheme.headline(size: 20, color: Colors.white)),
-              const SizedBox(height: 4),
-              Text('Plan your perfect Mindanao adventure. Choose your guide, matching style, and create lasting memories.', style: AppTheme.body(size: 12, color: Colors.white.withOpacity(0.8))),
-              const SizedBox(height: 14),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: const Text('Go to Travel', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                  const SizedBox(width: 12),
+                  const DurieMascot(size: 56),
+                ],
               ),
-            ])),
-            Container(padding: const EdgeInsets.all(12), decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), shape: BoxShape.circle),
-              child: const Icon(Icons.explore_rounded, size: 40, color: Colors.white)),
-          ]),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMindanaoCrawlSection(CrawlProvider crawl, MilesProvider miles) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionHeader('Mindanao Crawl', 'Details'),
-        const SizedBox(height: 12),
-        _buildCrawlBanner(crawl),
-        const SizedBox(height: 16),
-        _padded(_buildMilesCard(miles)),
-      ],
-    );
-  }
-
-  Widget _buildCrawlBanner(CrawlProvider crawl) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: GestureDetector(
-        onTap: () => _pushSubPage(HomeSubPage.crawl),
-        child: Container(
-          width: double.infinity,
-          height: 140,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadius.xxl),
-            image: const DecorationImage(
-              image: CachedNetworkImageProvider('https://picsum.photos/seed/crawl/600/300'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppRadius.xxl),
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [Colors.black.withOpacity(0.8), Colors.transparent],
-              ),
-            ),
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+              const SizedBox(height: AppSpacing.lg),
+              // Search bar
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(15),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
                     children: [
-                      Text('Mindanao Crawl', style: AppTheme.headline(size: 18, color: Colors.white)),
-                      const SizedBox(height: 4),
-                      Text('${crawl.stampCount}/8 stamps', style: AppTheme.label(size: 14, color: Colors.white)),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                        child: Text('Join the Crawl', style: AppTheme.label(size: 12, color: AppColors.accent)),
+                      const Icon(Icons.search, color: AppColors.textLight, size: 20),
+                      const SizedBox(width: AppSpacing.md),
+                      Text(
+                        'Search tours, destinations...',
+                        style: AppTheme.body(size: 14, color: AppColors.textLight),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), shape: BoxShape.circle),
-                  child: const Icon(Icons.emoji_events, size: 32, color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _madayawPointsBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+      child: Container(
+        height: 56,
+        decoration: BoxDecoration(
+          color: AppColors.accent,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          child: Row(
+            children: [
+              const Icon(
+                Icons.star_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Text(
+                'Madayaw Points',
+                style: GoogleFonts.nunito(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '1,250',
+                style: GoogleFonts.baloo2(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                ' pts',
+                style: GoogleFonts.nunito(
+                  fontSize: 12,
+                  color: Colors.white.withAlpha(204),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _twoLegs() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+      child: Column(
+        children: [
+          // JUST SHOW UP - PRIMARY (larger, top)
+          KuyogCard(
+            padding: EdgeInsets.zero,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const JustShowUpScreen()),
+            ),
+            child: SizedBox(
+              height: 180, // Even size
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Background image
+                  CachedNetworkImage(
+                    imageUrl: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800',
+                    fit: BoxFit.cover,
+                    placeholder: (c, u) => Container(color: AppColors.primary),
+                    errorWidget: (c, u, e) => Container(color: AppColors.primary),
+                  ),
+                  // Solid Overlay
+                  Container(
+                    color: Colors.black.withAlpha(100),
+                  ),
+                  // Content
+                  Positioned(
+                    bottom: AppSpacing.lg,
+                    left: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Category pill
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                          ),
+                          child: Text(
+                            'Tour Package',
+                            style: AppTheme.label(
+                              size: 11,
+                              color: AppColors.primary,
+                              weight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Just Show Up',
+                          style: GoogleFonts.baloo2(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'All-in tour packages. Managed for you.',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14,
+                            color: Colors.white.withAlpha(204),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Arrow button
+                  Positioned(
+                    top: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          // ROAM FREE - SECONDARY (smaller)
+          KuyogCard(
+            padding: EdgeInsets.zero,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RoamFreeScreen()),
+            ),
+            child: SizedBox(
+              height: 180, // Even size
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Background image
+                  CachedNetworkImage(
+                    imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800',
+                    fit: BoxFit.cover,
+                    placeholder: (c, u) => Container(color: AppColors.primary),
+                    errorWidget: (c, u, e) => Container(color: AppColors.primary),
+                  ),
+                  // Solid Overlay
+                  Container(
+                    color: Colors.black.withAlpha(100),
+                  ),
+                  // Content
+                  Positioned(
+                    bottom: AppSpacing.lg,
+                    left: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Category pill
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
+                          ),
+                          child: Text(
+                            'Build Your Own',
+                            style: AppTheme.label(
+                              size: 11,
+                              color: AppColors.primary,
+                              weight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'Roam Free',
+                          style: GoogleFonts.baloo2(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'Build your own AI-assisted itinerary.',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14,
+                            color: Colors.white.withAlpha(204),
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Arrow button
+                  Positioned(
+                    top: AppSpacing.lg,
+                    right: AppSpacing.lg,
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward,
+                        color: AppColors.primary,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _quickActions() {
+    final actions = [
+      {
+        'label': 'Discover\nDavao',
+        'icon': Icons.explore,
+        'tap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DiscoverDavaoScreen())),
+      },
+      {
+        'label': 'Transport\nRental',
+        'icon': Icons.directions_car,
+        'tap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TransportBookingScreen())),
+      },
+      {
+        'label': 'Events\nCalendar',
+        'icon': Icons.event,
+        'tap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EventsCalendarScreen())),
+      },
+      {
+        'label': 'My\nTrips',
+        'icon': Icons.luggage,
+        'tap': () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyTripsScreen())),
+      },
+    ];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+      child: Row(
+        children: actions.map((action) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: KuyogCard(
+                onTap: action['tap'] as VoidCallback?,
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                radius: AppRadius.lg,
+                border: Border.all(color: AppColors.accent.withAlpha(80), width: 1.2),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.accent.withAlpha(25),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(action['icon'] as IconData,
+                        color: AppColors.accent, size: 22),
+                  ),
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(action['label'] as String,
+                      style: AppTheme.label(size: 11, color: AppColors.textPrimary),
+                      textAlign: TextAlign.center),
+                ]),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _packageStrip() {
+    if (_packages.isEmpty) return const SizedBox();
+    return SizedBox(
+      height: 310,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+        itemCount: _packages.length,
+        itemBuilder: (c, i) => _pkgCard(_packages[i]),
+      ),
+    );
+  }
+
+  Widget _pkgCard(TourPackage pkg) {
+    final op = _opFor(pkg.operatorId);
+    return Padding(
+      padding: const EdgeInsets.only(right: AppSpacing.md, bottom: AppSpacing.md),
+      child: Container(
+        width: 260,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(15),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => PackageDetailScreen(package: pkg, operator: op))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image Header
+                CachedNetworkImage(
+                  imageUrl: pkg.photoUrl,
+                  height: 140,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (c, u) => Container(height: 140, color: AppColors.divider),
+                  errorWidget: (c, u, e) => Container(
+                    height: 140, 
+                    color: AppColors.primary.withAlpha(25),
+                    child: const Icon(Icons.image_not_supported, color: AppColors.primary),
+                  ),
+                ),
+                // Content Body
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title and Price Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              pkg.name,
+                              style: AppTheme.headline(size: 16),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '₱${pkg.price.toInt()}',
+                                style: AppTheme.headline(size: 16, color: AppColors.primary),
+                              ),
+                              Text(
+                                '/Person',
+                                style: AppTheme.body(size: 11, color: AppColors.textSecondary),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      // Rating Row
+                      Row(
+                        children: [
+                          const Icon(Icons.star, size: 16, color: Colors.amber),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${pkg.rating}',
+                            style: AppTheme.label(size: 13, color: AppColors.textPrimary),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'ratings',
+                            style: AppTheme.body(size: 12, color: AppColors.textSecondary),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Info Pills Row
+                      Row(
+                        children: [
+                          // Duration Pill
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE0F2FE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.schedule, size: 14, color: Color(0xFF0284C7)),
+                                const SizedBox(width: 6),
+                                Text(
+                                  pkg.duration.isNotEmpty ? pkg.duration : '${pkg.durationDays} Days',
+                                  style: GoogleFonts.nunito(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF0284C7),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          // Operator Pill
+                          if (op != null)
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFDCFCE7),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.verified, size: 14, color: Color(0xFF16A34A)),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        op.companyName,
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF16A34A),
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -419,13 +672,175 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
     );
   }
 
-  Widget _sectionHeader(String title, String action) {
+  Widget _storyHubPreview() {
+    // Mock story posts for preview
+    final mockPosts = [
+      {
+        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=400',
+        'title': 'Sunset at Mount Apo',
+        'author': 'Maria Santos',
+        'location': 'Davao City',
+      },
+      {
+        'image': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&q=80&w=400',
+        'title': 'Hidden Waterfalls',
+        'author': 'Juan Cruz',
+        'location': 'Davao del Norte',
+      },
+      {
+        'image': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=400',
+        'title': 'City Exploration',
+        'author': 'Ana Reyes',
+        'location': 'Davao City',
+      },
+    ];
+
+    return SizedBox(
+      height: 250,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+        itemCount: mockPosts.length,
+        itemBuilder: (context, index) {
+          final post = mockPosts[index];
+          return Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.md, bottom: AppSpacing.md),
+            child: Container(
+              width: 180,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    // Navigate to StoryHub
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Post image
+                      CachedNetworkImage(
+                        imageUrl: post['image'] as String,
+                        height: 130,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder: (c, u) => Container(
+                          height: 130,
+                          color: AppColors.divider,
+                        ),
+                        errorWidget: (c, u, e) => Container(
+                          height: 130,
+                          color: AppColors.primary.withAlpha(25),
+                        ),
+                      ),
+                      // Post content
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post['title'] as String,
+                              style: AppTheme.headline(size: 14),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 10,
+                                  backgroundColor: AppColors.primary.withAlpha(50),
+                                  child: Text(
+                                    (post['author'] as String).substring(0, 1),
+                                    style: AppTheme.label(size: 10, color: AppColors.primary),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    post['author'] as String,
+                                    style: AppTheme.label(size: 11, color: AppColors.textPrimary),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 12, color: AppColors.textSecondary),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    post['location'] as String,
+                                    style: AppTheme.body(size: 11, color: AppColors.textSecondary),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _crawlBanner() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Text(title, style: AppTheme.headline(size: 18)),
-        Text(action, style: AppTheme.label(size: 13, color: AppColors.primary)),
-      ]),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xl, AppSpacing.xl, AppSpacing.xl, 0),
+      child: GestureDetector(
+        onTap: () {},
+        child: Container(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          decoration: BoxDecoration(
+            color: AppColors.primary.withAlpha(20),
+            border: Border.all(color: AppColors.primary.withAlpha(51)),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+          ),
+          child: Row(children: [
+            Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  KuyogBadge(
+                    label: 'SEASON ACTIVE',
+                    color: AppColors.primary.withAlpha(38),
+                    labelColor: AppColors.primary,
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  Text('Madayaw Lungsod Crawl',
+                      style: AppTheme.headline(size: 20, color: AppColors.primary)),
+                  const SizedBox(height: 4),
+                  Text('Explore heritage sites. Win rewards!',
+                      style: AppTheme.body(size: 13, color: AppColors.primary.withAlpha(204))),
+                ])),
+            const SizedBox(width: AppSpacing.md),
+            const DurieMascot(size: 64),
+          ]),
+        ),
+      ),
     );
   }
 }
+

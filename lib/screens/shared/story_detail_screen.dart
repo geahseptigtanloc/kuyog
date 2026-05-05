@@ -83,7 +83,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                           decoration: BoxDecoration(
-                            color: _roleChipColor(currentPost.userRole).withOpacity(0.1),
+                            color: _roleChipColor(currentPost.userRole).withAlpha(26),
                             borderRadius: BorderRadius.circular(AppRadius.pill),
                           ),
                           child: Text(_formatRole(currentPost.userRole), style: AppTheme.label(size: 10, weight: FontWeight.w800, color: _roleChipColor(currentPost.userRole))),
@@ -213,7 +213,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: active ? AppColors.primary : AppColors.primary.withOpacity(0.05), 
+        color: active ? AppColors.primary : AppColors.primary.withAlpha(13), 
         borderRadius: BorderRadius.circular(AppRadius.pill)
       ),
       child: Row(children: [
@@ -231,7 +231,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
         CircleAvatar(
           radius: 16, 
           backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
-          backgroundColor: AppColors.primary.withOpacity(0.1), 
+          backgroundColor: AppColors.primary.withAlpha(26), 
           child: (avatarUrl == null || avatarUrl.isEmpty) ? Text(name.isNotEmpty ? name[0] : '?', style: AppTheme.label(size: 14, color: AppColors.primary)) : null,
         ),
         const SizedBox(width: 12),
@@ -264,3 +264,4 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
     return 'Tourist';
   }
 }
+

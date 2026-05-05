@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import '../../../app_theme.dart';
 import '../../../providers/miles_provider.dart';
-import '../../../models/miles_activity.dart';
 import '../../../widgets/kuyog_back_button.dart';
 
 class MilesDashboardScreen extends StatefulWidget {
@@ -48,17 +47,14 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
               margin: const EdgeInsets.all(20),
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft, end: Alignment.bottomRight,
-                  colors: [AppColors.primaryDark, AppColors.primaryLight],
-                ),
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(AppRadius.xxl),
-                boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 8))],
+                boxShadow: [BoxShadow(color: AppColors.primary.withAlpha(76), blurRadius: 16, offset: const Offset(0, 8))],
               ),
               child: Column(children: [
                 Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text('Kuyog Miles', style: AppTheme.label(size: 14, color: Colors.white70)),
+                    Text('Madayaw Points', style: AppTheme.label(size: 14, color: Colors.white70)),
                     const SizedBox(height: 4),
                     AnimatedBuilder(
                       animation: _countAnimation,
@@ -71,7 +67,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
                   Container(
                     width: 80, height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
+                      color: Colors.white.withAlpha(38),
                       borderRadius: BorderRadius.circular(AppRadius.lg),
                     ),
                     child: const Icon(Icons.star, size: 40, color: Colors.amber),
@@ -85,14 +81,14 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: miles.tierProgress,
-                        backgroundColor: Colors.white.withOpacity(0.2),
+                        backgroundColor: Colors.white.withAlpha(51),
                         valueColor: const AlwaysStoppedAnimation(Colors.amber),
                         minHeight: 8,
                       ),
                     )),
                   ]),
                   const SizedBox(height: 6),
-                  Text('${miles.milesToNextTier} miles to next reward', style: AppTheme.body(size: 11, color: Colors.white70)),
+                  Text('${miles.milesToNextTier} points to next reward', style: AppTheme.body(size: 11, color: Colors.white70)),
                 ]),
               ]),
             ),
@@ -123,7 +119,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
                       Icon(_tierIcon(i), size: 28, color: _tierColor(i)),
                       const SizedBox(height: 6),
                       Text(tier.name, style: AppTheme.label(size: 14, color: _tierColor(i))),
-                      Text('${tier.minMiles}-${tier.maxMiles}', style: AppTheme.body(size: 10, color: AppColors.textLight)),
+                      Text('${tier.minMiles}-${tier.maxMiles} pts', style: AppTheme.body(size: 10, color: AppColors.textLight)),
                       const Spacer(),
                       ...tier.perks.take(2).map((p) => Padding(
                         padding: const EdgeInsets.only(top: 2),
@@ -136,7 +132,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
             ),
             const SizedBox(height: 24),
             // How to Earn
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text('Earn Miles', style: AppTheme.headline(size: 18))),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text('Earn Points', style: AppTheme.headline(size: 18))),
             const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -176,14 +172,14 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
                     clipBehavior: Clip.antiAlias,
                     child: Stack(children: [
-                      Container(height: 170, width: 150, color: AppColors.primary.withOpacity(0.1),
-                        child: Icon(Icons.card_giftcard, size: 50, color: AppColors.primary.withOpacity(0.2))),
+                      Container(height: 170, width: 150, color: AppColors.primary.withAlpha(26),
+                        child: Icon(Icons.card_giftcard, size: 50, color: AppColors.primary.withAlpha(51))),
                       Positioned.fill(child: DecoratedBox(decoration: BoxDecoration(
-                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withOpacity(0.7)]),
+                        gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [Colors.transparent, Colors.black.withAlpha(178)]),
                       ))),
                       Positioned(bottom: 12, left: 12, right: 12, child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text(reward.name, style: AppTheme.label(size: 12, color: Colors.white)),
-                        Text('${reward.milesCost} miles', style: AppTheme.label(size: 14, color: Colors.amber)),
+                        Text('${reward.milesCost} points', style: AppTheme.label(size: 14, color: Colors.amber)),
                         const SizedBox(height: 6),
                         SizedBox(width: double.infinity, child: canAfford
                           ? ElevatedButton(
@@ -193,7 +189,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
                             )
                           : Container(
                               padding: const EdgeInsets.symmetric(vertical: 6),
-                              decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(AppRadius.md)),
+                              decoration: BoxDecoration(color: Colors.white.withAlpha(51), borderRadius: BorderRadius.circular(AppRadius.md)),
                               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                                 const Icon(Icons.lock, size: 12, color: Colors.white60),
                                 const SizedBox(width: 4),
@@ -208,8 +204,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
               ),
             ),
             const SizedBox(height: 24),
-            // Miles Activity Timeline
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text('Miles Activity', style: AppTheme.headline(size: 18))),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text('Points Activity', style: AppTheme.headline(size: 18))),
             const SizedBox(height: 12),
             ...miles.history.map((activity) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -249,8 +244,8 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
               ]),
             ),
             const SizedBox(height: 12),
-            _challengePreview('Visit 3 Waterfalls', 0.66, '+500 miles', 'https://picsum.photos/seed/waterfall_ch/100/100'),
-            _challengePreview('Book a Local Guide', 0.0, '+300 miles', 'https://picsum.photos/seed/guide_ch/100/100'),
+            _challengePreview('Visit 3 Waterfalls', 0.66, '+500 pts', 'https://picsum.photos/seed/waterfall_ch/100/100'),
+            _challengePreview('Book a Local Guide', 0.0, '+300 pts', 'https://picsum.photos/seed/guide_ch/100/100'),
             const SizedBox(height: 40),
           ]),
         ),
@@ -268,7 +263,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
         child: Row(children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+            decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.sm)),
             child: Icon(icon, size: 20, color: color),
           ),
           const SizedBox(width: 10),
@@ -289,7 +284,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
       child: Row(children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadius.sm),
-          child: Container(width: 50, height: 50, color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.emoji_events, color: AppColors.accent, size: 28)),
+          child: Container(width: 50, height: 50, color: AppColors.primary.withAlpha(26), child: const Icon(Icons.emoji_events, color: AppColors.accent, size: 28)),
         ),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -305,7 +300,7 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
         const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(color: AppColors.accent.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)),
+          decoration: BoxDecoration(color: AppColors.accent.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.sm)),
           child: Text(reward, style: AppTheme.label(size: 10, color: AppColors.accent)),
         ),
       ]),
@@ -332,3 +327,4 @@ class _MilesDashboardScreenState extends State<MilesDashboardScreen> with Single
     }
   }
 }
+

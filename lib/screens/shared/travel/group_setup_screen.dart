@@ -153,7 +153,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.md),
         boxShadow: AppShadows.card,
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withAlpha(76)),
       ),
       child: Row(
         children: [
@@ -179,7 +179,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withAlpha(26),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                   child: Text('Trip Leader (You)', style: AppTheme.label(size: 10, color: AppColors.primary)),
@@ -263,7 +263,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            backgroundColor: AppColors.primaryLight.withOpacity(0.2),
+            backgroundColor: AppColors.primaryLight.withAlpha(51),
             child: Text(initials, style: AppTheme.label(size: 16, color: AppColors.primary)),
           ),
           const SizedBox(width: 16),
@@ -298,9 +298,9 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.warning.withOpacity(0.1),
+                        color: AppColors.warning.withAlpha(26),
                         borderRadius: BorderRadius.circular(AppRadius.pill),
-                        border: Border.all(color: AppColors.warning.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.warning.withAlpha(76)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -328,7 +328,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.05),
+            color: AppColors.primary.withAlpha(13),
             borderRadius: BorderRadius.circular(AppRadius.md),
           ),
           child: Row(
@@ -441,7 +441,7 @@ class _GroupSetupScreenState extends State<GroupSetupScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, -2)),
+          BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, -2)),
         ],
       ),
       child: Column(
@@ -522,7 +522,7 @@ class _AddMemberSheetState extends State<_AddMemberSheet> {
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: _role,
+            initialValue: _role,
             decoration: const InputDecoration(labelText: 'Role'),
             items: _roles.map((r) => DropdownMenuItem(value: r, child: Text(r))).toList(),
             onChanged: (v) => setState(() => _role = v!),
@@ -549,3 +549,4 @@ class _AddMemberSheetState extends State<_AddMemberSheet> {
     );
   }
 }
+

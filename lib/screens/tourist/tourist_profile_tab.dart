@@ -12,6 +12,10 @@ import '../shared/help_support_screen.dart';
 import '../shared/edit_profile_screen.dart';
 import '../features/notifications/notifications_list_screen.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../widgets/core/kuyog_card.dart';
+import '../../widgets/core/kuyog_badge.dart';
+import '../../widgets/core/kuyog_section_header.dart';
+import '../../widgets/core/kuyog_button.dart';
 import '../../data/services/auth_service.dart';
 import 'tourist_preferences_screen.dart';
 
@@ -24,90 +28,126 @@ class TouristProfileTab extends StatelessWidget {
     final user = roleProvider.currentUser;
     final miles = context.watch<MilesProvider>();
     final crawl = context.watch<CrawlProvider>();
-    
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: const KuyogAppBar(title: 'Profile'),
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(children: [
-            const SizedBox(height: 8),
-            CircleAvatar(
-              radius: 44, 
-              backgroundColor: AppColors.primary.withValues(alpha: 0.12),
-              backgroundImage: user?.avatarUrl.isNotEmpty == true ? NetworkImage(user!.avatarUrl) : null,
-              child: (user?.avatarUrl.isEmpty == true || user?.avatarUrl == null) 
-                  ? const Icon(Icons.person, size: 44, color: AppColors.primary) 
-                  : null,
-            ),
-            const SizedBox(height: 12),
-            Text(user?.name ?? roleProvider.userName, style: AppTheme.headline(size: 22)),
-            if (user?.email.isNotEmpty == true) ...[
-              const SizedBox(height: 4),
-              Text(user!.email, style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
-            ],
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(color: AppColors.touristBlue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text(roleProvider.roleDisplayName, style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.touristBlue)),
-            ),
-            const SizedBox(height: 8),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            // Profile Info Header
+            Column(children: [
+              CircleAvatar(
+                radius: 48,
+                backgroundColor: AppColors.primary.withAlpha(31),
+                backgroundImage: user?.avatarUrl.isNotEmpty == true
+                    ? NetworkImage(user!.avatarUrl)
+                    : null,
+                child: (user?.avatarUrl.isEmpty == true ||
+                        user?.avatarUrl == null)
+                    ? const Icon(Icons.person, size: 48, color: AppColors.primary)
+                    : null,
+              ),
+              const SizedBox(height: AppSpacing.md),
+              Text(user?.name ?? roleProvider.userName,
+                  style: AppTheme.headline(size: 24)),
               if (user?.email.isNotEmpty == true) ...[
-                const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
-                const SizedBox(width: 4),
-                Text('Verified Email', style: AppTheme.body(size: 12, color: AppColors.verified)),
+                const SizedBox(height: 4),
+                Text(user!.email,
+                    style: AppTheme.body(
+                        size: 14, color: AppColors.textSecondary)),
               ],
-              if (user?.phone.isNotEmpty == true) ...[
-                const SizedBox(width: 12),
-                const Icon(Icons.check_circle, size: 14, color: AppColors.verified),
-                const SizedBox(width: 4),
-                Text('Verified Phone', style: AppTheme.body(size: 12, color: AppColors.verified)),
-              ],
+              const SizedBox(height: AppSpacing.md),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                KuyogBadge(
+                  label: roleProvider.roleDisplayName,
+                  color: AppColors.touristBlue,
+                ),
+                if (user?.email.isNotEmpty == true ||
+                    user?.phone.isNotEmpty == true) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  const KuyogBadge(
+                    label: 'Verified',
+                    color: AppColors.verified,
+                    icon: Icons.verified,
+                  ),
+                ],
+              ]),
+              const SizedBox(height: AppSpacing.lg),
+              KuyogButton(
+                label: 'Edit Profile',
+                variant: KuyogButtonVariant.outline,
+                icon: Icons.edit,
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const EditProfileScreen())),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
+              ),
             ]),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen())), 
-              icon: const Icon(Icons.edit, size: 16), 
-              label: const Text('Edit Profile')
-            ),
-            const SizedBox(height: 24),
-            _statsRow(miles, crawl),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
+
+            // Stats Row
+            Row(children: [
+              _statCard('Trips', '3', Icons.flight_takeoff),
+              const SizedBox(width: AppSpacing.md),
+              _statCard('Reviews', '5', Icons.star),
+              const SizedBox(width: AppSpacing.md),
+              _statCard('Miles', '${miles.balance}', Icons.stars),
+              const SizedBox(width: AppSpacing.md),
+              _statCard('Stamps', '${crawl.stampCount}', Icons.emoji_events),
+            ]),
+            const SizedBox(height: AppSpacing.xxl),
+
+            // Menu Section
             _menuItem(Icons.map, 'My Itineraries', '3 trips'),
-            _menuItem(Icons.auto_awesome, 'Match Preferences', 'Adjust', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TouristPreferencesScreen()))),
+            _menuItem(Icons.auto_awesome, 'Match Preferences', 'Adjust',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const TouristPreferencesScreen()))),
             _menuItem(Icons.bookmark, 'Saved Guides', '5 saved'),
             _menuItem(Icons.favorite, 'Wishlist', '8 items'),
-            _menuItem(Icons.stars, 'Kuyog Miles', '${miles.balance} miles', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MilesDashboardScreen()))),
+            _menuItem(Icons.stars, 'Madayaw Points', '${miles.balance} pts',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const MilesDashboardScreen()))),
             _menuItem(Icons.shopping_bag, 'My Orders', '2 orders'),
-            _menuItem(Icons.emoji_events, 'Crawl Progress', '${crawl.stampCount}/8', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CrawlHomeScreen()))),
-            const SizedBox(height: 16),
-            _sectionTitle('Settings'),
-            _settingsItem(Icons.notifications, 'Notifications', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsListScreen()))),
+            _menuItem(Icons.emoji_events, 'Crawl Progress',
+                '${crawl.stampCount}/8',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const CrawlHomeScreen()))),
+
+            const SizedBox(height: AppSpacing.xl),
+            const KuyogSectionHeader(title: 'Settings', padding: EdgeInsets.zero),
+            const SizedBox(height: AppSpacing.md),
+
+            _settingsItem(Icons.notifications, 'Notifications',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const NotificationsListScreen()))),
             _settingsItem(Icons.language, 'Language'),
             _settingsItem(Icons.lock, 'Privacy'),
-            _settingsItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
-            _settingsItem(Icons.settings, 'General Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
-            const SizedBox(height: 8),
-            _settingsItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
-            const SizedBox(height: 16),
-            // Role Switcher Dev Mode
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.textPrimary.withValues(alpha: 0.04),
-                borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(color: AppColors.divider),
-              ),
-              child: Column(children: [
-                Text('Switch Role — Dev Mode', style: AppTheme.label(size: 13, color: AppColors.textSecondary)),
-                const SizedBox(height: 8),
-                Wrap(spacing: 8, runSpacing: 8, children: UserRole.values.map((r) => _roleChip(context, r)).toList()),
-              ]),
-            ),
+            _settingsItem(Icons.help, 'Help & Support',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const HelpSupportScreen()))),
+            _settingsItem(Icons.settings, 'General Settings',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SettingsScreen()))),
+            const SizedBox(height: AppSpacing.md),
+            _settingsItem(Icons.logout, 'Logout',
+                isDestructive: true, onTap: () => _showLogoutDialog(context)),
+
+            const SizedBox(height: AppSpacing.xxl),
             const SizedBox(height: 80),
           ]),
         ),
@@ -115,43 +155,33 @@ class TouristProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _statsRow(MilesProvider miles, CrawlProvider crawl) {
-    return Row(children: [
-      _statCard('Trips', '3', Icons.flight_takeoff),
-      const SizedBox(width: 8),
-      _statCard('Reviews', '5', Icons.star),
-      const SizedBox(width: 8),
-      _statCard('Miles', '${miles.balance}', Icons.stars),
-      const SizedBox(width: 8),
-      _statCard('Stamps', '${crawl.stampCount}', Icons.emoji_events),
-    ]);
-  }
-
   Widget _statCard(String label, String value, IconData icon) {
-    return Expanded(child: Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md), boxShadow: AppShadows.card),
+    return Expanded(
+        child: KuyogCard(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Column(children: [
         Icon(icon, size: 20, color: AppColors.primary),
         const SizedBox(height: 4),
         Text(value, style: AppTheme.label(size: 16, color: AppColors.primary)),
-        Text(label, style: AppTheme.body(size: 10, color: AppColors.textSecondary)),
+        Text(label,
+            style: AppTheme.body(size: 10, color: AppColors.textSecondary)),
       ]),
     ));
   }
 
-  Widget _menuItem(IconData icon, String title, String trailing, {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+  Widget _menuItem(IconData icon, String title, String trailing,
+      {VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: KuyogCard(
+        onTap: onTap,
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(children: [
           Icon(icon, size: 20, color: AppColors.primary),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpacing.md),
           Expanded(child: Text(title, style: AppTheme.label(size: 14))),
-          Text(trailing, style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
+          Text(trailing,
+              style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
           const SizedBox(width: 4),
           const Icon(Icons.chevron_right, size: 18, color: AppColors.textLight),
         ]),
@@ -159,26 +189,29 @@ class TouristProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _sectionTitle(String title) {
-    return Align(alignment: Alignment.centerLeft, child: Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(title, style: AppTheme.headline(size: 16)),
-    ));
-  }
-
-  Widget _settingsItem(IconData icon, String title, {bool isDestructive = false, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+  Widget _settingsItem(IconData icon, String title,
+      {bool isDestructive = false, VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: KuyogCard(
+        onTap: onTap,
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md, vertical: AppSpacing.md),
         child: Row(children: [
-          Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
-          const SizedBox(width: 12),
-          Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
+          Icon(icon,
+              size: 20,
+              color: isDestructive ? AppColors.error : AppColors.textSecondary),
+          const SizedBox(width: AppSpacing.md),
+          Text(title,
+              style: AppTheme.body(
+                  size: 14,
+                  color: isDestructive
+                      ? AppColors.error
+                      : AppColors.textPrimary)),
           const Spacer(),
-          Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
+          Icon(Icons.chevron_right,
+              size: 18,
+              color: isDestructive ? AppColors.error : AppColors.textLight),
         ]),
       ),
     );
@@ -188,43 +221,33 @@ class TouristProfileTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.xl)),
         title: Text('Log out of Kuyog?', style: AppTheme.headline(size: 20)),
-        content: Text('You will need to sign in again to access your account.', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+        content: Text('You will need to sign in again to access your account.',
+            style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
         actions: [
-          OutlinedButton(
+          TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel',
+                style: AppTheme.label(size: 14, color: AppColors.textLight)),
           ),
-          ElevatedButton(
+          KuyogButton(
+            label: 'Log Out',
+            variant: KuyogButtonVariant.destructive,
             onPressed: () async {
               Navigator.pop(ctx);
               await AuthService().signOut();
               if (context.mounted) context.go('/onboarding');
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('Log Out'),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
           ),
         ],
       ),
     );
   }
 
-  Widget _roleChip(BuildContext context, UserRole role) {
-    final current = context.read<RoleProvider>().currentRole;
-    final isActive = current == role;
-    final labels = {UserRole.tourist: 'Tourist', UserRole.guide: 'Guide', UserRole.merchant: 'Merchant', UserRole.admin: 'Admin', UserRole.superAdmin: 'Super Admin'};
-    return GestureDetector(
-      onTap: () => context.read<RoleProvider>().switchRole(role),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-          border: Border.all(color: isActive ? AppColors.primary : AppColors.divider),
-        ),
-        child: Text('${labels[role]}', style: AppTheme.label(size: 12, color: isActive ? Colors.white : AppColors.textPrimary)),
-      ),
-    );
-  }
 }
+
+

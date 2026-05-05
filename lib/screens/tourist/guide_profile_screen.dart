@@ -49,7 +49,7 @@ class GuideProfileScreen extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                        colors: [Colors.transparent, Colors.black.withAlpha(204)],
                       ),
                     ),
                   ),
@@ -124,9 +124,9 @@ class GuideProfileScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.08),
+                      color: AppColors.primary.withAlpha(20),
                       borderRadius: BorderRadius.circular(AppRadius.lg),
-                      border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+                      border: Border.all(color: AppColors.primary.withAlpha(51)),
                     ),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Row(children: [
@@ -231,7 +231,7 @@ class GuideProfileScreen extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(AppRadius.md),
                         boxShadow: AppShadows.card,
-                        border: Border.all(color: _paymentColor(p).withOpacity(0.3)),
+                        border: Border.all(color: _paymentColor(p).withAlpha(76)),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
                         Icon(_paymentIcon(p), size: 18, color: _paymentColor(p)),
@@ -292,7 +292,7 @@ class GuideProfileScreen extends StatelessWidget {
                                 width: 160,
                                 fit: BoxFit.cover,
                                 placeholder: (c, u) => Container(width: 160, color: AppColors.divider),
-                                errorWidget: (c, u, e) => Container(width: 160, color: AppColors.primary.withOpacity(0.1)),
+                                errorWidget: (c, u, e) => Container(width: 160, color: AppColors.primary.withAlpha(26)),
                               ),
                             ),
                           );
@@ -384,7 +384,7 @@ class GuideProfileScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha(13),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -399,7 +399,7 @@ class GuideProfileScreen extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withAlpha(26),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: AppColors.primary, size: 20),
@@ -461,7 +461,7 @@ class GuideProfileScreen extends StatelessWidget {
           children: items.map((item) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              color: AppColors.primary.withAlpha(20),
               borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
             child: Text(item, style: AppTheme.body(size: 13, color: AppColors.primary)),
@@ -530,3 +530,4 @@ class GuideProfileScreen extends StatelessWidget {
     );
   }
 }
+

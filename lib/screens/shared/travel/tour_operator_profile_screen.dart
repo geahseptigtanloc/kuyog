@@ -47,7 +47,7 @@ class TourOperatorProfileScreen extends StatelessWidget {
       backgroundColor: AppColors.primary,
       leading: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: KuyogBackButton(onTap: () => Navigator.pop(context), color: Colors.white),
+        child: KuyogBackButton(onTap: () => Navigator.pop(context)),
       ),
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
@@ -62,7 +62,7 @@ class TourOperatorProfileScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [Colors.transparent, Colors.black.withAlpha(178)],
                 ),
               ),
             ),
@@ -116,7 +116,7 @@ class TourOperatorProfileScreen extends StatelessWidget {
   Widget _badge(String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+      decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -258,7 +258,7 @@ class TourOperatorProfileScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 16, backgroundColor: AppColors.primaryLight.withOpacity(0.2), child: Text(name[0], style: AppTheme.label(size: 12, color: AppColors.primary))),
+              CircleAvatar(radius: 16, backgroundColor: AppColors.primaryLight.withAlpha(51), child: Text(name[0], style: AppTheme.label(size: 12, color: AppColors.primary))),
               const SizedBox(width: 8),
               Text(name, style: AppTheme.label(size: 14)),
               const Spacer(),
@@ -272,3 +272,4 @@ class TourOperatorProfileScreen extends StatelessWidget {
     );
   }
 }
+

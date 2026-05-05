@@ -106,7 +106,7 @@ class _AdminVerificationsTabState extends State<AdminVerificationsTab> {
             Text('Verifications', style: AppTheme.headline(size: 24)),
             const Spacer(),
             if (!_isLoading)
-              Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.warning.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+              Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6), decoration: BoxDecoration(color: AppColors.warning.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                 child: Text('$pendingCount pending', style: AppTheme.label(size: 12, color: AppColors.warning))),
           ])),
           
@@ -165,13 +165,13 @@ class _AdminVerificationsTabState extends State<AdminVerificationsTab> {
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            CircleAvatar(radius: 22, backgroundColor: type == 'guide' ? AppColors.primary.withOpacity(0.15) : AppColors.accent.withOpacity(0.15), child: Icon(type == 'guide' ? Icons.person : Icons.store, color: type == 'guide' ? AppColors.primary : AppColors.accent)),
+            CircleAvatar(radius: 22, backgroundColor: type == 'guide' ? AppColors.primary.withAlpha(38) : AppColors.accent.withAlpha(38), child: Icon(type == 'guide' ? Icons.person : Icons.store, color: type == 'guide' ? AppColors.primary : AppColors.accent)),
             const SizedBox(width: 12),
             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(name, style: AppTheme.label(size: 14)),
               Text('$city · Submitted $date', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
             ])),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: AppColors.touristBlue.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: AppColors.touristBlue.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
               child: Text('$docs docs', style: AppTheme.label(size: 10, color: AppColors.touristBlue))),
           ]),
           const SizedBox(height: 12),
@@ -202,7 +202,7 @@ class _AdminVerificationsTabState extends State<AdminVerificationsTab> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
+                    color: statusColor.withAlpha(26),
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   alignment: Alignment.center,
@@ -221,3 +221,4 @@ class _AdminVerificationsTabState extends State<AdminVerificationsTab> {
     );
   }
 }
+

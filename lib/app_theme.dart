@@ -75,7 +75,7 @@ class AppSpacing {
 class AppShadows {
   static List<BoxShadow> get card => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withAlpha(20),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -83,7 +83,7 @@ class AppShadows {
 
   static List<BoxShadow> get cardHover => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.12),
+          color: Colors.black.withAlpha(31),
           blurRadius: 16,
           offset: const Offset(0, 4),
         ),
@@ -91,7 +91,7 @@ class AppShadows {
 
   static List<BoxShadow> get bottomNav => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withAlpha(20),
           blurRadius: 16,
           offset: const Offset(0, -4),
         ),
@@ -108,20 +108,41 @@ class AppTheme {
   static TextStyle headline(
           {double size = 24,
           Color color = AppColors.textPrimary,
-          FontWeight weight = FontWeight.w700}) =>
-      GoogleFonts.baloo2(fontSize: size, fontWeight: weight, color: color);
+          FontWeight weight = FontWeight.w700,
+          double? height,
+          double? letterSpacing}) =>
+      GoogleFonts.baloo2(
+          fontSize: size,
+          fontWeight: weight,
+          color: color,
+          height: height,
+          letterSpacing: letterSpacing);
 
   static TextStyle body(
           {double size = 14,
           Color color = AppColors.textPrimary,
-          FontWeight weight = FontWeight.w400}) =>
-      GoogleFonts.nunito(fontSize: size, fontWeight: weight, color: color);
+          FontWeight weight = FontWeight.w400,
+          double? height,
+          double? letterSpacing}) =>
+      GoogleFonts.nunito(
+          fontSize: size,
+          fontWeight: weight,
+          color: color,
+          height: height,
+          letterSpacing: letterSpacing);
 
   static TextStyle label(
           {double size = 13,
           Color color = AppColors.textPrimary,
-          FontWeight weight = FontWeight.w600}) =>
-      GoogleFonts.nunito(fontSize: size, fontWeight: weight, color: color);
+          FontWeight weight = FontWeight.w600,
+          double? height,
+          double? letterSpacing}) =>
+      GoogleFonts.nunito(
+          fontSize: size,
+          fontWeight: weight,
+          color: color,
+          height: height,
+          letterSpacing: letterSpacing);
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -273,7 +294,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: Colors.white,
-        selectedColor: AppColors.primary.withOpacity(0.15),
+        selectedColor: AppColors.primary.withAlpha(38),
         side: const BorderSide(color: AppColors.divider),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -323,3 +344,4 @@ class AppTheme {
     );
   }
 }
+

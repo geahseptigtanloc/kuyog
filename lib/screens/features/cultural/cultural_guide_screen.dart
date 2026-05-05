@@ -71,7 +71,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: [AppColors.touristBlue, Color(0xFF0284C7)]),
+            color: AppColors.touristBlue,
             borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
           child: Row(
@@ -82,7 +82,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
                   children: [
                     Text('Learn Visayan', style: AppTheme.headline(size: 20, color: Colors.white)),
                     const SizedBox(height: 8),
-                    Text('Take a quick quiz to earn Kuyog Miles while learning the local tongue.', style: AppTheme.body(size: 13, color: Colors.white70)),
+                    Text('Take a quick quiz to earn Madayaw Points while learning the local tongue.', style: AppTheme.body(size: 13, color: Colors.white70)),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {},
@@ -145,7 +145,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), shape: BoxShape.circle),
                     child: const Icon(Icons.handshake, color: AppColors.primary),
                   ),
                   const SizedBox(width: 16),
@@ -168,7 +168,7 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: AppColors.touristBlue.withOpacity(0.1), shape: BoxShape.circle),
+                    decoration: BoxDecoration(color: AppColors.touristBlue.withAlpha(26), shape: BoxShape.circle),
                     child: const Icon(Icons.checkroom, color: AppColors.touristBlue),
                   ),
                   const SizedBox(width: 16),
@@ -184,3 +184,4 @@ class _CulturalGuideScreenState extends State<CulturalGuideScreen> {
     );
   }
 }
+

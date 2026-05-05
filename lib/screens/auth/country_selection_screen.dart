@@ -103,7 +103,7 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
               if (_selection == 'no') ...[
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: _selectedCountry,
+                  initialValue: _selectedCountry,
                   decoration: InputDecoration(
                     labelText: 'Select your country/region',
                     prefixIcon: const Icon(Icons.public, color: AppColors.textLight),
@@ -157,7 +157,7 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: _selection == value ? AppColors.primary.withOpacity(0.06) : Colors.white,
+          color: _selection == value ? AppColors.primary.withAlpha(15) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(
             color: _selection == value ? AppColors.primary : AppColors.divider,
@@ -185,3 +185,4 @@ class _CountrySelectionScreenState extends State<CountrySelectionScreen> {
     );
   }
 }
+

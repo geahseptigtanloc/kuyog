@@ -101,7 +101,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: unread > 0 ? AppColors.primary.withOpacity(0.04) : Colors.white,
+          color: unread > 0 ? AppColors.primary.withAlpha(10) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.lg),
           boxShadow: AppShadows.card,
           border: unread > 0 ? Border(left: BorderSide(color: AppColors.primary, width: 3)) : null,
@@ -145,7 +145,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: _roleColor(thread.participantRole).withOpacity(0.1),
+                          color: _roleColor(thread.participantRole).withAlpha(26),
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                         child: Text(thread.participantRole, style: AppTheme.label(size: 9, color: _roleColor(thread.participantRole))),
@@ -204,3 +204,4 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return '${diff.inDays}d';
   }
 }
+

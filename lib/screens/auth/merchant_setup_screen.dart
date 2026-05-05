@@ -96,7 +96,7 @@ class _MerchantSetupScreenState extends State<MerchantSetupScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _businessType,
+              initialValue: _businessType,
               decoration: const InputDecoration(
                 labelText: 'Business Type',
               ),

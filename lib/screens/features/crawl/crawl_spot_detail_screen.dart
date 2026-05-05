@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../app_theme.dart';
 import '../../../models/event.dart';
 import '../../../providers/crawl_provider.dart';
 import '../../../widgets/mock_qr_scanner.dart';
+import '../../../widgets/core/kuyog_button.dart';
 
 class CrawlSpotDetailScreen extends StatelessWidget {
   final CrawlEvent event;
@@ -17,152 +19,294 @@ class CrawlSpotDetailScreen extends StatelessWidget {
     final isJoined = crawl.stampCount > 0; // Simple mock condition
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF0F4EF), // Light sage background to match image
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverAppBar(
-            expandedHeight: 280,
-            pinned: true,
-            backgroundColor: AppColors.accent,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                fit: StackFit.expand,
-                children: [
-                  CachedNetworkImage(
-                    imageUrl: event.imageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(color: AppColors.divider),
-                    errorWidget: (context, url, error) => Container(color: AppColors.primary.withOpacity(0.1), child: const Icon(Icons.image, color: AppColors.primary, size: 48)),
+          // Header Image & Title Card Stack
+          SliverToBoxAdapter(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Background Image
+                CachedNetworkImage(
+                  imageUrl: event.imageUrl,
+                  height: 350,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(height: 350, color: AppColors.divider),
+                  errorWidget: (context, url, error) => Container(
+                    height: 350,
+                    color: AppColors.primary.withAlpha(26),
+                    child: const Icon(Icons.image, color: AppColors.primary, size: 48),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                ),
+                // Navigation Buttons
+                Positioned(
+                  top: MediaQuery.of(context).padding.top + 8,
+                  left: 16,
+                  right: 16,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: IconButton(
+                          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary, size: 20),
+                          onPressed: () => Navigator.pop(context),
+                        ),
                       ),
-                    ),
+                      CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: IconButton(
+                          icon: const Icon(Icons.more_horiz, color: AppColors.textPrimary, size: 20),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    bottom: 20,
-                    left: 20,
-                    right: 20,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                // Floating Title Card
+                Positioned(
+                  bottom: -40,
+                  left: 20,
+                  right: 20,
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withAlpha(15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                event.name,
+                                style: GoogleFonts.baloo2(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.star, color: Colors.amber, size: 16),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '4.8 ratings',
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 14,
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(color: AppColors.accent, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                          child: Text(event.category, style: AppTheme.label(size: 11, color: Colors.white)),
+                          height: 40,
+                          width: 1,
+                          color: AppColors.divider,
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          event.name,
-                          style: AppTheme.headline(size: 24, color: Colors.white),
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const Icon(Icons.calendar_today, size: 14, color: Colors.white70),
-                            const SizedBox(width: 4),
-                            Text(event.dateRange, style: AppTheme.body(size: 13, color: Colors.white70)),
+                            Text(
+                              '500 Points',
+                              style: GoogleFonts.baloo2(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            Text(
+                              '/Crawl',
+                              style: GoogleFonts.nunito(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
                           ],
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 64)),
+
+          // Content Sections
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (isJoined) ...[
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: AppColors.accent.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+                  const SizedBox(height: 24),
+                  // About section
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'About the event',
+                        style: GoogleFonts.baloo2(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.qr_code_scanner, color: AppColors.accent, size: 32),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Scan QR to get Stamp', style: AppTheme.label(size: 14, color: AppColors.accent)),
-                                Text('Visit participating spots to earn stamps and win prizes.', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
-                              ],
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 12),
+                      Text(
+                        event.description,
+                        style: GoogleFonts.nunito(
+                          fontSize: 14,
+                          height: 1.6,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                  ],
+                    ],
+                  ),
 
-                  Text('About the Event', style: AppTheme.headline(size: 18)),
-                  const SizedBox(height: 12),
-                  Text(event.description, style: AppTheme.body(size: 14)),
                   const SizedBox(height: 24),
 
-                  Text('Participating Spots', style: AppTheme.headline(size: 18)),
+                  // Info Chips Scroll
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        _infoChip(Icons.access_time, 'Duration', 'All Day', const Color(0xFFFFF7ED)),
+                        _infoChip(Icons.category, 'Category', event.category, const Color(0xFFFFF1DC)),
+                        _infoChip(Icons.location_on, 'Location', 'Davao City', const Color(0xFFFFEDD5)),
+                        _infoChip(Icons.people, 'Limit', 'None', const Color(0xFFFFE4D6)),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Participating Spots
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Participating Spots',
+                        style: GoogleFonts.baloo2(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'See all',
+                          style: GoogleFonts.nunito(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 12),
                   ...event.spots.map((spot) => _spotTile(spot)),
-                  const SizedBox(height: 100),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: isJoined
-          ? Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),
-              child: SafeArea(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final success = await Navigator.push(context, MaterialPageRoute(builder: (_) => const MockQrScanner()));
-                      if (success == true) {
-                        context.read<CrawlProvider>().collectStampSimple('scanned_stamp');
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stamp Collected!'), backgroundColor: AppColors.success));
-                      }
-                    },
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: const Text('Scan QR to Earn Stamp'),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent, padding: const EdgeInsets.symmetric(vertical: 16), foregroundColor: Colors.white),
-                  ),
-                ),
-              ),
-            )
-          : Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),
-              child: SafeArea(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      crawl.collectStampSimple('Welcome Stamp');
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Joined successfully! Earned 1 free stamp.'), backgroundColor: AppColors.success));
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
-                    child: const Text('Join Crawl Event'),
-                  ),
-                ),
-              ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(10),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
             ),
+          ],
+        ),
+        child: KuyogButton(
+          label: isJoined ? 'Scan QR to Earn Stamp' : 'Join Crawl Event',
+          onPressed: () async {
+            if (isJoined) {
+              final success = await Navigator.push(context, MaterialPageRoute(builder: (_) => const MockQrScanner()));
+              if (!context.mounted) return;
+              if (success == true) {
+                context.read<CrawlProvider>().collectStampSimple('scanned_stamp');
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Stamp Collected!'), backgroundColor: AppColors.success));
+              }
+            } else {
+              crawl.collectStampSimple('Welcome Stamp');
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Joined successfully! Earned 1 free stamp.'), backgroundColor: AppColors.success));
+            }
+          },
+          fullWidth: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _infoChip(IconData icon, String label, String value, Color bgColor) {
+    return Container(
+      width: 100,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: Colors.white,
+            child: Icon(icon, color: const Color(0xFF92400E), size: 18),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            label,
+            style: GoogleFonts.nunito(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: GoogleFonts.nunito(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
     );
   }
 
@@ -174,7 +318,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: AppShadows.card,
-        border: spot.isFeatured ? Border.all(color: AppColors.primary.withOpacity(0.3), width: 1.5) : null,
+        border: spot.isFeatured ? Border.all(color: AppColors.primary.withAlpha(76), width: 1.5) : null,
       ),
       child: Column(
         children: [
@@ -242,7 +386,7 @@ class CrawlSpotDetailScreen extends StatelessWidget {
               if (spot.isCollected)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(color: AppColors.success.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                  decoration: BoxDecoration(color: AppColors.success.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
                   child: Row(
                     children: [
                       const Icon(Icons.check_circle, color: AppColors.success, size: 16),
@@ -283,8 +427,9 @@ class CrawlSpotDetailScreen extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+      decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
       child: Text(label, style: AppTheme.label(size: 10, color: color)),
     );
   }
 }
+

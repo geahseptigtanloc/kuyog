@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../app_theme.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../widgets/core/kuyog_card.dart';
+import '../../widgets/core/kuyog_badge.dart';
+import '../../widgets/core/kuyog_button.dart';
 import '../shared/settings_screen.dart';
 import '../shared/help_support_screen.dart';
 import '../shared/edit_profile_screen.dart';
@@ -20,26 +23,60 @@ class MerchantProfileTab extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(children: [
-            const SizedBox(height: 8),
-            CircleAvatar(radius: 44, backgroundColor: AppColors.merchantAmber.withOpacity(0.15), child: const Icon(Icons.store, size: 44, color: AppColors.merchantAmber)),
-            const SizedBox(height: 12),
-            Text('T\'boli Weaves Co.', style: AppTheme.headline(size: 22)),
-            const SizedBox(height: 4),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-              child: Text('Verified Merchant', style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.merchantAmber))),
-            const SizedBox(height: 24),
-            _menuItem(Icons.edit, 'Edit Store Profile', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
-            _menuItem(Icons.access_time, 'Operating Hours', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantOperatingHoursScreen()))),
-            _menuItem(Icons.local_shipping, 'Delivery Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantDeliverySettingsScreen()))),
+            const SizedBox(height: AppSpacing.md),
+            CircleAvatar(
+                radius: 48,
+                backgroundColor: AppColors.merchantAmber.withAlpha(38),
+                child: const Icon(Icons.store,
+                    size: 48, color: AppColors.merchantAmber)),
+            const SizedBox(height: AppSpacing.md),
+            Text('T\'boli Weaves Co.', style: AppTheme.headline(size: 24)),
+            const SizedBox(height: AppSpacing.sm),
+            const KuyogBadge(
+              label: 'Verified Merchant',
+              color: AppColors.merchantAmber,
+            ),
+            const SizedBox(height: AppSpacing.xxl),
+            _menuItem(Icons.edit, 'Edit Store Profile',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const EditProfileScreen()))),
+            _menuItem(Icons.access_time, 'Operating Hours',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            const MerchantOperatingHoursScreen()))),
+            _menuItem(Icons.local_shipping, 'Delivery Settings',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            const MerchantDeliverySettingsScreen()))),
             _menuItem(Icons.account_balance, 'Payout Settings'),
             _menuItem(Icons.bar_chart, 'Sales Analytics'),
-            _menuItem(Icons.reviews, 'Customer Reviews', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MerchantReviewsScreen()))),
-            const SizedBox(height: 16),
-            _menuItem(Icons.settings, 'Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
-            _menuItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
-            _menuItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
+            _menuItem(Icons.reviews, 'Customer Reviews',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const MerchantReviewsScreen()))),
+            const SizedBox(height: AppSpacing.md),
+            _menuItem(Icons.settings, 'Settings',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SettingsScreen()))),
+            _menuItem(Icons.help, 'Help & Support',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const HelpSupportScreen()))),
+            const SizedBox(height: AppSpacing.md),
+            _menuItem(Icons.logout, 'Logout',
+                isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 80),
           ]),
         ),
@@ -47,19 +84,28 @@ class MerchantProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _menuItem(IconData icon, String title, {bool isDestructive = false, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+  Widget _menuItem(IconData icon, String title,
+      {bool isDestructive = false, VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: KuyogCard(
+        onTap: onTap,
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(children: [
-          Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
-          const SizedBox(width: 12),
-          Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
+          Icon(icon,
+              size: 20,
+              color: isDestructive ? AppColors.error : AppColors.textSecondary),
+          const SizedBox(width: AppSpacing.md),
+          Text(title,
+              style: AppTheme.body(
+                  size: 14,
+                  color: isDestructive
+                      ? AppColors.error
+                      : AppColors.textPrimary)),
           const Spacer(),
-          Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
+          Icon(Icons.chevron_right,
+              size: 18,
+              color: isDestructive ? AppColors.error : AppColors.textLight),
         ]),
       ),
     );
@@ -69,24 +115,31 @@ class MerchantProfileTab extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.xl)),
         title: Text('Log out of Kuyog?', style: AppTheme.headline(size: 20)),
-        content: Text('You will need to sign in again to access your account.', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+        content: Text('You will need to sign in again to access your account.',
+            style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
         actions: [
-          OutlinedButton(
+          TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel',
+                style: AppTheme.label(size: 14, color: AppColors.textLight)),
           ),
-          ElevatedButton(
+          KuyogButton(
+            label: 'Log Out',
+            variant: KuyogButtonVariant.destructive,
             onPressed: () {
               Navigator.pop(ctx);
               context.go('/onboarding');
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('Log Out'),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
           ),
         ],
       ),
     );
   }
 }
+
+

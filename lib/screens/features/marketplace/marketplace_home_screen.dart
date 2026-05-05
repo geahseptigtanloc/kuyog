@@ -5,6 +5,11 @@ import '../../../app_theme.dart';
 import '../../../providers/cart_provider.dart';
 import '../../../data/mock_data.dart';
 import '../../../models/product.dart';
+import '../../../widgets/kuyog_app_bar.dart';
+import '../../../widgets/core/kuyog_card.dart';
+import '../../../widgets/core/kuyog_badge.dart';
+import '../../../widgets/core/kuyog_section_header.dart';
+import '../../../widgets/core/kuyog_button.dart';
 
 class MarketplaceHomeScreen extends StatefulWidget {
   const MarketplaceHomeScreen({super.key});
@@ -25,7 +30,12 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
 
   Future<void> _load() async {
     final p = await MockData.getProducts();
-    if (mounted) setState(() { _products = p; _loading = false; });
+    if (mounted) {
+      setState(() {
+        _products = p;
+        _loading = false;
+      });
+    }
   }
 
   @override
@@ -34,75 +44,89 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: Text('Kuyog Market', style: AppTheme.headline(size: 20)),
+      appBar: KuyogAppBar(
+        title: 'Kuyog Market',
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(
+              icon: const Icon(Icons.search, color: AppColors.primary),
+              onPressed: () {}),
           Stack(
             alignment: Alignment.center,
             children: [
-              IconButton(icon: const Icon(Icons.shopping_cart_outlined), onPressed: () {}),
+              IconButton(
+                  icon: const Icon(Icons.shopping_cart_outlined,
+                      color: AppColors.primary),
+                  onPressed: () {}),
               if (cart.itemCount > 0)
                 Positioned(
                   right: 8,
                   top: 8,
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
-                    child: Text('${cart.itemCount}', style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                    decoration: const BoxDecoration(
+                        color: AppColors.error, shape: BoxShape.circle),
+                    child: Text('${cart.itemCount}',
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ),
             ],
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpacing.md),
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator(color: AppColors.merchantAmber))
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.merchantAmber))
           : SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Banner
-                  Container(
-                    margin: const EdgeInsets.all(20),
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [AppColors.merchantAmber, const Color(0xFFF59E0B)]),
-                      borderRadius: BorderRadius.circular(AppRadius.xl),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Mindanao Made', style: AppTheme.body(size: 14, color: Colors.white70)),
-                              const SizedBox(height: 4),
-                              Text('Support Local Artisans', style: AppTheme.headline(size: 24, color: Colors.white)),
-                              const SizedBox(height: 12),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.pill)),
-                                child: Text('Shop Now', style: AppTheme.label(size: 12, color: AppColors.merchantAmber)),
-                              ),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.xl),
+                    child: KuyogCard(
+                      color: AppColors.accent,
+                      padding: const EdgeInsets.all(AppSpacing.xl),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Mindanao Made',
+                                    style: AppTheme.body(
+                                        size: 14, color: Colors.white70)),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text('Support Local Artisans',
+                                    style: AppTheme.headline(
+                                        size: 24, color: Colors.white)),
+                                const SizedBox(height: AppSpacing.lg),
+                                KuyogButton(
+                                  label: 'Shop Now',
+                                  variant: KuyogButtonVariant.secondary,
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const Icon(Icons.handshake, size: 60, color: Colors.white54),
-                      ],
+                          const Icon(Icons.handshake,
+                              size: 64, color: Colors.white24),
+                        ],
+                      ),
                     ),
                   ),
-                  
+
                   // Categories
                   SizedBox(
-                    height: 90,
+                    height: 100,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                       children: [
                         _categoryItem('Crafts', Icons.brush),
                         _categoryItem('Food', Icons.restaurant),
@@ -112,29 +136,30 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
 
                   // Products Grid
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Trending Now', style: AppTheme.headline(size: 18)),
-                        Text('View All', style: AppTheme.label(size: 13, color: AppColors.merchantAmber)),
-                      ],
+                  KuyogSectionHeader(
+                    title: 'Trending Now',
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+                    trailing: GestureDetector(
+                      onTap: () {},
+                      child: Text('View All',
+                          style: AppTheme.label(size: 13, color: AppColors.primary)),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.md),
                   GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.65,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
+                      childAspectRatio: 0.68,
+                      crossAxisSpacing: AppSpacing.md,
+                      mainAxisSpacing: AppSpacing.md,
                     ),
                     itemCount: _products.length,
                     itemBuilder: (context, index) {
@@ -151,15 +176,15 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
 
   Widget _categoryItem(String label, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.only(right: 20),
+      padding: const EdgeInsets.only(right: AppSpacing.lg),
       child: Column(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, boxShadow: AppShadows.card),
+          KuyogCard(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            shape: BoxShape.circle,
             child: Icon(icon, color: AppColors.merchantAmber, size: 24),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           Text(label, style: AppTheme.label(size: 12)),
         ],
       ),
@@ -167,63 +192,78 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
   }
 }
 
-// Inline product card since we deleted the standalone one
 class _ProductCard extends StatelessWidget {
   final Product product;
   const _ProductCard({required this.product});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
+    return KuyogCard(
+      padding: EdgeInsets.zero,
+      onTap: () {},
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(AppRadius.lg)),
                 child: CachedNetworkImage(
                   imageUrl: product.imageUrl,
-                  height: 130,
+                  height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (c, u) => Container(color: AppColors.divider),
                 ),
               ),
               if (product.isFlashDeal)
-                Positioned(
-                  top: 8, left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(color: AppColors.error, borderRadius: BorderRadius.circular(AppRadius.sm)),
-                    child: const Text('SALE', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                const Positioned(
+                  top: 8,
+                  left: 8,
+                  child: KuyogBadge(
+                    label: 'SALE',
+                    color: AppColors.error,
                   ),
                 ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(product.name, style: AppTheme.label(size: 13), maxLines: 2, overflow: TextOverflow.ellipsis),
-                Text(product.merchantName, style: AppTheme.body(size: 11, color: AppColors.textSecondary)),
-                const SizedBox(height: 4),
+                Text(product.name,
+                    style: AppTheme.label(size: 13),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                Text(product.merchantName,
+                    style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                const SizedBox(height: AppSpacing.xs),
                 Row(
                   children: [
-                    Text('₱${product.price.toStringAsFixed(0)}', style: AppTheme.label(size: 14, color: AppColors.merchantAmber)),
+                    Text('₱${product.price.toStringAsFixed(0)}',
+                        style: AppTheme.label(
+                            size: 14, color: AppColors.merchantAmber)),
                     if (product.originalPrice != null) ...[
-                      const SizedBox(width: 4),
-                      Text('₱${product.originalPrice!.toStringAsFixed(0)}', style: TextStyle(fontSize: 10, color: AppColors.textLight, decoration: TextDecoration.lineThrough)),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text('₱${product.originalPrice!.toStringAsFixed(0)}',
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: AppColors.textLight,
+                              decoration: TextDecoration.lineThrough)),
                     ],
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpacing.sm),
                 Row(
                   children: [
                     const Icon(Icons.star, size: 12, color: AppColors.warning),
                     Text(' ${product.rating}', style: AppTheme.body(size: 11)),
-                    Text(' · ${product.soldCount} sold', style: AppTheme.body(size: 11, color: AppColors.textLight)),
+                    const Spacer(),
+                    Text('${product.soldCount} sold',
+                        style: AppTheme.body(
+                            size: 10, color: AppColors.textLight)),
                   ],
                 ),
               ],

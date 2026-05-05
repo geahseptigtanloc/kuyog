@@ -174,8 +174,6 @@ class RoleProvider extends ChangeNotifier {
 
   /// Updates the user role in the database
   Future<void> switchRole(UserRole role) async {
-    if (_currentUser == null) return;
-
     String roleString;
     switch (role) {
       case UserRole.guide: roleString = 'guide'; break;
@@ -185,19 +183,29 @@ class RoleProvider extends ChangeNotifier {
       default: roleString = 'tourist';
     }
 
-    try {
-      _isLoading = true;
-      notifyListeners();
+    // 🌟 Snappy local update first
+    if (_currentUser == null) {
+      _currentUser = User(
+        id: 'mock-id-$roleString',
+        name: 'Guest ${roleString.toUpperCase()}',
+        email: 'guest@kuyog.com',
+        role: roleString,
+        avatarUrl: '',
+        joinedDate: DateTime.now(),
+      );
+    } else {
+      _currentUser = _currentUser!.copyWith(role: roleString);
+    }
+    
+    notifyListeners();
 
-      // Update the database
-      await _profileService.updateProfile(_currentUser!.id, {'role': roleString});
-      
-      // Refresh local state
-      await initialize();
-    } catch (e) {
-      _isLoading = false;
-      notifyListeners();
-      debugPrint('Error switching role: $e');
+    // 🌟 Attempt background DB sync if it's a real user
+    if (!_currentUser!.id.startsWith('mock-id')) {
+      try {
+        await _profileService.updateProfile(_currentUser!.id, {'role': roleString});
+      } catch (e) {
+        debugPrint('RoleProvider: Background DB sync failed: $e');
+      }
     }
   }
 }

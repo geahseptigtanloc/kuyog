@@ -43,9 +43,9 @@ class _ItineraryBrowseScreenState extends State<ItineraryBrowseScreen> {
               margin: const EdgeInsets.fromLTRB(20, 12, 20, 0),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withAlpha(26),
                 borderRadius: BorderRadius.circular(AppRadius.md),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(color: AppColors.primary.withAlpha(76)),
               ),
               child: Row(
                 children: [
@@ -124,12 +124,12 @@ class _ItineraryBrowseScreenState extends State<ItineraryBrowseScreen> {
           Stack(children: [
             CachedNetworkImage(imageUrl: itin.coverUrl, height: 100, width: double.infinity, fit: BoxFit.cover,
               placeholder: (c, u) => Container(height: 100, color: AppColors.divider),
-              errorWidget: (c, u, e) => Container(height: 100, color: AppColors.primary.withOpacity(0.15))),
+              errorWidget: (c, u, e) => Container(height: 100, color: AppColors.primary.withAlpha(38))),
             Positioned(top: 8, right: 8, child: InkWell(
               onTap: () {},
               child: Container(
                 padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(color: Colors.white.withOpacity(0.9), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: Colors.white.withAlpha(230), shape: BoxShape.circle),
                 child: const Icon(Icons.bookmark_border, size: 16, color: AppColors.primary),
               ),
             )),
@@ -167,3 +167,4 @@ class _CommunityItin {
   final double rating;
   _CommunityItin(this.title, this.creatorName, this.creatorAvatar, this.coverUrl, this.stops, this.days, this.rating, this.region, this.saves);
 }
+

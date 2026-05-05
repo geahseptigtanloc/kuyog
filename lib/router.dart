@@ -3,12 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'screens/splash/splash_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/onboarding/onboarding_flow_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/auth/google_oauth_mock.dart';
 import 'screens/auth/loading_screen.dart';
-import 'screens/auth/country_selection_screen.dart';
+import 'screens/auth/travel_profile_screen.dart';
 import 'screens/auth/tour_preferences_screen.dart';
 import 'screens/auth/guide/guide_setup_screen.dart';
 import 'screens/auth/guide/professional_profile_screen.dart';
@@ -17,7 +16,6 @@ import 'screens/auth/guide/add_experience_screen.dart';
 import 'screens/auth/guide/id_verification_screen.dart';
 import 'screens/auth/merchant_setup_screen.dart';
 import 'screens/app_shell.dart';
-import 'data/services/auth_service.dart';
 import 'providers/role_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -44,16 +42,16 @@ class GoRouterRefreshStream extends ChangeNotifier {
 
 final router = GoRouter(
   initialLocation: '/splash',
-  refreshListenable: GoRouterRefreshStream(Supabase.instance.client.auth.onAuthStateChange),
+  // refreshListenable: GoRouterRefreshStream(Supabase.instance.client.auth.onAuthStateChange),
   redirect: (context, state) {
     final roleProvider = Provider.of<RoleProvider>(context, listen: false);
     final session = Supabase.instance.client.auth.currentSession;
+    
+    // 🔥 BYPASS AUTH FOR FRONTEND TESTING 🔥
+    return null;
+
     final isLoggingIn = state.uri.path.startsWith('/auth') || state.uri.path == '/splash' || state.uri.path == '/onboarding';
 
-    // Allow access if we have a session OR a mock user (Admin bypass)
-    if (session == null && roleProvider.currentUser == null && !isLoggingIn) {
-      return '/splash';
-    }
 
     final role = roleProvider.currentRole;
     final path = state.uri.path;
@@ -82,25 +80,27 @@ final router = GoRouter(
   },
   routes: [
     GoRoute(
+      path: '/',
+      redirect: (context, state) => '/splash',
+    ),
+    GoRoute(
       path: '/splash',
       builder: (context, state) => SplashScreen(
         onComplete: () async {
-          final session = Supabase.instance.client.auth.currentSession;
-          if (session != null) {
-            // HYDRATE: Fetch profile for existing session
-            await Provider.of<RoleProvider>(context, listen: false).initialize();
-            if (context.mounted) context.go('/home');
-          } else {
+          // 🔥 BYPASS AUTH FOR FRONTEND TESTING 🔥
+          // final session = Supabase.instance.client.auth.currentSession;
+          // if (session != null) {
+          //   await Provider.of<RoleProvider>(context, listen: false).initialize();
+          //   if (context.mounted) context.go('/home');
+          // } else {
             context.go('/onboarding');
-          }
+          // }
         },
       ),
     ),
     GoRoute(
       path: '/onboarding',
-      builder: (context, state) => OnboardingScreen(
-        onRoleSelected: (role) => context.go('/auth', extra: {'role': role}),
-      ),
+      builder: (context, state) => const OnboardingFlowScreen(),
     ),
     GoRoute(
       path: '/auth',
@@ -146,7 +146,7 @@ final router = GoRouter(
               // Route to role-specific onboarding
               switch (roleProvider.currentRole) {
                 case UserRole.tourist:
-                  context.go('/auth/country');
+                  context.go('/auth/travel-profile');
                   break;
                 case UserRole.guide:
                   context.go('/auth/guide-setup');
@@ -161,8 +161,8 @@ final router = GoRouter(
           ),
         ),
         GoRoute(
-          path: 'country',
-          builder: (context, state) => CountrySelectionScreen(
+          path: 'travel-profile',
+          builder: (context, state) => TravelProfileScreen(
             onNext: () => context.go('/auth/preferences'),
           ),
         ),

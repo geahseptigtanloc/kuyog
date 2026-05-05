@@ -259,9 +259,9 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.08), 
+        color: AppColors.primary.withAlpha(20), 
         borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: AppColors.primary.withOpacity(0.1)),
+        border: Border.all(color: AppColors.primary.withAlpha(26)),
       ),
       child: Row(children: [
         const DurieMascot(size: 60),
@@ -281,16 +281,16 @@ class _VerificationGateScreenState extends State<VerificationGateScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isUploaded ? AppColors.success.withOpacity(0.05) : Colors.white,
+        color: isUploaded ? AppColors.success.withAlpha(13) : Colors.white,
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: isUploaded ? AppColors.success.withOpacity(0.3) : AppColors.divider),
+        border: Border.all(color: isUploaded ? AppColors.success.withAlpha(76) : AppColors.divider),
         boxShadow: isUploaded ? [] : AppShadows.card,
       ),
       child: Row(children: [
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: (isUploaded ? AppColors.success : AppColors.primary).withOpacity(0.1), 
+            color: (isUploaded ? AppColors.success : AppColors.primary).withAlpha(26), 
             borderRadius: BorderRadius.circular(AppRadius.sm)
           ),
           child: Icon(req.icon, size: 22, color: isUploaded ? AppColors.success : AppColors.primary),
@@ -354,3 +354,4 @@ class _DocRequirement {
   final bool isOptional;
   _DocRequirement(this.key, this.title, this.subtitle, this.icon, {this.isOptional = false});
 }
+

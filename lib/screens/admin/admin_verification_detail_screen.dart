@@ -120,7 +120,7 @@ class AdminVerificationDetailScreen extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 30,
-                            backgroundColor: (type == 'guide' ? AppColors.primary : AppColors.accent).withOpacity(0.15),
+                            backgroundColor: (type == 'guide' ? AppColors.primary : AppColors.accent).withAlpha(38),
                             child: Icon(type == 'guide' ? Icons.person : Icons.store, size: 30, color: type == 'guide' ? AppColors.primary : AppColors.accent),
                           ),
                           const SizedBox(width: 16),
@@ -167,7 +167,7 @@ class AdminVerificationDetailScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), offset: const Offset(0, -4), blurRadius: 10)],
+                boxShadow: [BoxShadow(color: Colors.black.withAlpha(13), offset: const Offset(0, -4), blurRadius: 10)],
               ),
               child: Row(
                 children: [
@@ -223,7 +223,7 @@ class AdminVerificationDetailScreen extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: AppColors.touristBlue.withOpacity(0.1),
+            color: AppColors.touristBlue.withAlpha(26),
             borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           child: Icon(isImage ? Icons.image : Icons.picture_as_pdf, color: AppColors.touristBlue),
@@ -235,3 +235,4 @@ class AdminVerificationDetailScreen extends StatelessWidget {
     );
   }
 }
+

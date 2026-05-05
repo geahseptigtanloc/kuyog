@@ -21,7 +21,7 @@ class TravelTypeScreen extends StatefulWidget {
 class _TravelTypeScreenState extends State<TravelTypeScreen> {
   String? _selectedTravelType;
   String? _selectedGuideType;
-  bool _showComparison = false;
+  final bool _showComparison = false;
 
   @override
   void initState() {
@@ -167,7 +167,7 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
                       const SizedBox(height: 4),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                        decoration: BoxDecoration(color: color.withAlpha(26), borderRadius: BorderRadius.circular(4)),
                         child: Text(badge, style: AppTheme.label(size: 10, color: color)),
                       ),
                     ],
@@ -192,7 +192,7 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withAlpha(10),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -219,3 +219,4 @@ class _TravelTypeScreenState extends State<TravelTypeScreen> {
     );
   }
 }
+

@@ -14,6 +14,8 @@ import '../models/itinerary.dart';
 import '../models/match_request.dart';
 import '../models/tour_operator.dart';
 import '../models/group_trip.dart';
+import '../models/transport_rental.dart';
+import '../models/madayaw_season.dart';
 
 class MockData {
   static List<Guide>? _guides;
@@ -31,6 +33,9 @@ class MockData {
   static List<GroupTrip>? _groupTrips;
   static List<CrawlRoute>? _crawlRoutes;
   static List<Map<String, dynamic>>? _crawlMerch;
+  static List<TourPackage>? _tourPackages;
+  static List<TransportRental>? _transportPartners;
+  static List<MadayawSeason>? _madayawSeasons;
 
   static Future<List<T>> _load<T>(String path, T Function(Map<String, dynamic>) fromJson) async {
     final data = await rootBundle.loadString(path);
@@ -115,5 +120,20 @@ class MockData {
       _crawlMerch = list.map((e) => e as Map<String, dynamic>).toList();
     }
     return _crawlMerch!;
+  }
+
+  static Future<List<TourPackage>> getTourPackages() async {
+    _tourPackages ??= await _load('assets/data/mock_tour_packages.json', TourPackage.fromJson);
+    return _tourPackages!;
+  }
+
+  static Future<List<TransportRental>> getTransportPartners() async {
+    _transportPartners ??= await _load('assets/data/mock_transport_partners.json', TransportRental.fromJson);
+    return _transportPartners!;
+  }
+
+  static Future<List<MadayawSeason>> getMadayawSeasons() async {
+    _madayawSeasons ??= await _load('assets/data/mock_madayaw_seasons.json', MadayawSeason.fromJson);
+    return _madayawSeasons!;
   }
 }

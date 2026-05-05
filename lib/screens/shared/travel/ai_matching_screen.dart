@@ -7,7 +7,6 @@ import '../../../models/guide.dart';
 import '../../../models/tour_operator.dart';
 import '../../../providers/travel_provider.dart';
 import '../../../providers/role_provider.dart';
-import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_mascot.dart';
 import '../../../widgets/kuyog_app_bar.dart';
 import '../../tourist/guide_profile_screen.dart';
@@ -123,7 +122,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                     height: 150 + (_pulseCtrl.value * 20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.1 * (1 - _pulseCtrl.value)),
+                      color: AppColors.primary.withAlpha((0.1 * (1 - _pulseCtrl.value) * 255).round()),
                     ),
                   ),
                 ),
@@ -136,7 +135,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                       height: 120,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary.withOpacity(0.5), width: 2, style: BorderStyle.solid),
+                        border: Border.all(color: AppColors.primary.withAlpha(128), width: 2, style: BorderStyle.solid),
                       ),
                     ),
                   ),
@@ -152,7 +151,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
             SizedBox(
               width: 200,
               child: LinearProgressIndicator(
-                backgroundColor: AppColors.primary.withOpacity(0.2),
+                backgroundColor: AppColors.primary.withAlpha(51),
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
@@ -218,7 +217,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (c, u) => Container(color: AppColors.divider, height: 160),
-                errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1), height: 160),
+                errorWidget: (c, u, e) => Container(color: AppColors.primary.withAlpha(26), height: 160),
               ),
               Positioned.fill(
                 child: DecoratedBox(
@@ -226,7 +225,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+                      colors: [Colors.transparent, Colors.black.withAlpha(204)],
                     ),
                   ),
                 ),
@@ -235,7 +234,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                 top: 12, left: 12,
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: isTopMatch ? AppColors.accent : Colors.white.withOpacity(0.9), borderRadius: BorderRadius.circular(AppRadius.pill)),
+                  decoration: BoxDecoration(color: isTopMatch ? AppColors.accent : Colors.white.withAlpha(230), borderRadius: BorderRadius.circular(AppRadius.pill)),
                   child: Row(
                     children: [
                       Icon(isTopMatch ? Icons.star : Icons.check_circle, size: 14, color: isTopMatch ? Colors.white : AppColors.primary),
@@ -322,7 +321,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                     return Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: matches ? AppColors.primary.withOpacity(0.1) : AppColors.divider,
+                        color: matches ? AppColors.primary.withAlpha(26) : AppColors.divider,
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                         border: Border.all(color: matches ? AppColors.primary : Colors.transparent),
                       ),
@@ -388,7 +387,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                 width: double.infinity,
                 fit: BoxFit.cover,
                 placeholder: (c, u) => Container(color: AppColors.divider, height: 140),
-                errorWidget: (c, u, e) => Container(color: AppColors.primary.withOpacity(0.1), height: 140),
+                errorWidget: (c, u, e) => Container(color: AppColors.primary.withAlpha(26), height: 140),
               ),
               Positioned.fill(
                 child: DecoratedBox(
@@ -396,7 +395,7 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                      colors: [Colors.transparent, Colors.black.withAlpha(178)],
                     ),
                   ),
                 ),
@@ -472,3 +471,4 @@ class _AIMatchingScreenState extends State<AIMatchingScreen> with TickerProvider
     );
   }
 }
+

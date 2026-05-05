@@ -51,14 +51,17 @@ class _GuideAvailabilityScreenState extends State<GuideAvailabilityScreen> {
                         return GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (isBlocked) _blockedDays.remove(day);
-                              else _blockedDays.add(day);
+                              if (isBlocked) {
+                                _blockedDays.remove(day);
+                              } else {
+                                _blockedDays.add(day);
+                              }
                             });
                           },
                           child: Container(
                             margin: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
-                              color: isBlocked ? AppColors.error.withOpacity(0.1) : AppColors.primary.withOpacity(0.05),
+                              color: isBlocked ? AppColors.error.withAlpha(26) : AppColors.primary.withAlpha(13),
                               borderRadius: BorderRadius.circular(AppRadius.sm),
                               border: isBlocked ? Border.all(color: AppColors.error) : null,
                             ),
@@ -74,11 +77,11 @@ class _GuideAvailabilityScreenState extends State<GuideAvailabilityScreen> {
                 Text('Legend', style: AppTheme.headline(size: 16)),
                 const SizedBox(height: 12),
                 Row(children: [
-                  Container(width: 16, height: 16, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.05), borderRadius: BorderRadius.circular(4))),
+                  Container(width: 16, height: 16, decoration: BoxDecoration(color: AppColors.primary.withAlpha(13), borderRadius: BorderRadius.circular(4))),
                   const SizedBox(width: 8),
                   Text('Available', style: AppTheme.body(size: 14)),
                   const SizedBox(width: 24),
-                  Container(width: 16, height: 16, decoration: BoxDecoration(color: AppColors.error.withOpacity(0.1), border: Border.all(color: AppColors.error), borderRadius: BorderRadius.circular(4))),
+                  Container(width: 16, height: 16, decoration: BoxDecoration(color: AppColors.error.withAlpha(26), border: Border.all(color: AppColors.error), borderRadius: BorderRadius.circular(4))),
                   const SizedBox(width: 8),
                   Text('Blocked / Booked', style: AppTheme.body(size: 14)),
                 ]),
@@ -104,3 +107,4 @@ class _GuideAvailabilityScreenState extends State<GuideAvailabilityScreen> {
     );
   }
 }
+

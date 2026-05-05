@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../../app_theme.dart';
 import '../../../widgets/kuyog_app_bar.dart';
 import '../../../models/group_trip.dart';
@@ -76,7 +75,7 @@ class _SharedTripSpaceScreenState extends State<SharedTripSpaceScreen> with Sing
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.map, size: 64, color: AppColors.primary.withOpacity(0.5)),
+          Icon(Icons.map, size: 64, color: AppColors.primary.withAlpha(128)),
           const SizedBox(height: 16),
           Text('Shared Itinerary', style: AppTheme.headline(size: 20)),
           const SizedBox(height: 8),
@@ -103,7 +102,7 @@ class _SharedTripSpaceScreenState extends State<SharedTripSpaceScreen> with Sing
               _chatBubble('Hey everyone! Excited for our Davao trip!', 'Maria (Leader)', true, AppColors.accent),
               _chatBubble('Can\'t wait! Did we book a guide yet?', 'Jose', false, Colors.white),
               _systemMessage('Guide Rico Magbanua joined the trip'),
-              _chatBubble('Maayong adlaw! I will be your guide. Check out the itinerary suggestions I just added.', 'Rico (Guide)', false, AppColors.primaryLight.withOpacity(0.2)),
+              _chatBubble('Maayong adlaw! I will be your guide. Check out the itinerary suggestions I just added.', 'Rico (Guide)', false, AppColors.primaryLight.withAlpha(51)),
             ],
           ),
         ),
@@ -197,7 +196,7 @@ class _SharedTripSpaceScreenState extends State<SharedTripSpaceScreen> with Sing
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: AppColors.primaryLight.withOpacity(0.2),
+            backgroundColor: AppColors.primaryLight.withAlpha(51),
             child: Text(name[0], style: AppTheme.label(size: 16, color: AppColors.primary)),
           ),
           const SizedBox(width: 12),
@@ -220,7 +219,7 @@ class _SharedTripSpaceScreenState extends State<SharedTripSpaceScreen> with Sing
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: statusColor.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
+            decoration: BoxDecoration(color: statusColor.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.pill)),
             child: Row(
               children: [
                 Icon(statusIcon, size: 12, color: statusColor),
@@ -234,3 +233,4 @@ class _SharedTripSpaceScreenState extends State<SharedTripSpaceScreen> with Sing
     );
   }
 }
+

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import '../../app_theme.dart';
 import '../../widgets/kuyog_back_button.dart';
@@ -134,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                          backgroundColor: AppColors.primary.withAlpha(31),
                           backgroundImage: _imageFile != null 
                               ? (kIsWeb ? NetworkImage(_imageFile!.path) : FileImage(File(_imageFile!.path)) as ImageProvider)
                               : (user?.avatarUrl != null && user!.avatarUrl.isNotEmpty ? NetworkImage(user.avatarUrl) : null),
@@ -188,3 +187,4 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     ]);
   }
 }
+

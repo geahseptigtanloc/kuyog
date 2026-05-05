@@ -11,6 +11,9 @@ import 'guide_availability_screen.dart';
 import 'guide_pricing_screen.dart';
 import 'guide_certifications_screen.dart';
 import '../../widgets/kuyog_app_bar.dart';
+import '../../widgets/core/kuyog_card.dart';
+import '../../widgets/core/kuyog_badge.dart';
+import '../../widgets/core/kuyog_button.dart';
 
 class GuideProfileTab extends StatefulWidget {
   const GuideProfileTab({super.key});
@@ -42,7 +45,7 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
           .select()
           .eq('profile_id', user.id)
           .maybeSingle();
-      
+
       if (mounted) {
         setState(() {
           _guideProfile = res;
@@ -65,7 +68,8 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
       return const Scaffold(
         backgroundColor: AppColors.background,
         appBar: KuyogAppBar(title: 'Profile'),
-        body: Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        body:
+            Center(child: CircularProgressIndicator(color: AppColors.primary)),
       );
     }
 
@@ -77,7 +81,7 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
     final tripCount = _guideProfile?['tripCount'] ?? 0;
     final rating = _guideProfile?['rating'] ?? 0.0;
     final yearsExp = _guideProfile?['yearsExperience'] ?? 0;
-    
+
     // Languages is in the main profiles table, not guide_profiles
     final languagesList = user?.languages ?? [];
     final languagesCount = languagesList.length;
@@ -88,55 +92,90 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.md),
             Stack(children: [
               CircleAvatar(
-                radius: 44, 
-                backgroundColor: AppColors.primary.withValues(alpha: 0.12), 
-                backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty ? NetworkImage(avatarUrl) : null,
-                child: avatarUrl == null || avatarUrl.isEmpty ? const Icon(Icons.person, size: 44, color: AppColors.primary) : null,
+                radius: 48,
+                backgroundColor: AppColors.primary.withAlpha(31),
+                backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
+                    ? NetworkImage(avatarUrl)
+                    : null,
+                child: avatarUrl == null || avatarUrl.isEmpty
+                    ? const Icon(Icons.person, size: 48, color: AppColors.primary)
+                    : null,
               ),
               if (isVerified)
-                Positioned(right: 0, bottom: 0, child: Container(padding: const EdgeInsets.all(2), decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                  child: const Icon(Icons.verified, size: 20, color: AppColors.verified))),
+                const Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: KuyogBadge(
+                      label: '',
+                      color: AppColors.verified,
+                      icon: Icons.verified,
+                      padding: EdgeInsets.all(4),
+                    )),
             ]),
-            const SizedBox(height: 12),
-            Text(name, style: AppTheme.headline(size: 22)),
-            const SizedBox(height: 4),
-            if (isVerified)
-              Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.verified.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text('Verified Kuyog Guide', style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.verified))),
-            if (!isVerified)
-               Container(padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4), decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(AppRadius.pill)),
-                child: Text('Unverified Guide', style: AppTheme.label(size: 13, weight: FontWeight.w800, color: AppColors.warning))),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.md),
+            Text(name, style: AppTheme.headline(size: 24)),
+            const SizedBox(height: AppSpacing.sm),
+            KuyogBadge(
+              label: isVerified ? 'Verified Kuyog Guide' : 'Unverified Guide',
+              color: isVerified ? AppColors.verified : AppColors.warning,
+            ),
+            const SizedBox(height: AppSpacing.xl),
             Row(children: [
               _statCard('$tripCount', 'Trips'),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.md),
               _statCard('$rating', 'Rating'),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpacing.md),
               _statCard('$languagesCount', 'Languages'),
-              const SizedBox(width: 8),
-              _statCard('$yearsExp Yrs', 'Experience'),
+              const SizedBox(width: AppSpacing.md),
+              _statCard('$yearsExp Yrs', 'Exp'),
             ]),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
             _menuItem(Icons.edit, 'Edit Profile', onTap: () {
-               Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideEditProfileScreen())).then((_) {
-                 setState(() {});
-               });
+              Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const GuideEditProfileScreen()))
+                  .then((_) {
+                setState(() {});
+              });
             }),
-            _menuItem(Icons.calendar_month, 'Availability Calendar', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideAvailabilityScreen()))),
+            _menuItem(Icons.calendar_month, 'Availability Calendar',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const GuideAvailabilityScreen()))),
             _menuItem(Icons.backpack, 'Tour Packages'),
-            _menuItem(Icons.attach_money, 'Pricing', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuidePricingScreen()))),
-            _menuItem(Icons.badge, 'Certifications', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GuideCertificationsScreen()))),
+            _menuItem(Icons.attach_money, 'Pricing',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const GuidePricingScreen()))),
+            _menuItem(Icons.badge, 'Certifications',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const GuideCertificationsScreen()))),
             _menuItem(Icons.account_balance, 'Payout Settings'),
             _menuItem(Icons.bar_chart, 'Earnings & Insights'),
-            const SizedBox(height: 16),
-            _menuItem(Icons.settings, 'Settings', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()))),
-            _menuItem(Icons.help, 'Help & Support', onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()))),
-            _menuItem(Icons.logout, 'Logout', isDestructive: true, onTap: () => _showLogoutDialog(context)),
+            const SizedBox(height: AppSpacing.md),
+            _menuItem(Icons.settings, 'Settings',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const SettingsScreen()))),
+            _menuItem(Icons.help, 'Help & Support',
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const HelpSupportScreen()))),
+            const SizedBox(height: AppSpacing.md),
+            _menuItem(Icons.logout, 'Logout',
+                isDestructive: true, onTap: () => _showLogoutDialog(context)),
             const SizedBox(height: 80),
           ]),
         ),
@@ -145,30 +184,40 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
   }
 
   Widget _statCard(String value, String label) {
-    return Expanded(child: Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md), boxShadow: AppShadows.card),
+    return Expanded(
+        child: KuyogCard(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
       child: Column(children: [
-        Text(value, style: AppTheme.label(size: 15, color: AppColors.primary)),
+        Text(value, style: AppTheme.label(size: 16, color: AppColors.primary)),
         const SizedBox(height: 2),
-        Text(label, style: AppTheme.body(size: 10, color: AppColors.textSecondary)),
+        Text(label,
+            style: AppTheme.body(size: 10, color: AppColors.textSecondary)),
       ]),
     ));
   }
 
-  Widget _menuItem(IconData icon, String title, {bool isDestructive = false, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
+  Widget _menuItem(IconData icon, String title,
+      {bool isDestructive = false, VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+      child: KuyogCard(
+        onTap: onTap,
+        padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(children: [
-          Icon(icon, size: 20, color: isDestructive ? AppColors.error : AppColors.textSecondary),
-          const SizedBox(width: 12),
-          Text(title, style: AppTheme.body(size: 14, color: isDestructive ? AppColors.error : AppColors.textPrimary)),
+          Icon(icon,
+              size: 20,
+              color: isDestructive ? AppColors.error : AppColors.textSecondary),
+          const SizedBox(width: AppSpacing.md),
+          Text(title,
+              style: AppTheme.body(
+                  size: 14,
+                  color: isDestructive
+                      ? AppColors.error
+                      : AppColors.textPrimary)),
           const Spacer(),
-          Icon(Icons.chevron_right, size: 18, color: isDestructive ? AppColors.error : AppColors.textLight),
+          Icon(Icons.chevron_right,
+              size: 18,
+              color: isDestructive ? AppColors.error : AppColors.textLight),
         ]),
       ),
     );
@@ -178,24 +227,31 @@ class _GuideProfileTabState extends State<GuideProfileTab> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.xl)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.xl)),
         title: Text('Log out of Kuyog?', style: AppTheme.headline(size: 20)),
-        content: Text('You will need to sign in again to access your account.', style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
+        content: Text('You will need to sign in again to access your account.',
+            style: AppTheme.body(size: 14, color: AppColors.textSecondary)),
         actions: [
-          OutlinedButton(
+          TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
+            child: Text('Cancel',
+                style: AppTheme.label(size: 14, color: AppColors.textLight)),
           ),
-          ElevatedButton(
+          KuyogButton(
+            label: 'Log Out',
+            variant: KuyogButtonVariant.destructive,
             onPressed: () {
               Navigator.pop(ctx);
               context.go('/onboarding');
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('Log Out'),
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg, vertical: AppSpacing.xs),
           ),
         ],
       ),
     );
   }
 }
+
+

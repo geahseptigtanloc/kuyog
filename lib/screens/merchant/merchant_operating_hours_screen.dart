@@ -52,7 +52,7 @@ class _MerchantOperatingHoursScreenState extends State<MerchantOperatingHoursScr
                     Switch(
                       value: isOpen,
                       onChanged: (v) => setState(() => _days[day] = v),
-                      activeColor: AppColors.merchantAmber,
+                      activeThumbColor: AppColors.merchantAmber,
                     ),
                   ]),
                 );

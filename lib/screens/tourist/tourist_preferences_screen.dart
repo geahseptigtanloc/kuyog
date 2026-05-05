@@ -149,7 +149,7 @@ class _TouristPreferencesScreenState extends State<TouristPreferencesScreen> {
                               }
                             });
                           },
-                          selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                          selectedColor: AppColors.primary.withAlpha(51),
                           checkmarkColor: AppColors.primary,
                           labelStyle: AppTheme.label(
                             size: 13, 
@@ -175,9 +175,9 @@ class _TouristPreferencesScreenState extends State<TouristPreferencesScreen> {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.05),
+                        color: AppColors.primary.withAlpha(13),
                         borderRadius: BorderRadius.circular(AppRadius.lg),
-                        border: Border.all(color: AppColors.primary.withValues(alpha: 0.1)),
+                        border: Border.all(color: AppColors.primary.withAlpha(26)),
                       ),
                       child: Row(children: [
                         const Icon(Icons.auto_awesome, color: AppColors.primary, size: 24),
@@ -205,7 +205,7 @@ class _TouristPreferencesScreenState extends State<TouristPreferencesScreen> {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary.withValues(alpha: 0.05) : Colors.white,
+          color: isSelected ? AppColors.primary.withAlpha(13) : Colors.white,
           borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(color: isSelected ? AppColors.primary : AppColors.divider),
         ),
@@ -222,3 +222,4 @@ class _TouristPreferencesScreenState extends State<TouristPreferencesScreen> {
     );
   }
 }
+

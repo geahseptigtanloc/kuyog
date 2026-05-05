@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'package:google_fonts/google_fonts.dart';
 import '../app_theme.dart';
 import '../providers/role_provider.dart';
 
@@ -15,72 +15,129 @@ class KuyogBottomNav extends StatelessWidget {
     required this.onTap,
   });
 
-  List<BottomNavigationBarItem> _getItems() {
+  List<_NavItem> _getItems() {
     switch (role) {
       case UserRole.tourist:
         return const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
-          BottomNavigationBarItem(icon: Icon(Icons.auto_stories_rounded), label: 'StoryHub'),
-          BottomNavigationBarItem(icon: Icon(Icons.travel_explore), label: 'Travel'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
+          _NavItem(Icons.home_outlined, Icons.home_rounded, 'Home'),
+          _NavItem(Icons.luggage_outlined, Icons.luggage_rounded, 'Trips'),
+          _NavItem(Icons.auto_stories_outlined, Icons.auto_stories_rounded, 'StoryHub'),
+          _NavItem(Icons.emoji_events_outlined, Icons.emoji_events, 'Crawl'),
+          _NavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
         ];
       case UserRole.guide:
         return const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_alt_rounded), label: 'Clients'),
-          BottomNavigationBarItem(icon: Icon(Icons.explore_rounded), label: 'Explore'),
-          BottomNavigationBarItem(icon: Icon(Icons.travel_explore), label: 'Travel'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
+          _NavItem(Icons.home_outlined, Icons.home_rounded, 'Home'),
+          _NavItem(Icons.people_alt_outlined, Icons.people_alt_rounded, 'Clients'),
+          _NavItem(Icons.explore_outlined, Icons.explore_rounded, 'Explore'),
+          _NavItem(Icons.travel_explore_outlined, Icons.travel_explore, 'Travel'),
+          _NavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
         ];
       case UserRole.merchant:
         return const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.storefront_rounded), label: 'Marketplace'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long_rounded), label: 'Orders'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline_rounded), label: 'Profile'),
+          _NavItem(Icons.dashboard_outlined, Icons.dashboard_rounded, 'Dashboard'),
+          _NavItem(Icons.storefront_outlined, Icons.storefront_rounded, 'Market'),
+          _NavItem(Icons.receipt_long_outlined, Icons.receipt_long_rounded, 'Orders'),
+          _NavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
         ];
       case UserRole.admin:
         return const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.verified_user_rounded), label: 'Verify'),
-          BottomNavigationBarItem(icon: Icon(Icons.report_rounded), label: 'Reports'),
+          _NavItem(Icons.dashboard_outlined, Icons.dashboard_rounded, 'Dashboard'),
+          _NavItem(Icons.verified_user_outlined, Icons.verified_user_rounded, 'Verify'),
+          _NavItem(Icons.report_outlined, Icons.report_rounded, 'Reports'),
+          _NavItem(Icons.settings_outlined, Icons.settings_rounded, 'Settings'),
         ];
       case UserRole.superAdmin:
         return const [
-          BottomNavigationBarItem(icon: Icon(Icons.analytics_rounded), label: 'Overview'),
-          BottomNavigationBarItem(icon: Icon(Icons.people_rounded), label: 'Users'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart_rounded), label: 'Analytics'),
+          _NavItem(Icons.analytics_outlined, Icons.analytics_rounded, 'Overview'),
+          _NavItem(Icons.people_outline_rounded, Icons.people_rounded, 'Users'),
+          _NavItem(Icons.bar_chart_outlined, Icons.bar_chart_rounded, 'Analytics'),
+          _NavItem(Icons.settings_outlined, Icons.settings_rounded, 'Settings'),
         ];
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final items = _getItems();
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.7),
-        boxShadow: AppShadows.bottomNav,
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            blurRadius: 12,
+            offset: const Offset(0, -2),
+          ),
+        ],
       ),
-      child: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: SafeArea(
-            child: BottomNavigationBar(
-              currentIndex: currentIndex,
-              onTap: onTap,
-              items: _getItems(),
-              backgroundColor: Colors.transparent,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.textLight,
-              type: BottomNavigationBarType.fixed,
-              elevation: 0,
-              selectedFontSize: 12,
-              unselectedFontSize: 11,
-            ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 6, bottom: 2),
+          child: Row(
+            children: List.generate(items.length, (i) {
+              final item = items[i];
+              final isActive = currentIndex == i;
+              return Expanded(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => onTap(i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Active dot indicator
+                        AnimatedContainer(
+                          duration: const Duration(milliseconds: 250),
+                          width: isActive ? 20 : 0,
+                          height: 3,
+                          margin: const EdgeInsets.only(bottom: 4),
+                          decoration: BoxDecoration(
+                            color: isActive ? AppColors.primary : Colors.transparent,
+                            borderRadius: BorderRadius.circular(2),
+                          ),
+                        ),
+                        // Icon with animated switch
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            isActive ? item.activeIcon : item.icon,
+                            key: ValueKey('${item.label}_$isActive'),
+                            size: 22,
+                            color: isActive ? AppColors.primary : AppColors.textLight,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          item.label,
+                          style: GoogleFonts.nunito(
+                            fontSize: 10,
+                            fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+                            color: isActive ? AppColors.primary : AppColors.textLight,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
           ),
         ),
       ),
     );
   }
+}
+
+class _NavItem {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+
+  const _NavItem(this.icon, this.activeIcon, this.label);
 }

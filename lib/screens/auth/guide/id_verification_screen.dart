@@ -105,7 +105,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                       width: 250,
                       height: 160,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withAlpha(230),
                         borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       padding: const EdgeInsets.all(12),
@@ -244,3 +244,4 @@ class _CornerPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
+

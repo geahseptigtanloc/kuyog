@@ -36,7 +36,7 @@ class OrderTrackingScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: _statusColor(order.status).withOpacity(0.1),
+                          color: _statusColor(order.status).withAlpha(26),
                           borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                         child: Text(order.status, style: AppTheme.label(size: 12, color: _statusColor(order.status))),
@@ -54,7 +54,7 @@ class OrderTrackingScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
                   child: Row(children: [
-                    Container(width: 48, height: 48, decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.sm)), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
+                    Container(width: 48, height: 48, decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.sm)), child: const Icon(Icons.inventory_2, color: AppColors.primary)),
                     const SizedBox(width: 12),
                     Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(item.productName, style: AppTheme.label(size: 14)),
@@ -118,3 +118,4 @@ class OrderTrackingScreen extends StatelessWidget {
     ]);
   }
 }
+

@@ -87,7 +87,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         title: Text('Mindanao-Made', style: AppTheme.label(size: 14)),
         subtitle: Text('Tag as locally sourced', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
         value: _isMindanaoMade, onChanged: (v) => setState(() => _isMindanaoMade = v),
-        activeColor: AppColors.primary,
+        activeThumbColor: AppColors.primary,
       ),
       const SizedBox(height: 16),
       GestureDetector(
@@ -96,7 +96,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           height: 120, width: double.infinity,
           decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md), border: Border.all(color: AppColors.divider, width: 1.5)),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(Icons.add_a_photo, size: 32, color: AppColors.primary.withOpacity(0.5)),
+            Icon(Icons.add_a_photo, size: 32, color: AppColors.primary.withAlpha(128)),
             const SizedBox(height: 8),
             Text('Add Photos', style: AppTheme.body(size: 13, color: AppColors.textSecondary)),
           ]),
@@ -135,7 +135,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget _buildBottomButtons() {
     return Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8, offset: const Offset(0, -2))]),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 8, offset: const Offset(0, -2))]),
       child: Row(children: [
         if (_step > 0) Expanded(child: OutlinedButton(onPressed: () => setState(() => _step--), child: const Text('Back'))),
         if (_step > 0) const SizedBox(width: 12),
@@ -171,3 +171,4 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 }
+

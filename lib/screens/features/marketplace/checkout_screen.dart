@@ -41,7 +41,7 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
               decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.lg), boxShadow: AppShadows.card),
               child: Row(
                 children: [
-                  Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: AppColors.merchantAmber.withOpacity(0.1), shape: BoxShape.circle),
+                  Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: AppColors.merchantAmber.withAlpha(26), shape: BoxShape.circle),
                     child: const Icon(Icons.location_on, color: AppColors.merchantAmber)),
                   const SizedBox(width: 12),
                   Expanded(
@@ -109,10 +109,10 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Kuyog Miles
+            // Madayaw Points
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: AppColors.primary.withOpacity(0.3))),
+              decoration: BoxDecoration(color: AppColors.primary.withAlpha(26), borderRadius: BorderRadius.circular(AppRadius.lg), border: Border.all(color: AppColors.primary.withAlpha(76))),
               child: Row(
                 children: [
                   const Icon(Icons.stars, color: AppColors.primary, size: 28),
@@ -121,7 +121,7 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Use Kuyog Miles', style: AppTheme.label(size: 14, color: AppColors.primary)),
+                        Text('Use Madayaw Points', style: AppTheme.label(size: 14, color: AppColors.primary)),
                         Text('Balance: ${miles.balance} miles', style: AppTheme.body(size: 12, color: AppColors.textSecondary)),
                       ],
                     ),
@@ -143,7 +143,7 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
                   _priceRow('Delivery Fee', '₱${cart.deliveryFee.toStringAsFixed(0)}'),
                   if (cart.discount > 0) ...[
                     const SizedBox(height: 8),
-                    _priceRow('Kuyog Miles Discount', '-₱${cart.discount.toStringAsFixed(0)}', color: AppColors.primary),
+                    _priceRow('Madayaw Points Discount', '-₱${cart.discount.toStringAsFixed(0)}', color: AppColors.primary),
                   ],
                   const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1)),
                   _priceRow('Total', '₱${cart.total.toStringAsFixed(0)}', isTotal: true),
@@ -201,3 +201,4 @@ class _MarketplaceCheckoutScreenState extends State<MarketplaceCheckoutScreen> {
     );
   }
 }
+

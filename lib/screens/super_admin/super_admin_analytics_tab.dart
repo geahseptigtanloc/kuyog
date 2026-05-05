@@ -70,7 +70,7 @@ class SuperAdminAnalyticsTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        CircleAvatar(radius: 20, backgroundColor: AppColors.primary.withOpacity(0.15), child: const Icon(Icons.person, color: AppColors.primary, size: 20)),
+        CircleAvatar(radius: 20, backgroundColor: AppColors.primary.withAlpha(38), child: const Icon(Icons.person, color: AppColors.primary, size: 20)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(name, style: AppTheme.label(size: 14)),
@@ -81,3 +81,4 @@ class SuperAdminAnalyticsTab extends StatelessWidget {
     );
   }
 }
+

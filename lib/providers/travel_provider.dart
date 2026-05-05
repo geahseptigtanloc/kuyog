@@ -11,7 +11,7 @@ class TravelProvider extends ChangeNotifier {
   
   // Group Setup State
   String _groupName = '';
-  List<GroupMember> _members = [];
+  final List<GroupMember> _members = [];
   String _selectedGuideId = '';
   
   // Tourist Preferences

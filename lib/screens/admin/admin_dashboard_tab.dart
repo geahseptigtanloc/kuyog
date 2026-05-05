@@ -62,7 +62,7 @@ class AdminDashboardTab extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(AppRadius.md)),
       child: Row(children: [
-        Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: color.withOpacity(0.1), shape: BoxShape.circle),
+        Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(color: color.withAlpha(26), shape: BoxShape.circle),
           child: Icon(icon, size: 18, color: color)),
         const SizedBox(width: 12),
         Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -74,3 +74,4 @@ class AdminDashboardTab extends StatelessWidget {
     );
   }
 }
+
