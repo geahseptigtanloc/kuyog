@@ -261,7 +261,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                 children: [
                   // Background image
                   CachedNetworkImage(
-                    imageUrl: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800',
+                    imageUrl: 'https://picsum.photos/seed/just_show_up/800/600',
                     fit: BoxFit.cover,
                     placeholder: (c, u) => Container(color: AppColors.primary),
                     errorWidget: (c, u, e) => Container(color: AppColors.primary),
@@ -354,7 +354,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                 children: [
                   // Background image
                   CachedNetworkImage(
-                    imageUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=800',
+                    imageUrl: 'https://picsum.photos/seed/roam_free/800/600',
                     fit: BoxFit.cover,
                     placeholder: (c, u) => Container(color: AppColors.primary),
                     errorWidget: (c, u, e) => Container(color: AppColors.primary),
@@ -676,19 +676,19 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
     // Mock story posts for preview
     final mockPosts = [
       {
-        'image': 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=400',
+        'image': 'https://picsum.photos/seed/story1/400/300',
         'title': 'Sunset at Mount Apo',
         'author': 'Maria Santos',
         'location': 'Davao City',
       },
       {
-        'image': 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?auto=format&fit=crop&q=80&w=400',
+        'image': 'https://picsum.photos/seed/story2/400/300',
         'title': 'Hidden Waterfalls',
         'author': 'Juan Cruz',
         'location': 'Davao del Norte',
       },
       {
-        'image': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&q=80&w=400',
+        'image': 'https://picsum.photos/seed/story3/400/300',
         'title': 'City Exploration',
         'author': 'Ana Reyes',
         'location': 'Davao City',
@@ -755,7 +755,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            const Spacer(),
+                            const SizedBox(height: 12),
                             Row(
                               children: [
                                 CircleAvatar(

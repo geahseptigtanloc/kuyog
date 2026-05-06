@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../app_theme.dart';
 import '../../providers/booking_provider.dart';
@@ -19,6 +20,20 @@ class MyTripsScreen extends StatefulWidget {
 class _MyTripsScreenState extends State<MyTripsScreen> {
   int _selectedTab = 0;
   final _tabs = ['Upcoming', 'Past Trips'];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        context.read<BookingProvider>().loadBookings(user.id);
+      } else {
+        // For testing/mock purposes if not logged in
+        context.read<BookingProvider>().loadBookings('e460505a-0d33-45b2-bbe3-0bf10d8ca1c2');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +91,9 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
             ),
             // Trip List
             Expanded(
-              child: _selectedTab == 0
+              child: bp.isLoading 
+                ? const Center(child: CircularProgressIndicator())
+                : _selectedTab == 0
                   ? _tripList(context, bp.upcomingBookings, isUpcoming: true)
                   : _tripList(context, bp.pastBookings, isUpcoming: false),
             ),
@@ -133,8 +150,12 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
       ),
       child: InkWell(
         onTap: () {
-          if (trip.status == 'active') {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const ActiveTripScreen()));
+          if (trip.status == 'active' || trip.status == 'confirmed') {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ActiveTripScreen(trip: trip)));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Booking ${trip.bookingRef} is currently ${trip.status}')),
+            );
           }
         },
         borderRadius: const BorderRadius.only(
@@ -197,24 +218,39 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
               ),
               const SizedBox(height: 24),
               // Show Details Button
-              Container(
-                width: double.infinity,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: AppColors.accent,
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    if (trip.status == 'active' || trip.status == 'confirmed') {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => ActiveTripScreen(trip: trip)));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Booking ${trip.bookingRef} is currently ${trip.status}')),
+                      );
+                    }
+                  },
                   borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.accent.withAlpha(77),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
+                  child: Container(
+                    width: double.infinity,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.accent,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.accent.withAlpha(77),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    'Show details',
-                    style: AppTheme.label(size: 14, color: Colors.white, weight: FontWeight.w700),
+                    child: Center(
+                      child: Text(
+                        'Show details',
+                        style: AppTheme.label(size: 14, color: Colors.white, weight: FontWeight.w700),
+                      ),
+                    ),
                   ),
                 ),
               ),

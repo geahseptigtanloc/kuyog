@@ -9,18 +9,24 @@ class OnboardingService {
   Future<void> saveTouristPreferences({
     required String userId,
     List<String>? interests,
-    String? travelStyle,
-    String? countryOfOrigin,
+    String? travelerType,
+    String? visitorType,
     String? budgetRange,
+    DateTime? arrivalDate,
+    DateTime? departureDate,
+    int? numberOfPeople,
     List<String>? preferredLanguages,
   }) async {
     final data = {
       'profile_id': userId,
-      'interests': ?interests,
-      'travel_style': ?travelStyle,
-      'country_of_origin': ?countryOfOrigin,
-      'budget_range': ?budgetRange,
-      'languages_preferred': ?preferredLanguages,
+      if (interests != null) 'interests': interests,
+      if (travelerType != null) 'travelerType': travelerType,
+      if (visitorType != null) 'visitorType': visitorType,
+      if (budgetRange != null) 'budgetRange': budgetRange,
+      if (arrivalDate != null) 'arrivalDate': arrivalDate.toIso8601String(),
+      if (departureDate != null) 'departureDate': departureDate.toIso8601String(),
+      if (numberOfPeople != null) 'numberOfPeople': numberOfPeople,
+      if (preferredLanguages != null) 'languages_preferred': preferredLanguages,
     };
 
     await _client.from('tourist_preferences').upsert(data, onConflict: 'profile_id');
@@ -38,9 +44,9 @@ class OnboardingService {
   }) async {
     // Update main profile for bio and languages and location
     final profileUpdate = {
-      'bio': ?bio,
-      'languages': ?languages,
-      'location': ?location,
+      if (bio != null) 'bio': bio,
+      if (languages != null) 'languages': languages,
+      if (location != null) 'location': location,
     };
 
     if (profileUpdate.isNotEmpty) {
@@ -50,9 +56,9 @@ class OnboardingService {
     // Update guide-specific profile
     final guideData = {
       'profile_id': userId,
-      'specialties': ?specialties,
-      'yearsExperience': ?yearsExperience,
-      'communityArea': ?communityArea,
+      if (specialties != null) 'specialties': specialties,
+      if (yearsExperience != null) 'yearsExperience': yearsExperience,
+      if (communityArea != null) 'communityArea': communityArea,
     };
 
     await _client.from('guide_profiles').upsert(guideData, onConflict: 'profile_id');
@@ -91,15 +97,15 @@ class OnboardingService {
     final data = {
       'guide_id': userId,
       'status': status,
-      'cv_url': ?cvUrl,
-      'selfie_url': ?selfieUrl,
-      'dot_cert_url': ?dotCertUrl,
-      'barangay_clearance_url': ?barangayClearanceUrl,
-      'birth_cert_url': ?birthCertUrl,
-      'nbi_clearance_url': ?nbiClearanceUrl,
-      'application_form_url': ?applicationFormUrl,
-      'portfolio_urls': ?portfolioUrls,
-      'id_url': ?idUrl,
+      if (cvUrl != null) 'cv_url': cvUrl,
+      if (selfieUrl != null) 'selfie_url': selfieUrl,
+      if (dotCertUrl != null) 'dot_cert_url': dotCertUrl,
+      if (barangayClearanceUrl != null) 'barangay_clearance_url': barangayClearanceUrl,
+      if (birthCertUrl != null) 'birth_cert_url': birthCertUrl,
+      if (nbiClearanceUrl != null) 'nbi_clearance_url': nbiClearanceUrl,
+      if (applicationFormUrl != null) 'application_form_url': applicationFormUrl,
+      if (portfolioUrls != null) 'portfolio_urls': portfolioUrls,
+      if (idUrl != null) 'id_url': idUrl,
       'submitted_at': DateTime.now().toIso8601String(),
     };
 
@@ -134,9 +140,9 @@ class OnboardingService {
     final data = {
       'merchant_id': userId,
       'status': status,
-      'permit_url': ?permitUrl,
-      'lgu_endorsement_url': ?lguEndorsementUrl,
-      'dot_accreditation_url': ?dotAccreditationUrl,
+      if (permitUrl != null) 'permit_url': permitUrl,
+      if (lguEndorsementUrl != null) 'lgu_endorsement_url': lguEndorsementUrl,
+      if (dotAccreditationUrl != null) 'dot_accreditation_url': dotAccreditationUrl,
       'submitted_at': DateTime.now().toIso8601String(),
     };
 

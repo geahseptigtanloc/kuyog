@@ -145,45 +145,50 @@ class TourPackage {
     return TourPackage(
       id: json['id'] ?? '',
       name: json['name'] ?? '',
-      photoUrl: json['photoUrl'] ?? '',
-      durationDays: json['durationDays'] ?? 1,
+      photoUrl: json['photoUrl'] ?? json['photourl'] ?? '',
+      durationDays: json['durationDays'] ?? json['durationdays'] ?? 1,
       price: (json['price'] ?? json['price_per_person'] ?? 0).toDouble(),
       inclusions: List<String>.from(json['inclusions'] ?? []),
       description: json['description'] ?? '',
       groupPricePerPerson: (json['groupPricePerPerson'] ?? json['group_price_per_person'] ?? 0).toDouble(),
-      maxPax: json['maxPax'] ?? json['max_pax'] ?? 1,
+      maxPax: json['maxPax'] ?? json['maxpax'] ?? json['max_pax'] ?? 1,
       duration: json['duration'] ?? '',
-      operatorId: json['operatorId'] ?? '',
-      heroPhotos: List<String>.from(json['heroPhotos'] ?? []),
+      operatorId: json['operatorId'] ?? json['operatorid'] ?? '',
+      heroPhotos: List<String>.from(json['heroPhotos'] ?? json['herophotos'] ?? []),
       whyThisTour: json['whyThisTour'] ?? '',
       highlights: (json['highlights'] as List<dynamic>?)
               ?.map((h) => Map<String, dynamic>.from(h))
-              .toList() ??
+              .toList()
+              .cast<Map<String, dynamic>>() ??
           [],
-      fullItinerary: (json['fullItinerary'] as List<dynamic>?)
+      fullItinerary: (json['fullItinerary'] ?? json['itinerary'] as List<dynamic>?)
               ?.map((d) => Map<String, dynamic>.from(d))
-              .toList() ??
+              .toList()
+              .cast<Map<String, dynamic>>() ??
           [],
       exclusions: List<String>.from(json['exclusions'] ?? []),
-      entranceFees: (json['entranceFees'] as List<dynamic>?)
+      entranceFees: (json['entranceFees'] ?? json['entrancefees'] as List<dynamic>?)
               ?.map((e) => Map<String, dynamic>.from(e))
-              .toList() ??
+              .toList()
+              .cast<Map<String, dynamic>>() ??
           [],
       faqs: (json['faqs'] as List<dynamic>?)
               ?.map((f) => Map<String, String>.from(f))
-              .toList() ??
+              .toList()
+              .cast<Map<String, String>>() ??
           [],
       difficulty: json['difficulty'] ?? 'Easy',
-      languagesAvailable: List<String>.from(json['languagesAvailable'] ?? ['English']),
-      pickupAvailable: json['pickupAvailable'] ?? true,
-      minGroupSize: json['minGroupSize'] ?? 1,
-      categoryTags: List<String>.from(json['categoryTags'] ?? []),
+      languagesAvailable: List<String>.from(json['languagesAvailable'] ?? json['languages_available'] ?? ['English']),
+      pickupAvailable: json['pickupAvailable'] ?? json['pickup_available'] ?? true,
+      minGroupSize: json['minGroupSize'] ?? json['mingroupsize'] ?? 1,
+      categoryTags: List<String>.from(json['categoryTags'] ?? json['categorytags'] ?? []),
       rating: (json['rating'] ?? 4.5).toDouble(),
-      reviewCount: json['reviewCount'] ?? 0,
-      hookLine: json['hookLine'] ?? '',
-      addOns: (json['addOns'] as List<dynamic>?)
+      reviewCount: json['reviewCount'] ?? json['reviewcount'] ?? 0,
+      hookLine: json['hookLine'] ?? json['hookline'] ?? '',
+      addOns: (json['addOns'] ?? json['addons'] as List<dynamic>?)
               ?.map((a) => Map<String, dynamic>.from(a))
-              .toList() ??
+              .toList()
+              .cast<Map<String, dynamic>>() ??
           [],
     );
   }

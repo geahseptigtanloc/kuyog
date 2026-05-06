@@ -1,21 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:intl/intl.dart';
 import '../../app_theme.dart';
 import '../../widgets/kuyog_back_button.dart';
 import '../../widgets/core/kuyog_card.dart';
 import '../../widgets/core/kuyog_button.dart';
 import '../../widgets/core/kuyog_section_header.dart';
 import 'sos_screen.dart';
+import '../../models/tour_booking.dart';
 
 class ActiveTripScreen extends StatelessWidget {
-  const ActiveTripScreen({super.key});
+  final TourBooking trip;
+
+  const ActiveTripScreen({super.key, required this.trip});
+
+  DateTime? _parseTime(String timeStr) {
+    try {
+      final cleanTime = timeStr.trim().toUpperCase();
+      final now = DateTime.now();
+      final format = DateFormat("h:mm a");
+      final time = format.parse(cleanTime);
+      return DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    } catch (e) {
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final dayData = trip.fullItinerary.isNotEmpty ? trip.fullItinerary[0] : null;
+    final stops = dayData != null ? (dayData['stops'] as List<dynamic>?) : null;
+    
+    int completedStops = 0;
+    int? currentStopIndex;
+    
+    if (stops != null && stops.isNotEmpty) {
+      for (int i = 0; i < stops.length; i++) {
+        final stopTime = _parseTime(stops[i]['time'] ?? '');
+        if (stopTime != null) {
+          if (now.isAfter(stopTime)) {
+            completedStops++;
+            if (i < stops.length - 1) {
+              final nextStopTime = _parseTime(stops[i + 1]['time'] ?? '');
+              if (nextStopTime != null && now.isBefore(nextStopTime)) {
+                currentStopIndex = i;
+              }
+            } else {
+              currentStopIndex = i;
+            }
+          }
+        }
+      }
+    }
+
+    final progress = stops != null && stops.isNotEmpty 
+        ? (completedStops / stops.length).clamp(0.1, 1.0) 
+        : 0.1;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         leading: KuyogBackButton(onTap: () => Navigator.pop(context)),
-        title: Text('Active Trip', style: AppTheme.headline(size: 20)),
+        title: Text(trip.status == 'active' ? 'Active Trip' : 'Trip Details', 
+                   style: AppTheme.headline(size: 20)),
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline, color: AppColors.textPrimary),
@@ -28,12 +76,11 @@ class ActiveTripScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current Status
             KuyogCard(
-              color: AppColors.primary,
+              color: trip.status == 'active' ? AppColors.primary : AppColors.accent,
               shadow: [
                 BoxShadow(
-                  color: AppColors.primary.withAlpha(77),
+                  color: (trip.status == 'active' ? AppColors.primary : AppColors.accent).withAlpha(77),
                   blurRadius: 12,
                   offset: const Offset(0, 6),
                 )
@@ -49,71 +96,85 @@ class ActiveTripScreen extends StatelessWidget {
                           color: Colors.white.withAlpha(51),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.directions_walk, color: Colors.white),
+                        child: Icon(trip.status == 'active' ? Icons.directions_walk : Icons.event_available, color: Colors.white),
                       ),
                       const SizedBox(width: AppSpacing.md),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Ongoing Activity',
-                            style: AppTheme.body(
-                              size: 12,
-                              color: Colors.white.withAlpha(204),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              trip.status == 'active' ? 'Ongoing Activity' : 'Upcoming Trip',
+                              style: AppTheme.body(
+                                size: 12,
+                                color: Colors.white.withAlpha(204),
+                              ),
                             ),
-                          ),
-                          Text(
-                            'Mt. Apo Trekking',
-                            style: AppTheme.headline(size: 18, color: Colors.white),
-                          ),
-                        ],
+                            Text(
+                              trip.packageName,
+                              style: AppTheme.headline(size: 18, color: Colors.white),
+                              softWrap: true,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSpacing.xl),
-                  LinearProgressIndicator(
-                    value: 0.4,
-                    backgroundColor: Colors.white.withAlpha(51),
-                    valueColor: const AlwaysStoppedAnimation(Colors.amber),
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Day 1 of 3',
-                        style: AppTheme.body(size: 12, color: Colors.white),
-                      ),
-                      Text(
-                        'Next stop: Camp 1',
-                        style: AppTheme.body(size: 12, color: Colors.white),
-                      ),
-                    ],
-                  ),
+                  if (trip.status == 'active') ...[
+                    const SizedBox(height: AppSpacing.xl),
+                    LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.white.withAlpha(51),
+                      valueColor: const AlwaysStoppedAnimation(Colors.amber),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Day 1 of ${trip.fullItinerary.length}',
+                          style: AppTheme.body(size: 12, color: Colors.white),
+                        ),
+                        Text(
+                          currentStopIndex != null 
+                            ? 'Currently: ${stops![currentStopIndex]['activity']}'
+                            : (progress > 0.9 ? 'Finishing soon' : 'Starting soon'),
+                          style: AppTheme.body(size: 12, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    const SizedBox(height: AppSpacing.xl),
+                    Text(
+                      'This trip starts on ${DateFormat('dd/MM/yyyy').format(trip.date)}. Get ready!',
+                      style: AppTheme.body(size: 13, color: Colors.white),
+                    ),
+                  ],
                 ],
               ),
             ),
             const SizedBox(height: AppSpacing.xxl),
             
-            // Your Guide
-            const KuyogSectionHeader(title: 'Your Guide'),
+            const KuyogSectionHeader(title: 'Your Operator'),
             KuyogCard(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 24,
-                    backgroundImage: NetworkImage('https://picsum.photos/seed/guide1/100/100'),
+                    backgroundImage: trip.operatorPhotoUrl.isNotEmpty 
+                      ? CachedNetworkImageProvider(trip.operatorPhotoUrl)
+                      : const NetworkImage('https://picsum.photos/seed/operator/100/100') as ImageProvider,
                   ),
                   const SizedBox(width: AppSpacing.lg),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Juan Dela Cruz', style: AppTheme.label(size: 16)),
+                        Text(trip.operatorName, style: AppTheme.label(size: 16)),
                         Text(
-                          'DOT Accredited Guide',
+                          'Verified Tour Operator',
                           style: AppTheme.body(
                             size: 12,
                             color: AppColors.textSecondary,
@@ -124,9 +185,7 @@ class ActiveTripScreen extends StatelessWidget {
                   ),
                   IconButton(
                     icon: const Icon(Icons.chat, color: AppColors.primary),
-                    onPressed: () {
-                      // Navigate to chat
-                    },
+                    onPressed: () {},
                   ),
                   IconButton(
                     icon: const Icon(Icons.phone, color: AppColors.primary),
@@ -137,35 +196,57 @@ class ActiveTripScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xxl),
             
-            // Itinerary
-            const KuyogSectionHeader(title: 'Today\'s Itinerary'),
-            _itineraryItem('08:00 AM', 'Meetup at Basecamp', true),
-            _itineraryItem('09:00 AM', 'Start Trek', true),
-            _itineraryItem('12:00 PM', 'Lunch at the falls', false, isCurrent: true),
-            _itineraryItem('04:00 PM', 'Arrive at Camp 1', false),
+            KuyogSectionHeader(title: dayData != null ? 'Itinerary: ${dayData['title'] ?? "Day 1"}' : 'Trip Itinerary'),
+            if (stops != null && stops.isNotEmpty)
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: stops.length,
+                itemBuilder: (context, index) {
+                  final stop = stops[index];
+                  final stopTime = _parseTime(stop['time'] ?? '');
+                  final isDone = stopTime != null && now.isAfter(stopTime);
+                  final isCurrent = index == currentStopIndex;
+                  
+                  return _itineraryItem(
+                    stop['time'] ?? '--:--', 
+                    stop['activity'] ?? 'No activity', 
+                    isDone,
+                    isCurrent: isCurrent,
+                    location: stop['location']
+                  );
+                },
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Center(
+                  child: Text('Itinerary details coming soon.', style: AppTheme.body(color: AppColors.textLight)),
+                ),
+              ),
             
             const SizedBox(height: AppSpacing.xxxl),
             
-            // SOS Button
-            KuyogButton(
-              label: 'EMERGENCY SOS',
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SOSScreen()),
-                );
-              },
-              variant: KuyogButtonVariant.destructive,
-              icon: Icons.warning_rounded,
-              width: double.infinity,
-            ),
+            if (trip.status == 'active')
+              KuyogButton(
+                label: 'EMERGENCY SOS',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SOSScreen()),
+                  );
+                },
+                variant: KuyogButtonVariant.destructive,
+                icon: Icons.warning_rounded,
+                width: double.infinity,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _itineraryItem(String time, String title, bool isDone, {bool isCurrent = false}) {
+  Widget _itineraryItem(String time, String title, bool isDone, {bool isCurrent = false, String? location}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: Row(
@@ -199,7 +280,7 @@ class ActiveTripScreen extends StatelessWidget {
               ),
               Container(
                 width: 2,
-                height: 40,
+                height: 60,
                 color: isDone ? AppColors.primary : AppColors.divider,
               ),
             ],
@@ -216,12 +297,34 @@ class ActiveTripScreen extends StatelessWidget {
                     : (isDone ? AppColors.primary.withAlpha(77) : AppColors.divider),
               ),
               shadow: isCurrent ? AppShadows.cardHover : AppShadows.card,
-              child: Text(
-                title,
-                style: AppTheme.label(
-                  size: 14,
-                  color: isDone || isCurrent ? AppColors.textPrimary : AppColors.textLight,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: AppTheme.label(
+                      size: 14,
+                      color: isDone || isCurrent ? AppColors.textPrimary : AppColors.textLight,
+                    ),
+                  ),
+                  if (location != null) ...[
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 10, color: AppColors.textLight),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            location,
+                            style: AppTheme.body(size: 11, color: AppColors.textLight),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
               ),
             ),
           ),
@@ -230,4 +333,3 @@ class ActiveTripScreen extends StatelessWidget {
     );
   }
 }
-
