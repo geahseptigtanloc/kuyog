@@ -744,7 +744,8 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                         ),
                       ),
                       // Post content
-                      Padding(
+                      Expanded(
+                        child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -794,6 +795,7 @@ class _TouristHomeTabState extends State<TouristHomeTab> {
                             ),
                           ],
                         ),
+                      ),
                       ),
                     ],
                   ),
