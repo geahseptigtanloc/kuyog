@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../app_theme.dart';
 import '../../widgets/durie_mascot.dart';
 import '../../widgets/kuyog_logo.dart';
@@ -10,6 +12,8 @@ import '../../widgets/core/kuyog_button.dart';
 import '../../widgets/core/kuyog_card.dart';
 import '../../widgets/terms_agreement_sheet.dart';
 import '../../providers/role_provider.dart';
+import '../../data/services/auth_service.dart';
+import '../../data/services/onboarding_service.dart';
 
 class OnboardingFlowScreen extends StatefulWidget {
   const OnboardingFlowScreen({super.key});
@@ -53,6 +57,10 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen>
   DateTime? _departureDate;
   String _budgetRange = ''; // 'economy', 'standard', 'premium'
   int _numberOfPeople = 1;
+  bool _isLoading = false;
+
+  final _authService = AuthService();
+  final _onboardingService = OnboardingService();
 
 
 
@@ -98,7 +106,37 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen>
     }
   }
 
+  Future<void> _handleSignUp() async {
+    final email = _emailController.text.trim();
+    final name = _fullNameController.text.trim();
+    final password = _passwordController.text.trim();
 
+    if (email.isEmpty || name.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.signUp(
+        email: email,
+        password: password,
+        name: name,
+        role: 'tourist',
+      );
+      _nextStep();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Sign up failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   Future<void> _completeOnboarding() async {
     // Show celebration animation
@@ -110,14 +148,58 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen>
       context,
       UserRole.tourist,
       () async {
-        // Save onboarding data
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('onboarding_completed', true);
+        setState(() => _isLoading = true);
+        try {
+          final client = Supabase.instance.client;
+          final userId = client.auth.currentUser?.id;
+          
+          if (userId == null) {
+            throw Exception('User session not found. Please try logging in again.');
+          }
+
+          // Save onboarding data to Supabase
+          await _onboardingService.saveTouristPreferences(
+            userId: userId,
+            interests: _selectedInterests.toList(),
+            travelerType: _travelerType,
+            visitorType: _visitorType,
+            budgetRange: _budgetRange,
+            arrivalDate: _arrivalDate,
+            departureDate: _departureDate,
+            numberOfPeople: _numberOfPeople,
+          );
+
+          // Mark user as onboarded in profiles table
+          await _onboardingService.markOnboarded(userId);
+
+          // Save onboarding data locally as fallback/cache
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('onboarding_completed', true);
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Profile setup complete! Welcome to Kuyog.'),
+                backgroundColor: Colors.green,
+              ),
+            );
+            GoRouter.of(context).go('/home');
+          }
+        } catch (e) {
+          debugPrint('Error saving onboarding data: $e');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to save profile: $e'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        } finally {
+          if (mounted) setState(() => _isLoading = false);
+        }
       },
     );
-
-    if (!mounted) return;
-    GoRouter.of(context).go('/home');
   }
 
   @override
@@ -470,7 +552,8 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen>
               // Sign Up Button
               KuyogButton(
                 label: 'Sign Up',
-                onPressed: _nextStep,
+                onPressed: _isLoading ? null : _handleSignUp,
+                isLoading: _isLoading,
                 fullWidth: true,
               ),
               const SizedBox(height: AppSpacing.xl),
@@ -529,7 +612,7 @@ class _OnboardingFlowScreenState extends State<OnboardingFlowScreen>
                 children: [
                   Text('Already have an account?', style: AppTheme.body(size: 14)),
                   TextButton(
-                    onPressed: () => Navigator.of(context).pushReplacementNamed('/auth/login'),
+                    onPressed: () => context.go('/auth/login'),
                     child: Text('Log In', style: AppTheme.label(size: 14, color: AppColors.primary)),
                   ),
                 ],

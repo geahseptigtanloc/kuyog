@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app_theme.dart';
 import '../../../data/mock_data.dart';
+import '../../../data/services/booking_service.dart';
 import '../../../models/tour_operator.dart';
 import '../../../widgets/kuyog_back_button.dart';
 import '../../../widgets/durie_loading.dart';
@@ -24,18 +25,26 @@ class _JustShowUpScreenState extends State<JustShowUpScreen> {
   final _categories = ['All', 'City Tours', 'Nature & Adventure', 'Wildlife', 'Beach & Island', 'Cultural Heritage', 'Food & Market'];
   final _provinces = ['All', 'Davao City', 'Davao del Sur', 'Davao Oriental', 'Davao de Oro'];
 
+  final _bookingService = BookingService();
+
   String _getProvinceFor(TourPackage pkg) {
+    // In a real app, this would be a column in the DB. For now, we'll keep the logic.
     final provinces = ['Davao City', 'Davao del Sur', 'Davao Oriental', 'Davao de Oro'];
-    return provinces[pkg.id.hashCode % provinces.length];
+    return provinces[pkg.id.hashCode.abs() % provinces.length];
   }
 
   @override
   void initState() { super.initState(); _load(); }
 
   Future<void> _load() async {
-    final pkgs = await MockData.getTourPackages();
-    final ops = await MockData.getTourOperators();
-    if (mounted) setState(() { _packages = pkgs; _operators = ops; _loading = false; });
+    try {
+      final pkgs = await _bookingService.getTourPackages();
+      final ops = await MockData.getTourOperators(); // Operators still mock for now
+      if (mounted) setState(() { _packages = pkgs; _operators = ops; _loading = false; });
+    } catch (e) {
+      debugPrint('Error loading packages: $e');
+      if (mounted) setState(() { _loading = false; });
+    }
   }
 
   TourOperator? _operatorFor(String opId) {

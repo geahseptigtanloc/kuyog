@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../app_theme.dart';
+import '../../../data/services/booking_service.dart';
 import '../../../models/tour_operator.dart';
 import '../../../widgets/kuyog_back_button.dart';
 
@@ -19,6 +21,10 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
   final Set<int> _addOnIndices = {};
   String _payment = 'GCash';
   final _payments = ['GCash', 'Maya', 'Credit/Debit Card', 'Bank Transfer'];
+  
+  final _bookingService = BookingService();
+  bool _isSaving = false;
+  String? _finalRefCode;
 
   double get _tourTotal => widget.package.price * _pax;
   double get _addOnTotal => _addOnIndices.fold(0.0, (s, i) => s + ((widget.package.addOns[i]['price'] as num?)?.toDouble() ?? 0));
@@ -194,7 +200,7 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
           _reviewRow('Group', '$_pax person(s)'),
           _reviewRow('Total Paid', 'P${_total.toInt()}'),
           _reviewRow('Payment', _payment),
-          _reviewRow('Booking Ref', 'KYG-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}'),
+          _reviewRow('Booking Ref', _finalRefCode ?? 'Processing...'),
         ]),
       ),
       const SizedBox(height: 16),
@@ -219,9 +225,44 @@ class _BookingFlowScreenState extends State<BookingFlowScreen> {
     }
     return Container(padding: const EdgeInsets.all(16), decoration: BoxDecoration(color: Colors.white, boxShadow: AppShadows.bottomNav),
       child: SafeArea(child: SizedBox(width: double.infinity, child: ElevatedButton(
-        onPressed: () => setState(() => _step++),
+        onPressed: _isSaving ? null : () async {
+          if (_step == 3) {
+            setState(() => _isSaving = true);
+            try {
+              final user = Supabase.instance.client.auth.currentUser;
+              if (user == null) throw 'User not logged in';
+
+              final ref = await _bookingService.createBooking(
+                packageId: widget.package.id,
+                touristId: user.id,
+                operatorId: widget.package.operatorId,
+                tourDate: _date,
+                paxCount: _pax,
+                totalAmount: _total,
+                serviceFee: _serviceFee,
+                paymentMethod: _payment,
+                selectedAddOns: _addOnIndices.map((i) => widget.package.addOns[i]).toList(),
+              );
+
+              setState(() {
+                _finalRefCode = ref;
+                _isSaving = false;
+                _step++;
+              });
+            } catch (e) {
+              setState(() => _isSaving = false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Booking failed: $e'), backgroundColor: AppColors.error),
+              );
+            }
+          } else {
+            setState(() => _step++);
+          }
+        },
         style: ElevatedButton.styleFrom(backgroundColor: _step == 3 ? AppColors.success : AppColors.accent, padding: const EdgeInsets.symmetric(vertical: 16)),
-        child: Text(_step == 3 ? 'Confirm & Pay P${_total.toInt()}' : 'Continue', style: AppTheme.label(size: 16, color: Colors.white)),
+        child: _isSaving 
+          ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+          : Text(_step == 3 ? 'Confirm & Pay P${_total.toInt()}' : 'Continue', style: AppTheme.label(size: 16, color: Colors.white)),
       ))));
   }
 }

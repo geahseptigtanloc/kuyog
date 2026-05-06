@@ -32,9 +32,10 @@ class _TravelProfileScreenState extends State<TravelProfileScreen> {
       
       await onboarding.saveTouristPreferences(
         userId: user.id,
-        travelStyle: _travelerType,
-        countryOfOrigin: _visitorType,
+        travelerType: _travelerType,
+        visitorType: _visitorType,
         budgetRange: _budgetRange,
+        numberOfPeople: _groupSize,
       );
       
       widget.onNext();
