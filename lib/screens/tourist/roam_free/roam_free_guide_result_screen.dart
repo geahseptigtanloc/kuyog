@@ -4,6 +4,7 @@ import '../../../app_theme.dart';
 import '../../../data/mock_data.dart';
 import '../../../models/guide.dart';
 import '../../../widgets/kuyog_back_button.dart';
+import 'guide_waiting_screen.dart';
 
 class RoamFreeGuideResultScreen extends StatefulWidget {
   final String location;
@@ -163,12 +164,17 @@ class _RoamFreeGuideResultScreenState
                 height: 54,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            '${guide.name} reserved! They\'ll confirm within 5 hours.'),
-                        behavior: SnackBarBehavior.floating,
+                    Navigator.pop(context); // close bottom sheet
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GuideWaitingScreen(
+                          guide: guide,
+                          location: widget.location,
+                          startDate: widget.startDate,
+                          endDate: widget.endDate,
+                          interests: widget.interests,
+                        ),
                       ),
                     );
                   },
@@ -318,6 +324,8 @@ class _RoamFreeGuideResultScreenState
   }
 
   Widget _buildGuideCard(Guide guide) {
+    final isNewGuide = guide.reviewCount == 0;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -336,7 +344,7 @@ class _RoamFreeGuideResultScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top row: avatar + info
+            // Top row: avatar + name + badges
             Row(
               children: [
                 CircleAvatar(
@@ -372,47 +380,103 @@ class _RoamFreeGuideResultScreenState
                                       size: 12,
                                       color: Color(0xFF16A34A)),
                                   const SizedBox(width: 2),
-                                  Text(
-                                    'Verified',
-                                    style: AppTheme.label(
-                                        size: 10,
-                                        color:
-                                            const Color(0xFF16A34A)),
-                                  ),
+                                  Text('Verified',
+                                      style: AppTheme.label(
+                                          size: 10,
+                                          color: const Color(0xFF16A34A))),
                                 ],
                               ),
                             ),
+                          if (isNewGuide) ...[
+                            const SizedBox(width: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.accent.withAlpha(20),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text('New to KUYOG',
+                                  style: AppTheme.label(
+                                      size: 10, color: AppColors.accent)),
+                            ),
+                          ],
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        guide.specialty,
-                        style: AppTheme.body(
-                            size: 12,
-                            color: AppColors.textSecondary),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.star_rounded,
-                              size: 16, color: Colors.amber),
-                          const SizedBox(width: 2),
-                          Text('${guide.rating}',
-                              style: AppTheme.label(size: 12)),
-                          Text(
-                              ' · ${guide.tripCount} trips · ${guide.languages.join(", ")}',
-                              style: AppTheme.body(
-                                  size: 11,
-                                  color: AppColors.textSecondary)),
-                        ],
-                      ),
+                      // Tagline
+                      if (guide.storyExcerpt.isNotEmpty)
+                        Text(
+                          '"${guide.storyExcerpt}"',
+                          style: AppTheme.body(
+                              size: 12,
+                              color: AppColors.textSecondary,
+                              height: 1.3),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            // Bio excerpt
+            const SizedBox(height: 10),
+
+            // Info row: home province, rating, trips, languages
+            Row(
+              children: [
+                const Icon(Icons.home_outlined,
+                    size: 13, color: AppColors.textSecondary),
+                const SizedBox(width: 3),
+                Text(guide.city,
+                    style: AppTheme.body(
+                        size: 11, color: AppColors.textSecondary)),
+                const SizedBox(width: 10),
+                const Icon(Icons.star_rounded,
+                    size: 14, color: Colors.amber),
+                const SizedBox(width: 2),
+                Text('${guide.rating}',
+                    style: AppTheme.label(size: 11)),
+                Text(' · ${guide.tripCount} trips',
+                    style: AppTheme.body(
+                        size: 11, color: AppColors.textSecondary)),
+                if (guide.reviewCount > 0) ...[
+                  Text(' · ${guide.reviewCount} reviews',
+                      style: AppTheme.body(
+                          size: 11, color: AppColors.textSecondary)),
+                ],
+              ],
+            ),
+            const SizedBox(height: 4),
+
+            // Languages + experience
+            Row(
+              children: [
+                const Icon(Icons.translate,
+                    size: 13, color: AppColors.textSecondary),
+                const SizedBox(width: 3),
+                Expanded(
+                  child: Text(
+                    guide.languages.join(', '),
+                    style: AppTheme.body(
+                        size: 11, color: AppColors.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.work_outline,
+                    size: 13, color: AppColors.textSecondary),
+                const SizedBox(width: 3),
+                Text('${guide.yearsExperience} yrs exp',
+                    style: AppTheme.body(
+                        size: 11, color: AppColors.textSecondary)),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // Bio
             Text(
               guide.bio,
               style: AppTheme.body(
@@ -422,12 +486,13 @@ class _RoamFreeGuideResultScreenState
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 12),
-            // Specialties chips
+            const SizedBox(height: 10),
+
+            // Specialty tags (max 5 per spec)
             Wrap(
               spacing: 6,
               runSpacing: 6,
-              children: guide.specialties.take(3).map((s) {
+              children: guide.specialties.take(5).map((s) {
                 return Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 8, vertical: 4),
@@ -435,16 +500,15 @@ class _RoamFreeGuideResultScreenState
                     color: AppColors.primary.withAlpha(15),
                     borderRadius: BorderRadius.circular(6),
                   ),
-                  child: Text(
-                    s,
-                    style: AppTheme.label(
-                        size: 10, color: AppColors.primary),
-                  ),
+                  child: Text(s,
+                      style: AppTheme.label(
+                          size: 10, color: AppColors.primary)),
                 );
               }).toList(),
             ),
             const SizedBox(height: 14),
-            // Bottom row: price + reserve button
+
+            // Bottom row: daily rate + reserve button
             Row(
               children: [
                 Column(

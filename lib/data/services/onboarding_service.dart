@@ -16,6 +16,7 @@ class OnboardingService {
     DateTime? departureDate,
     int? numberOfPeople,
     List<String>? preferredLanguages,
+    String? countryOfOrigin,
   }) async {
     final data = {
       'profile_id': userId,
@@ -27,6 +28,7 @@ class OnboardingService {
       if (departureDate != null) 'departureDate': departureDate.toIso8601String(),
       if (numberOfPeople != null) 'numberOfPeople': numberOfPeople,
       if (preferredLanguages != null) 'languages_preferred': preferredLanguages,
+      if (countryOfOrigin != null) 'country_of_origin': countryOfOrigin,
     };
 
     await _client.from('tourist_preferences').upsert(data, onConflict: 'profile_id');
